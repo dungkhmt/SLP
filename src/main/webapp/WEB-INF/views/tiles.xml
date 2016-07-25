@@ -8,8 +8,8 @@
     	<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />            
     </definition> 
        
-    <definition name="member.list" extends="layout">
-    	<put-attribute name="title" value="List Member" />
-    	<put-attribute name="content" value="/WEB-INF/views/member/list.jsp" />                
+    <definition name="home" extends="layout">
+    	<put-attribute name="title" value="home" />
+    	<put-attribute name="content" value="/WEB-INF/views/home.jsp" />                
     </definition>        
 </tiles-definitions>
