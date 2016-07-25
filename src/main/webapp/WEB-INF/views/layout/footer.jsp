@@ -1,3 +1,3 @@
-<footer class="navbar-fixed-bottom">
+<footer>
        <p>&copy; MSOLAB - 2016</p>
 </footer>  
