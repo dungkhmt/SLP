@@ -4,18 +4,32 @@
 <html>
 <head>
 	<title><tiles:insertAttribute name="title"/></title>
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css"/>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	
+	<!-- Bootstrap Core CSS -->
+	<link href="<c:url value="/assets/libs/bootstrap/dist/css/bootstrap.css" />" rel="stylesheet" type="text/css" media="all" />
+	
+	<!-- Custom CSS -->
+	<link href="<c:url value="/assets/css/sb-admin-2.css" />" rel="stylesheet" type="text/css" media="all" />
+	
+	<!-- Custom Fonts -->
+	<link href="<c:url value="/assets/libs/font-awesome/css/font-awesome.css" />" rel="stylesheet" type="text/css" media="all">
+	
+	<!-- jQuery -->
+   	<script src="<c:url value="/assets/libs/jquery/dist/jquery.min.js"/>"></script>
+   	    	
 </head>
  
 <body>
-<div class="container"> 
-<tiles:insertAttribute name="header"/>
-<tiles:insertAttribute name="content"/>
-<tiles:insertAttribute name="footer"/>	
-</div>
+	<div class="wrapper"> 
+		<tiles:insertAttribute name="header"/>
+		<tiles:insertAttribute name="content"/>
+		<tiles:insertAttribute name="footer"/>	
+	</div>
+	
+	<!-- Bootstrap Core JavaScript -->
+	<script src="<c:url value="/assets/libs/bootstrap/dist/js/bootstrap.min.js"/>"></script>
+	
+	<!-- Custom Theme JavaScript -->
+	<script src="<c:url value="/assets/js/sb-admin-2.js"/>"></script>
 </body>
-
-
-
 </html>
