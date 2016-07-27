@@ -41,7 +41,7 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2">Nhà cung cấp</label>
 						<div class="col-sm-6">
-							<form:select path="articleCode" name="articleCode">
+							<form:select path="articleCode" name="articleCode" class="form-control">
 								<option value="">Chọn nhà cung cấp</option>
 								<c:forEach items="${listSuppliers}" var="supplier">
 									<option value="${supplier.Supplier_Name}">${supplier.Supplier_Name}</option>
