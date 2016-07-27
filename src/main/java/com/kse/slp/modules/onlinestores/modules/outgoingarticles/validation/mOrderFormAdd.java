@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.outgoingarticles.validation;
+package com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation;
 
 public class mOrderFormAdd {
 	String orderClientCode;

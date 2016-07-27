@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.incomingarticles.controller;
+package com.kse.slp.modules.onlinestores.modules.incomingarticles.controller;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.kse.slp.modules.onlinestores.incomingarticles.model.mSuppliers;
-import com.kse.slp.modules.onlinestores.incomingarticles.service.mSuppliersService;
-import com.kse.slp.modules.onlinestores.incomingarticles.validation.mIncomingArticleValidation;
+import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mSuppliers;
+import com.kse.slp.modules.onlinestores.modules.incomingarticles.service.mSuppliersService;
+import com.kse.slp.modules.onlinestores.modules.incomingarticles.validation.mIncomingArticleValidation;
 
 @Controller("incomingArticlesController")
 @RequestMapping(value={"/incomingArticles"})

@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.outgoingarticles.controller;
+package com.kse.slp.modules.onlinestores.modules.outgoingarticles.controller;
 
 import javax.servlet.http.HttpSession;
 

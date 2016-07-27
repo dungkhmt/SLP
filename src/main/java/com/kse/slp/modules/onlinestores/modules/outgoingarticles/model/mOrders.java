@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.outgoingarticles.model;
+package com.kse.slp.modules.onlinestores.modules.outgoingarticles.model;
 
 import java.io.Serializable;
 
