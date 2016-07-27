@@ -39,6 +39,10 @@
 								<label>Thời gian giao hàng</label>
 								<form:input  path="orderDate" class="form-control datepicker" name="orderDate" placeholder="Date" ></form:input>
 							</div>
+							<div class="form-group col-lg-6">
+								<label>Thời gian giao hàng</label>
+								<form:input  path="orderDate" class="form-control datepicker" name="orderDate" placeholder="Date" ></form:input>
+							</div>
 						</div>
 					</div>
 				</div>
