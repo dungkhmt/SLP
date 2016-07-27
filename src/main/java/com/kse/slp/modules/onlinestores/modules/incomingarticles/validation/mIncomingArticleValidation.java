@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.incomingarticles.validation;
+package com.kse.slp.modules.onlinestores.modules.incomingarticles.validation;
 
 public class mIncomingArticleValidation {
 	

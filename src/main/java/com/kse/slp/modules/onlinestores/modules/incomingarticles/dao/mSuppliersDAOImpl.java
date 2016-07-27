@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.incomingarticles.dao;
+package com.kse.slp.modules.onlinestores.modules.incomingarticles.dao;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.hibernate.HibernateException;
 import org.springframework.stereotype.Repository;
 
 import com.kse.slp.dao.BaseDao;
-import com.kse.slp.modules.onlinestores.incomingarticles.model.mSuppliers;
+import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mSuppliers;
 
 @Repository("mSuppliersDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
