@@ -16,6 +16,7 @@
 	
 	<!-- jQuery -->
    	<script src="<c:url value="/assets/libs/jquery/dist/jquery.min.js"/>"></script>
+   	
    	    	
 </head>
  
