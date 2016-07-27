@@ -1,7 +1,6 @@
 package com.kse.slp.modules.onlinestores.modules.clientmanagment.model;
 
 
-
 import java.io.Serializable;
 
 import javax.persistence.Entity;
