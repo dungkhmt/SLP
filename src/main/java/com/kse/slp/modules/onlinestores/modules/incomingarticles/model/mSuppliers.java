@@ -17,13 +17,6 @@ public class mSuppliers {
 	private String Supplier_Description;
 	private String Supplier_ARCats_Code;
 	private String Supplier_Name;
-	
-	public String getSupplier_Name() {
-		return Supplier_Name;
-	}
-	public void setSupplier_Name(String supplier_Name) {
-		Supplier_Name = supplier_Name;
-	}
 	public int getSupplier_ID() {
 		return Supplier_ID;
 	}
@@ -54,4 +47,13 @@ public class mSuppliers {
 	public void setSupplier_ARCats_Code(String supplier_ARCats_Code) {
 		Supplier_ARCats_Code = supplier_ARCats_Code;
 	}
+	public String getSupplier_Name() {
+		return Supplier_Name;
+	}
+	public void setSupplier_Name(String supplier_Name) {
+		Supplier_Name = supplier_Name;
+	}
+	
+	
+	
 }

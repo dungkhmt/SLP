@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.clientmanagment.model;
+package com.kse.slp.modules.onlinestores.modules.clientmanagment.model;
 
 import java.io.Serializable;
 

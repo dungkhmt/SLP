@@ -54,7 +54,7 @@
         <beans:property name="hibernateProperties">            
             <beans:value>
                 hibernate.dialect=org.hibernate.dialect.MySQLDialect
-                hibernate.show_sql=false
+                hibernate.show_sql=true
                 hibernate.max_fetch_depth=1
                 hibernate.use_sql_comments=false
                 hibernate.order_updates=true

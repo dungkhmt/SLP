@@ -7,7 +7,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.kse.slp.modules.onlinestores.outgoingarticles.validation.mOrderFormAdd;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 
 @Controller("mOrderController")
 @RequestMapping(value = {"/outgoingarticles"})
