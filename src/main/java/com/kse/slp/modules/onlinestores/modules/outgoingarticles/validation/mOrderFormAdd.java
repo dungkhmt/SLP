@@ -6,6 +6,21 @@ public class mOrderFormAdd {
 	String orderAdress;
 	String orderDate;
 	String orderTimeEarly;
+	public String getOrderTimeEarly() {
+		return orderTimeEarly;
+	}
+
+	public void setOrderTimeEarly(String orderTimeEarly) {
+		this.orderTimeEarly = orderTimeEarly;
+	}
+
+	public String getOrderTimeLate() {
+		return orderTimeLate;
+	}
+
+	public void setOrderTimeLate(String orderTimeLate) {
+		this.orderTimeLate = orderTimeLate;
+	}
 	String orderTimeLate;
 	public String getOrderClientCode() {
 		return orderClientCode;
