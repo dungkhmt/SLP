@@ -19,7 +19,7 @@
 	</div>
 	<!-- /.row -->
 	
-	<form:form class="form-horizontal" role="form">
+	<form:form class="form-horizontal" role="form" commandName="articleFormAdd" method="POST">	
 		<div class="row">
 			<div class="panel panel-default">
 				<div class="panel-heading">
