@@ -5,6 +5,8 @@ public class mOrderFormAdd {
 	String orderClientName;
 	String orderAdress;
 	String orderDate;
+	String orderTimeEarly;
+	String orderTimeLate;
 	public String getOrderClientCode() {
 		return orderClientCode;
 	}
