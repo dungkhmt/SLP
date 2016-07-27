@@ -19,7 +19,7 @@ public class BaseWeb {
     
     @ModelAttribute
     public void addGlobalAttr(ModelMap map) {
-    	
+    
         switch (request.getRequestURI()) {
             case "/":
                 baseUrl = request.getRequestURL().substring(0, request.getRequestURL().length() - 1).toString();
@@ -31,9 +31,15 @@ public class BaseWeb {
                 baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
                 break;
         }       
+       
+        System.out.println(name()+"::addGlobalAttr");
         
         assetsUrl = baseUrl + "/assets";
         map.put("baseUrl", baseUrl);
         map.put("assetsUrl", assetsUrl);
+    }
+    
+    public String name(){
+    	return "BaseWeb";
     }
 }

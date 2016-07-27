@@ -2,7 +2,9 @@
 <!DOCTYPE tiles-definitions PUBLIC
        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
-<tiles-definitions> 
+<tiles-definitions>
+ 
+	<!-- layout -->
     <definition name="layout" template="/WEB-INF/views/layout/base.jsp">           
     	<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
     	<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />            
@@ -12,5 +14,10 @@
     	<put-attribute name="title" value="HomePage" />
     	<put-attribute name="content" value="/WEB-INF/views/home/home.jsp" />                
     </definition>
-         
+       
+    <!-- module incomingarticles -->  
+    <definition name="in.addArticles" extends="layout">
+    	<put-attribute name="title" value="Nhập hàng"/>
+    	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/addArticles.jsp"/>
+    </definition>
 </tiles-definitions>
