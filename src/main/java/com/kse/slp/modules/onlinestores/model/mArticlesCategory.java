@@ -40,5 +40,11 @@ public class mArticlesCategory implements Serializable {
 	public void setARCat_Description(String aRCat_Description) {
 		ARCat_Description = aRCat_Description;
 	}
+	@Override
+	public String toString() {
+		return "mArticlesCategory [ARCat_ID=" + ARCat_ID + ", ARCat_Code="
+				+ ARCat_Code + ", ARCat_Name=" + ARCat_Name
+				+ ", ARCat_Description=" + ARCat_Description + "]";
+	}
 	
 }

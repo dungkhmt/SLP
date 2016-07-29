@@ -64,13 +64,15 @@
 			</div>
 			<div class="panel-body">
 				<div class="form-group ">
-					<label class="control-label col-sm-2" for="projectMembers">Chọn mặt hàng</label>
+					<label class="control-label col-sm-2" for="categoryArticle">Chọn mặt hàng</label>
 					<div class="col-sm-2">
 						<select class="form-control categoryArticle" name="categoryArticle" >
-                    		<option value="">Chọn mặt hàng</option>
-                    		<option value="1">test1</option>
-  							<option value="2" selected="selected">test2</option>
-  							<option value="3">test3</option>
+							<option value="">Chọn mặt hàng</option>
+							<c:forEach items="${listArticleCategory}" var="article">
+                                     	<option value="${article.ARCat_Code}">${article.ARCat_Name}</option>
+                            </c:forEach>
+                    		
+                    		
                     	</select>
                     </div>
 				</div>	
@@ -143,7 +145,7 @@ function v_fAddOrderArticle(){
 		$("table#listOrderArticles tbody tr.no-records-found").remove();
 		//make orderArticleRecord
 		sAddedArticle+="<tr>";
-		sAddedArticle+="<td><span>"+categoryArticle+"</span><input name='orderArticles' type='hidden' value='"+categoryArticle+ " "+articleAmount+" "+articlePrice+"'/></td>";
+		sAddedArticle+="<td><span>"+categoryArticle+"</span><input name='orderArticles' type='hidden' value='"+categoryArticle+ " "+articleAmount+" "+articlePrice+" "+"'/></td>";
 		sAddedArticle+="<td><span>"+articleAmount+"</span></td>";
 		sAddedArticle+="<td><span>"+articlePrice+"</span></td>";
 		sAddedArticle 	+= "<td><button type='button' onclick='v_fClearOrderArticle(this);' class='btn btn-warning btn-xs' title='Xóa hàng này' >Xóa</button></td>";
