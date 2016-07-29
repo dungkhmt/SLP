@@ -18,7 +18,7 @@ public class mIncomingArticles implements Serializable {
 	private String IA_ArticleCode;
 	private int IA_Amount;
 	private float IA_Price;
-	private String IA_Supplier;
+	private String IA_Supplier_Code;
 	private String IA_Date;
 	
 	public int getIA_ID() {
@@ -45,17 +45,17 @@ public class mIncomingArticles implements Serializable {
 	public void setIA_Price(float iA_Price) {
 		IA_Price = iA_Price;
 	}
-	public String getIA_Supplier() {
-		return IA_Supplier;
-	}
-	public void setIA_Supplier(String iA_Supplier) {
-		IA_Supplier = iA_Supplier;
-	}
 	public String getIA_Date() {
 		return IA_Date;
 	}
 	public void setIA_Date(String iA_Date) {
 		IA_Date = iA_Date;
+	}
+	public String getIA_Supplier_Code() {
+		return IA_Supplier_Code;
+	}
+	public void setIA_Supplier_Code(String iA_Supplier_Code) {
+		IA_Supplier_Code = iA_Supplier_Code;
 	}
 	
 	
