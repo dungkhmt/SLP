@@ -57,6 +57,11 @@ public class mIncomingArticles implements Serializable {
 	public void setIA_Supplier_Code(String iA_Supplier_Code) {
 		IA_Supplier_Code = iA_Supplier_Code;
 	}
+	@Override
+	public String toString() {
+		return "mIncomingArticles [IA_ID=" + IA_ID + ", IA_ArticleCode=" + IA_ArticleCode + ", IA_Amount=" + IA_Amount
+				+ ", IA_Price=" + IA_Price + ", IA_Supplier_Code=" + IA_Supplier_Code + ", IA_Date=" + IA_Date + "]";
+	}
 	
 	
 }

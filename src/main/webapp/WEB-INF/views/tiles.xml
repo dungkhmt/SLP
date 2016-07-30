@@ -25,10 +25,43 @@
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/addArticles.jsp"/>
     </definition>
+    
+    <definition name="in.listIncommingArticles" extends="layout">
+    	<put-attribute name="title" value="Danh sách hàng nhập"/>
+    	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
+    </definition>
+
 	<!-- trash -->
 	<definition name="trash.outgoingarticles.add" extends="layout">
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/trash/add.jsp"/>
     </definition>
-			
+
+    <!-- Auth -->
+    <definition name="login" extends="layout">
+    	<put-attribute name="title" value="Login" />
+    	<put-attribute name="content" value="/WEB-INF/views/auth/login.jsp" />                
+    </definition>
+     <definition name="register" extends="layout">
+    	<put-attribute name="title" value="Register" />
+    	<put-attribute name="content" value="/WEB-INF/views/auth/register.jsp" />                
+    </definition>
+    <definition name="denied" extends="layout">
+    	<put-attribute name="title" value="Access Denied" />
+    	<put-attribute name="content" value="/WEB-INF/views/auth/denied.jsp" />                
+    </definition>
+    <definition name="home" extends="layout">
+    	<put-attribute name="title" value="Homepage" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/index.jsp" />                
+    </definition>    
+    
+    <!-- Member manager -->
+    <definition name="member.list" extends="layout">
+    	<put-attribute name="title" value="List Member" />
+    	<put-attribute name="content" value="/WEB-INF/views/member/list.jsp" />                
+    </definition>        
+    <definition name="member.add" extends="layout">
+    	<put-attribute name="title" value="Add Member" />
+    	<put-attribute name="content" value="/WEB-INF/views/member/add.jsp" />                
+    </definition>       
 </tiles-definitions>

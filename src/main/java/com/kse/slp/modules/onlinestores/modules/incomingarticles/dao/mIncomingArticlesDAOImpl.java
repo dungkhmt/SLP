@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
 
 import com.kse.slp.dao.BaseDao;
@@ -37,6 +38,28 @@ public class mIncomingArticlesDAOImpl extends BaseDao implements mIncomingArticl
 	}
 
 	@Override
+	public List<mIncomingArticles> getOrderedListByDate() {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mIncomingArticles.class);
+			criteria.addOrder(Order.desc("IA_Date"));
+			List<mIncomingArticles> inArts = criteria.list(); 
+			commit();
+			return inArts;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+	
+	@Override
 	public int saveAIncomingArticle(mIncomingArticles article) {
 		// TODO Auto-generated method stub
 		try {
@@ -55,5 +78,4 @@ public class mIncomingArticlesDAOImpl extends BaseDao implements mIncomingArticl
 	            close();
 	        }
 	}
-
 }
