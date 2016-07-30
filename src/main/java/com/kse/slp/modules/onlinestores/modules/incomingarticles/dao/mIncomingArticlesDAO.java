@@ -6,5 +6,6 @@ import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncoming
 
 public interface mIncomingArticlesDAO {
 	public List<mIncomingArticles> getList();
+	public List<mIncomingArticles> getOrderedListByDate();
 	public int saveAIncomingArticle(mIncomingArticles article);
 }

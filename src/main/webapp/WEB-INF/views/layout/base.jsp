@@ -8,6 +8,9 @@
 	<!-- Bootstrap Core CSS -->
 	<link href="<c:url value="/assets/libs/bootstrap/dist/css/bootstrap.css" />" rel="stylesheet" type="text/css" media="all" />
 	
+	 <!-- MetisMenu CSS -->
+	 <link href="<c:url value="/assets/libs/metisMenu/dist/metisMenu.css" />" rel="stylesheet" type="text/css" media="all" />
+	
 	<!-- Custom CSS -->
 	<link href="<c:url value="/assets/css/sb-admin-2.css" />" rel="stylesheet" type="text/css" media="all" />
 	
@@ -15,8 +18,16 @@
 	<link href="<c:url value="/assets/libs/font-awesome/css/font-awesome.css" />" rel="stylesheet" type="text/css" media="all">
 	
 	<!-- jQuery -->
-   	<script src="<c:url value="/assets/libs/jquery/dist/jquery.min.js"/>"></script>
+   	<script src="<c:url value="/assets/libs/jquery/dist/jquery.js"/>"></script>
    	
+   	<!-- Bootstrap Core JavaScript -->
+	<script src="<c:url value="/assets/libs/bootstrap/dist/js/bootstrap.min.js"/>"></script>
+	
+	<!-- Custom Theme JavaScript -->
+	<script src="<c:url value="/assets/js/sb-admin-2.js"/>"></script>
+	
+	<!-- Metis Menu Plugin JavaScript -->
+	<script src="<c:url value="/assets/libs/metisMenu/dist/metisMenu.min.js"/>"></script>
    	    	
 </head>
  
@@ -26,11 +37,5 @@
 		<tiles:insertAttribute name="content"/>
 		<tiles:insertAttribute name="footer"/>	
 	</div>
-	
-	<!-- Bootstrap Core JavaScript -->
-	<script src="<c:url value="/assets/libs/bootstrap/dist/js/bootstrap.min.js"/>"></script>
-	
-	<!-- Custom Theme JavaScript -->
-	<script src="<c:url value="/assets/js/sb-admin-2.js"/>"></script>
 </body>
 </html>

@@ -25,5 +25,9 @@
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/addArticles.jsp"/>
     </definition>
+    <definition name="in.listIncommingArticles" extends="layout">
+    	<put-attribute name="title" value="Danh sách hàng nhập"/>
+    	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
+    </definition>
 
 </tiles-definitions>

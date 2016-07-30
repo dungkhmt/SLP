@@ -1,5 +1,7 @@
 package com.kse.slp.modules.onlinestores.modules.incomingarticles.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,12 @@ public class mIncomingArticlesServiceImpl implements mIncomingArticlesService{
 
 	@Autowired
 	private mIncomingArticlesDAO mIncomingArticlesDAO;
+	
+	@Override
+	public List<mIncomingArticles> getList() {
+		// TODO Auto-generated method stub
+		return mIncomingArticlesDAO.getList();
+	}
 	
 	@Override
 	public int saveAIncomingArticle(String article_code, int article_amount, float article_price, String article_spcode,
@@ -27,4 +35,9 @@ public class mIncomingArticlesServiceImpl implements mIncomingArticlesService{
 		return mIncomingArticlesDAO.saveAIncomingArticle(article);
 	}
 
+	@Override
+	public List<mIncomingArticles> getOrderedListByDate() {
+		// TODO Auto-generated method stub
+		return mIncomingArticlesDAO.getOrderedListByDate();
+	}
 }
