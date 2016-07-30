@@ -27,14 +27,14 @@ public class mOrdersServiceImpl implements mOrdersService{
 		for(int i=0;i<orderArticles.length;i++)
 		if (orderArticles[i]!=""){
 			String s= orderArticles[i];
-			System.out.println(s);
+			
 			String oA_Code= s.substring(0,s.indexOf(' '));
 			s=s.substring(s.indexOf(' ')+1);
 			String oA_Amount=s.substring(0,s.indexOf(' '));
 			s=s.substring(s.indexOf(' ')+1);
 			String oA_Price=s;
 			
-			System.out.println(s+" "+oA_Code+" "+oA_Amount+" "+oA_Price);
+			
 			mOrderArticles mOA= new mOrderArticles();
 			mOA.setOA_Code(oA_Code);
 			mOA.setOA_Price(Float.parseFloat(oA_Price));

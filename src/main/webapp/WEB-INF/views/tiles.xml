@@ -25,5 +25,10 @@
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/addArticles.jsp"/>
     </definition>
-
+	<!-- trash -->
+	<definition name="trash.outgoingarticles.add" extends="layout">
+    	<put-attribute name="title" value="Nhập hàng"/>
+    	<put-attribute name="content" value="/WEB-INF/views/trash/add.jsp"/>
+    </definition>
+			
 </tiles-definitions>
