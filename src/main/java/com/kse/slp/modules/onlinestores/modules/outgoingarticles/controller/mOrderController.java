@@ -37,7 +37,8 @@ public class mOrderController extends BaseWeb{
 		model.put("listArticleCategory", list);
 		for(int i=0;i<list.size();i++ )
 			System.out.print(list.get(i).toString());
-		return "outgoingarticles.addAOrder";
+		//return "outgoingarticles.addAOrder";
+		return "trash.outgoingarticles.add";
 		
 	}
 	@RequestMapping(value = "/save-a-order", method = RequestMethod.POST)

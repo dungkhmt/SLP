@@ -25,11 +25,18 @@
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/addArticles.jsp"/>
     </definition>
+    
     <definition name="in.listIncommingArticles" extends="layout">
     	<put-attribute name="title" value="Danh sách hàng nhập"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
     </definition>
-    
+
+	<!-- trash -->
+	<definition name="trash.outgoingarticles.add" extends="layout">
+    	<put-attribute name="title" value="Nhập hàng"/>
+    	<put-attribute name="content" value="/WEB-INF/views/trash/add.jsp"/>
+    </definition>
+
     <!-- Auth -->
     <definition name="login" extends="layout">
     	<put-attribute name="title" value="Login" />
@@ -57,6 +64,4 @@
     	<put-attribute name="title" value="Add Member" />
     	<put-attribute name="content" value="/WEB-INF/views/member/add.jsp" />                
     </definition>       
-    
-
 </tiles-definitions>
