@@ -33,7 +33,7 @@ public class mOrderController extends BaseWeb{
 	public String addAOrder(ModelMap model, HttpSession session){
 		model.put("orderFormAdd", new mOrderFormAdd());
 		List<mArticlesCategory> list= articleService.getList();
-		System.out.print("this is list"+list.size());
+		//System.out.print("this is list"+list.size());
 		model.put("listArticleCategory", list);
 		for(int i=0;i<list.size();i++ )
 			System.out.print(list.get(i).toString());
@@ -43,7 +43,7 @@ public class mOrderController extends BaseWeb{
 	}
 	@RequestMapping(value = "/save-a-order", method = RequestMethod.POST)
 	public String saveAOrder(ModelMap model,HttpServletRequest request, HttpSession session,@ModelAttribute("orderFormAdd") mOrderFormAdd orderForm,BindingResult result){
-		System.out.print("This is "+orderForm.getOrderAdress());
+		//System.out.print("This is "+orderForm.getOrderAdress());
 		String[] orderArticles = request.getParameterValues("orderArticles");
 		for(int i=0;i<orderArticles.length;i++){
 			System.out.print(orderArticles[i]);

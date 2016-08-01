@@ -29,9 +29,9 @@
 					<div class="form-group">
 						<label class="control-label col-lg-2 phoneinput">Số điện thoại</label>
 						<div class="col-lg-6">
-						
-						<form:input path="orderClientCode" class="form-control" name="orderClientCode" placeholder="Number Phone"></form:input>
-					
+						<div class="ui-widget">
+						<form:input path="orderClientCode" id="inputSearch" class="form-control" name="orderClientCode" placeholder="Number Phone"></form:input>
+						</div>
 						</div>
 					</div>
 					<div class="form-group">
@@ -168,34 +168,69 @@ function v_fClearOrderArticle(the_oElement){
 
 $( function() {
 	console.log("start");
-    var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-    $( "#inputSearch" ).autocomplete({
-      source: availableTags
-    });
-  } );
+  
+    
+    
+   /*  $("#inputSearch").keyup(function(){
+
+		var input= document.getElementById("inputSearch").value;
+		console.log(input);
+		var jsonx={
+	    		
+	    		"inputString":input
+	    };
+    	$.ajax({ 
+    	    type:"POST", 
+    	    url:"${baseUrl}/clientSearch-byPhone",
+    	    data: JSON.stringify(jsonx),
+    	    contentType: "application/json; charset=utf-8",
+    	    dataType: "json",
+    	    //Stringified Json Object
+    	    success: function(resposeJsonObject){
+    	        // Success Message Handler
+    	        console.log(resposeJsonObject);
+    	        availableTags=[
+    	                       ];
+    	        for(var i=0;i<resposeJsonObject.length;i++){
+    	        	availableTags.push(resposeJsonObject[i].phone);
+    	        }
+    	    }
+    	   
+    	});
+   }, */
+    //function(){
+    	$( "#inputSearch" ).autocomplete({
+    		source: function( request, response ) {
+    			var input= document.getElementById("inputSearch").value;
+    			console.log(input);
+    			var jsonx={
+    		    		
+    		    		"inputString":input
+    		    };
+    	    	$.ajax({ 
+    	    	    type:"POST", 
+    	    	    url:"${baseUrl}/clientSearch-byPhone",
+    	    	    data: JSON.stringify(jsonx),
+    	    	    contentType: "application/json; charset=utf-8",
+    	    	    dataType: "json",
+    	    	    //Stringified Json Object
+    	    	    success: function(resposeJsonObject){
+    	    	        // Success Message Handler
+    	    	        console.log(resposeJsonObject);
+    	    	        availableTags=[
+    	    	                       ];
+    	    	        for(var i=0;i<resposeJsonObject.length;i++){
+    	    	        	availableTags.push(resposeJsonObject[i].phone);
+    	    	        }
+    	    	        response(availableTags);
+    	    	    }
+    	        });
+    	    },
+    
+    	});
+   
+  //} );
+});
 /*$(document).ready(function() {
 	console.log("up autocomplete start");
 	$('.phoneinput').autocomplete({
