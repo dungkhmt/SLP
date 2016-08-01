@@ -6,6 +6,25 @@ public class mOrderFormAdd {
 	String orderAdress;
 	String orderDate;
 	String orderTimeEarly;
+	float orderDeliveryLat;
+	float orderDeliveryLng;
+	
+	public float getOrderDeliveryLat() {
+		return orderDeliveryLat;
+	}
+
+	public void setOrderDeliveryLat(float orderDeliveryLat) {
+		this.orderDeliveryLat = orderDeliveryLat;
+	}
+
+	public float getOrderDeliveryLng() {
+		return orderDeliveryLng;
+	}
+
+	public void setOrderDeliveryLng(float orderDeliveryLng) {
+		this.orderDeliveryLng = orderDeliveryLng;
+	}
+
 	public String getOrderTimeEarly() {
 		return orderTimeEarly;
 	}

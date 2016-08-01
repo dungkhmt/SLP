@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 <script src="<c:url value="/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.js"/>"></script>
 <script src="<c:url value="/assets/libs/jquery-ui-1.12.0/jquery-ui.js"/>"> </script>
+<script src="<c:url value="/assets/js/selectAddress.js"/>"> </script>
+<link href="<c:url value="/assets/css/selectAddress.css" />" rel="stylesheet" type="text/css" media="all" />
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&libraries=places&callback=initAutocomplete" async defer></script>
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
@@ -37,15 +40,40 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2">Tên Khách Hàng</label>
 						<div class="col-lg-6">
-						<form:input path="orderClientName" class="form-control" name="orderClientName" placeholder="Client Name"></form:input>
+						<form:input path="orderClientName" class="form-control" id="orderClientName" name="orderClientName" placeholder="Client Name"></form:input>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-sm-2">Địa chỉ</label>
 						<div class="col-lg-6">
-						<form:input path="orderAdress" class="form-control" name="orderAdress" placeholder="Adress"></form:input>
+						<form:input path="orderAdress" class="form-control" id="orderAdress" name="orderAdress" placeholder="Adress"></form:input>
 						</div>
+						<button type="button" class="btn btn-primary active" onclick="enableSelectMap()"><span class="glyphicon glyphicon-map-marker"></span></button>
+						<button type="button" class="btn btn-primary active ok-selectMap" onclick="pushValueLatLng()">OK</button>
+						
 					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-2">Thông tin tọa độ</label>
+						<div class="col-lg-6">
+						
+							<div class="col-lg-2 orderDeliveryLat">
+							<label class="control-label col-sm-1">Lat:</label>
+							<form:input path="orderDeliveryLat" class="form-control" id="orderDeliveryLat" name="orderDeliveryLat" ></form:input>
+							</div>
+						
+							<div class="col-lg-2 orderDeliveryLng">
+							<label class="control-label col-sm-1 orderDeliveryLng">Lng:</label>
+							<form:input path="orderDeliveryLng" class="form-control" id="orderDeliveryLng" name="orderDeliveryLng" ></form:input>
+							</div>
+						</div>
+						
+					</div>
+					<div class="form-group selectMap">
+						<label class="selectMapLabel Ilabel"></label>
+						<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+						
+    					<div id="map"></div>
+    				</div>
 					<div class="form-group">
 						<label class="control-label col-sm-2">Ngày giao hàng</label>
 						<div class="col-lg-2">
@@ -124,15 +152,15 @@
 			</div>
 		</div>
 		</div>
-		<button type="submit" class="btn btn-primary" id="addANewPaper">Lưu</button>
+		<button type="submit" class="btn btn-primary" id="addANewOrder">Lưu</button>
         <button type="reset" class="btn btn-primary cancel">Hủy</button>
 	</div>
 	</form:form>
-	<div class="ui-widget">
-  		<label for="tags">Tags: </label>
-  		<input id="inputSearch">
-	</div>
+
+			
 </div>
+			
+
 <!-- Javascript -->
 <script>
 	$(function() {
@@ -140,8 +168,31 @@
         
     });
 	$('.timepicker').timepicker();
+	$(".selectMap").hide();
+	$(".ok-selectMap").hide();
+	$(".orderDeliveryLat").hide();
+	$(".orderDeliveryLng").hide();
 </script>
 <script type="text/javascript">
+function pushValueLatLng(){
+	$(".orderDeliveryLat").show();
+	$(".orderDeliveryLng").show();
+	$("#orderDeliveryLat").val(getLat());
+	$("#orderDeliveryLng").val(getLng());
+	$(".selectMap").hide();
+	$(".ok-selectMap").hide();
+}
+function enableSelectMap(){
+	console.log("enableSelectMap");
+	if ($(".selectMap").is(":visible")){
+	$(".selectMap").hide();
+	$(".ok-selectMap").hide();
+	}
+	else{ 
+		$(".selectMap").show();
+		$(".ok-selectMap").show();
+	}
+}
 function v_fAddOrderArticle(){
 	var categoryArticle= $("select.categoryArticle").find(":selected").val();;
 	var articleAmount= document.getElementsByName("amount")[0].value;
@@ -220,14 +271,27 @@ $( function() {
     	    	        availableTags=[
     	    	                       ];
     	    	        for(var i=0;i<resposeJsonObject.length;i++){
-    	    	        	availableTags.push(resposeJsonObject[i].phone);
+    	    	        	availableTags.push({
+    	    	        		"label": resposeJsonObject[i].phone,
+    	    	        		"value": resposeJsonObject[i].phone,
+    	    	        		"value1":resposeJsonObject[i].adress,
+    	    	        		"value2":resposeJsonObject[i].name
+    	    	        		
+    	    	        	});
+    	    	        	
     	    	        }
     	    	        response(availableTags);
     	    	    }
     	        });
     	    },
+    	    select: function(event, ui) {
+    	        //assign value back to the form element
+    	    	$( "#orderClientName" ).val( ui.item.value2 );
+    	    	$( "#orderAdress" ).val( ui.item.value1 );
+    	    }
     
     	});
+    	
    
   //} );
 });

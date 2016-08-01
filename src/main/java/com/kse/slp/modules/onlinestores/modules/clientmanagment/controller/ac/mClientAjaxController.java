@@ -42,8 +42,6 @@ public class mClientAjaxController {
 			e.printStackTrace();
 			return null;
 		}
-		
-
 	}
 	public String name(){
 		return "mClientAjaxController::";
