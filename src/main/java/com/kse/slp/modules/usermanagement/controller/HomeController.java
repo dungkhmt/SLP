@@ -34,7 +34,7 @@ public class HomeController extends BaseWeb {
 		    User user = userService.getByUsername(username);
 		    session.setAttribute("currentUser", user);				   
 		}
-		model.addAttribute("redirect", "member.html");
+		//model.addAttribute("redirect", "member.html");
 		return "home";
 	}	
 }

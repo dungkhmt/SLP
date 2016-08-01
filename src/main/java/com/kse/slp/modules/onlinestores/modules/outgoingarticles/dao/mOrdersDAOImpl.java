@@ -63,6 +63,25 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 		}
 	}
+	@Override
+	public List<mOrders> getList() {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mOrders.class);
+			List<mOrders> listOrders = criteria.list();
+			commit();
+			return listOrders;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
 	
 
 }

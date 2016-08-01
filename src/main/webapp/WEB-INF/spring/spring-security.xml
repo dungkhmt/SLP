@@ -8,8 +8,6 @@
 					                http://www.springframework.org/schema/security/spring-security-3.2.xsd">
     <http use-expressions="true" access-denied-page="/auth/denied.html">          
         <intercept-url pattern="/" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />        
-        <intercept-url pattern="/member.html" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />        
-        <intercept-url pattern="/member/**" access="hasRole('ROLE_ADMIN')" />                            
         <form-login login-page="/auth/login.html" 
         			default-target-url="/"
                     authentication-failure-url="/auth/login.html" />                                 

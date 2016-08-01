@@ -1,5 +1,7 @@
 package com.kse.slp.modules.onlinestores.modules.outgoingarticles.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,11 @@ public class mOrdersServiceImpl implements mOrdersService{
 			orderArticlesDAO.saveAOrderArticles(mOA);
 		}
 		return id;
+	}
+	@Override
+	public List<mOrders> getList() {
+		// TODO Auto-generated method stub
+		return orderDAO.getList();
 	}
 
 }

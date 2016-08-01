@@ -9,16 +9,16 @@
     	<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
     	<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />            
     </definition> 
-    
-    <definition name="home" extends="layout">
-    	<put-attribute name="title" value="HomePage" />
-    	<put-attribute name="content" value="/WEB-INF/views/home/home.jsp" />                
-    </definition>
-     
+  
     <definition name="outgoingarticles.addAOrder" extends="layout">
     	<put-attribute name="title" value="Add a Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/add.jsp" />                
     </definition>
+    
+    <definition name="home" extends="layout">
+    	<put-attribute name="title" value="Homepage" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/home.jsp" />                
+    </definition>    
        
     <!-- module incomingarticles -->  
     <definition name="in.addArticles" extends="layout">
@@ -38,30 +38,20 @@
     </definition>
 
     <!-- Auth -->
-    <definition name="login" extends="layout">
-    	<put-attribute name="title" value="Login" />
-    	<put-attribute name="content" value="/WEB-INF/views/auth/login.jsp" />                
+    <definition name="login" template="/WEB-INF/views/auth/login.jsp">
+    	    
     </definition>
-     <definition name="register" extends="layout">
-    	<put-attribute name="title" value="Register" />
-    	<put-attribute name="content" value="/WEB-INF/views/auth/register.jsp" />                
+    <definition name="register" template="/WEB-INF/views/auth/register.jsp">
+     
     </definition>
     <definition name="denied" extends="layout">
     	<put-attribute name="title" value="Access Denied" />
     	<put-attribute name="content" value="/WEB-INF/views/auth/denied.jsp" />                
     </definition>
-    <definition name="home" extends="layout">
-    	<put-attribute name="title" value="Homepage" />
-    	<put-attribute name="content" value="/WEB-INF/views/home/index.jsp" />                
-    </definition>    
     
-    <!-- Member manager -->
-    <definition name="member.list" extends="layout">
-    	<put-attribute name="title" value="List Member" />
-    	<put-attribute name="content" value="/WEB-INF/views/member/list.jsp" />                
-    </definition>        
-    <definition name="member.add" extends="layout">
-    	<put-attribute name="title" value="Add Member" />
-    	<put-attribute name="content" value="/WEB-INF/views/member/add.jsp" />                
-    </definition>       
+    <!-- Shipping Modules -->
+    <definition name="ship.createRoute" extends="layout">
+    	<put-attribute name="title" value="Create route manual"/>
+    	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoute.jsp"/>
+    </definition>
 </tiles-definitions>
