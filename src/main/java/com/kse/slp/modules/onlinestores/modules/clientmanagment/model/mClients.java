@@ -14,7 +14,7 @@ public class mClients implements Serializable{
 	@GeneratedValue
 	int C_ID;
 	String C_Code;
-	String C_Adress;
+	String C_Address;
 	String C_Name;
 	String C_PhoneNumber;
 	float C_Lng;
@@ -35,11 +35,12 @@ public class mClients implements Serializable{
 	public void setC_Code(String c_Code) {
 		C_Code = c_Code;
 	}
-	public String getC_Adress() {
-		return C_Adress;
+
+	public String getC_Address() {
+		return C_Address;
 	}
-	public void setC_Adress(String c_Adress) {
-		C_Adress = c_Adress;
+	public void setC_Address(String c_Address) {
+		C_Address = c_Address;
 	}
 	public String getC_Name() {
 		return C_Name;
