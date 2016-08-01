@@ -35,10 +35,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
        
         if ("".equals(username)) {
-            throw new BadCredentialsException("You must fill in username");
+            throw new BadCredentialsException("Các trường không được để trống");
         } 
         if ("".equals(password)) {
-            throw new BadCredentialsException("You must fill in password");
+            throw new BadCredentialsException("Các trường không được để trống");
         }
         
         String md5EncryptedPassword = DigestUtils.md5Hex(password);
@@ -46,10 +46,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         User user = userService.getByUsername(username);
         
         if (user == null) {
-            throw new BadCredentialsException("Username doesn't exists");
+            throw new BadCredentialsException("Tên đăng nhập không tồn tại");
         }
         if (!md5EncryptedPassword.equals(user.getPassword())) {
-            throw new BadCredentialsException("Wrong password");
+            throw new BadCredentialsException("Mật khẩu không đúng");
         }
         
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();

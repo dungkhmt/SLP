@@ -16,6 +16,42 @@ public class mOrders implements Serializable {
 	String O_ClientCode;
 	String O_OrderDate;
 	String O_DueDate;
+	String O_DeliveryAdress;
+	float O_DeliveryLat;
+	float O_DeliveryLng;
+	String O_TimeEarly;
+	String O_TimeLate;
+	
+	public String getO_DeliveryAdress() {
+		return O_DeliveryAdress;
+	}
+	public void setO_DeliveryAdress(String o_DeliveryAdress) {
+		O_DeliveryAdress = o_DeliveryAdress;
+	}
+	public float getO_DeliveryLat() {
+		return O_DeliveryLat;
+	}
+	public void setO_DeliveryLat(float o_DeliveryLat) {
+		O_DeliveryLat = o_DeliveryLat;
+	}
+	public float getO_DeliveryLng() {
+		return O_DeliveryLng;
+	}
+	public void setO_DeliveryLng(float o_DeliveryLng) {
+		O_DeliveryLng = o_DeliveryLng;
+	}
+	public String getO_TimeEarly() {
+		return O_TimeEarly;
+	}
+	public void setO_TimeEarly(String o_TimeEarly) {
+		O_TimeEarly = o_TimeEarly;
+	}
+	public String getO_TimeLate() {
+		return O_TimeLate;
+	}
+	public void setO_TimeLate(String o_TimeLate) {
+		O_TimeLate = o_TimeLate;
+	}
 	public int getO_ID() {
 		return O_ID;
 	}

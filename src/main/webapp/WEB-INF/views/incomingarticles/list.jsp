@@ -29,7 +29,7 @@
 							<option value="${inArtDate}">${inArtDate}</option>
 						</c:forEach>
 					</select>
-			</div>
+				</div>
 			</form>
 		</div>
 		<!-- /.form-group .col-sm-3  -->

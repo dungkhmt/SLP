@@ -239,14 +239,15 @@
                         <artifactId>spring-security-config</artifactId>
             <version>3.2.6.RELEASE</version>
         </dependency>
-<!-- Codec for md5 encrypt  -->       
+		
+		<!-- Codec for md5 encrypt  -->       
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.8</version>            
         </dependency>
 
-	<!-- Validation -->
+		<!-- Validation -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -258,9 +259,8 @@
             <artifactId>hibernate-validator</artifactId>
             <version>5.1.1.Final</version>
         </dependency>
-        
-
-	</dependencies>
+      
+   </dependencies>
 	
     <build>
         <plugins>
