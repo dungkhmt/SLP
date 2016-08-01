@@ -75,8 +75,7 @@
 							<c:forEach items="${listArticleCategory}" var="article">
                                      	<option value="${article.ARCat_Code}">${article.ARCat_Name}</option>
                             </c:forEach>
-                    		
-                    		
+                    
                     	</select>
                     </div>
 				</div>	
@@ -131,7 +130,7 @@
 	</form:form>
 	<div class="ui-widget">
   		<label for="tags">Tags: </label>
-  		<input id="tags">
+  		<input id="inputSearch">
 	</div>
 </div>
 <!-- Javascript -->
@@ -193,7 +192,7 @@ $( function() {
       "Scala",
       "Scheme"
     ];
-    $( "#tags" ).autocomplete({
+    $( "#inputSearch" ).autocomplete({
       source: availableTags
     });
   } );
