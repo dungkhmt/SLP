@@ -124,19 +124,31 @@ function changeRoute(event){
 }
 
 function caculateTimeAndDistance(indexOfShipper){
-	alert(marker[routeOfShipper[indexOfShipper][0]].getPosition());
-	var service = new google.maps.DistanceMatrixService; 
-	
-	service.getDistanceMatrix({
-		origins: [new google.maps.LatLng(20.955835,105.756366)],
-	    destinations: [new google.maps.LatLng(21.018072,105.829949)],
-	    travelMode: google.maps.TravelMode.DRIVING,
-	    unitSystem: google.maps.UnitSystem.METRIC,
-        avoidHighways: false,
-        avoidTolls: false
-	},function(response,status){
-		alert(status);
-	});
+	//alert(marker[routeOfShipper[indexOfShipper][0]].getPosition());
+	if(routeOfShipper[indexOfShipper].length>1){
+		var distance = 0;
+		var time = 0;
+		var service = new google.maps.DistanceMatrixService; 
+		for(var i=0; i<routeOfShipper[indexOfShipper].length; i++){
+			service.getDistanceMatrix({
+				origins: [marker[routeOfShipper[indexOfShipper][0]].getPosition()],
+			    destinations: [marker[routeOfShipper[indexOfShipper][1]].getPosition()],
+			    travelMode: google.maps.TravelMode.DRIVING,
+			    unitSystem: google.maps.UnitSystem.METRIC,
+		        avoidHighways: false,
+		        avoidTolls: false
+			},function(response,status){
+				//alert(JSON.stringify(response));
+				distance += response.rows[0].elements[0].distance.value;
+				time += response.rows[0].elements[0].duration.value;
+				$('#distance'+indexOfShipper).html(distance+"m");
+				$('#time'+indexOfShipper).html(time+"s");
+			});
+		}
+	}else{
+		$('#distance'+indexOfShipper).html("0m");
+		$('#time'+indexOfShipper).html("0s");
+	}
 }
 
 function openInfowindow(){
