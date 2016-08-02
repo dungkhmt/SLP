@@ -18,5 +18,20 @@ public class mClientsServiceImpl implements mClientsService {
 		// TODO Auto-generated method stub
 		return clientDAO.loadClientbyPhoneTag(tag);
 	}
+	@Override
+	public int saveAClient(String C_Phone, String C_Name, String C_Address,
+			String C_Facebook, String C_Email) {
+		// TODO Auto-generated method stub
+		mClients client= new mClients();
+		client.setC_Code(C_Phone);
+		client.setC_PhoneNumber(C_Phone);
+		client.setC_Address(C_Address);
+		client.setC_Email(C_Email);
+		client.setC_Name(C_Name);
+		client.setC_FacebookAccount(C_Facebook);
+		
+		return clientDAO.saveAClient(client);
+	}
+	
 
 }

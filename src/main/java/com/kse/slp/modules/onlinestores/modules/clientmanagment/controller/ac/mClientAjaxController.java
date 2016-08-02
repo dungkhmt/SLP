@@ -43,6 +43,26 @@ public class mClientAjaxController {
 			return null;
 		}
 	}
+	@ResponseBody @RequestMapping(value="/cm/save-A-Client", method = RequestMethod.POST)
+	public  boolean saveAClient(@RequestBody String infoClient) {
+		System.out.println(name()+" "+"saveAClient");
+		JSONParser parser = new JSONParser();
+		JSONObject json;
+		try {
+			json = (JSONObject) parser.parse(infoClient);
+			String phone= (String) json.get("phone");
+			String name= (String) json.get("name");
+			String email= (String) json.get("email");
+			String address= (String) json.get("address");
+			String facebook= (String) json.get("facebook");
+			clientsService.saveAClient(phone, name, address, facebook, email);
+			return true;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
 	public String name(){
 		return "mClientAjaxController::";
 	}

@@ -42,4 +42,22 @@ public class mClientsDAOImpl extends BaseDao implements mClientsDAO{
 			close();
 		}
 	}
+	@Override
+	public int saveAClient(mClients client) {
+		try{
+			begin();
+			int id = 0;
+			id = (int)getSession().save(client);
+			commit();
+			return id;
+		} catch (HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return -1;
+		}finally {
+			flush();
+			close();
+		}
+	}
 }

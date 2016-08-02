@@ -9,10 +9,15 @@
     	<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
     	<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />            
     </definition> 
-  
+  	<!-- outgoing articles -->
     <definition name="outgoingarticles.addAOrder" extends="layout">
-    	<put-attribute name="title" value="Add a Order" />
+    	<put-attribute name="title" value="Add an Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/add.jsp" />                
+    </definition>
+    
+    <definition name="outgoingarticles.list" extends="layout">
+    	<put-attribute name="title" value="list Order" />
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/list.jsp" />                
     </definition>
     
     <definition name="home" extends="layout">

@@ -16,17 +16,18 @@ public class mOrders implements Serializable {
 	String O_ClientCode;
 	String O_OrderDate;
 	String O_DueDate;
-	String O_DeliveryAdress;
+	String O_DeliveryAddress;
 	float O_DeliveryLat;
 	float O_DeliveryLng;
 	String O_TimeEarly;
 	String O_TimeLate;
 	
-	public String getO_DeliveryAdress() {
-		return O_DeliveryAdress;
+	
+	public String getO_DeliveryAddress() {
+		return O_DeliveryAddress;
 	}
-	public void setO_DeliveryAdress(String o_DeliveryAdress) {
-		O_DeliveryAdress = o_DeliveryAdress;
+	public void setO_DeliveryAddress(String o_DeliveryAddress) {
+		O_DeliveryAddress = o_DeliveryAddress;
 	}
 	public float getO_DeliveryLat() {
 		return O_DeliveryLat;
@@ -34,6 +35,7 @@ public class mOrders implements Serializable {
 	public void setO_DeliveryLat(float o_DeliveryLat) {
 		O_DeliveryLat = o_DeliveryLat;
 	}
+	
 	public float getO_DeliveryLng() {
 		return O_DeliveryLng;
 	}
@@ -82,5 +84,14 @@ public class mOrders implements Serializable {
 	public void setO_DueDate(String o_DueDate) {
 		O_DueDate = o_DueDate;
 	}
-	
+	@Override
+	public String toString() {
+		return "mOrders [O_ID=" + O_ID + ", O_Code=" + O_Code
+				+ ", O_ClientCode=" + O_ClientCode + ", O_OrderDate="
+				+ O_OrderDate + ", O_DueDate=" + O_DueDate
+				+ ", O_DeliveryAdress=" + O_DeliveryAddress + ", O_DeliveryLat="
+				+ O_DeliveryLat + ", O_DeliveryLng=" + O_DeliveryLng
+				+ ", O_TimeEarly=" + O_TimeEarly + ", O_TimeLate=" + O_TimeLate
+				+ "]";
+	}
 }

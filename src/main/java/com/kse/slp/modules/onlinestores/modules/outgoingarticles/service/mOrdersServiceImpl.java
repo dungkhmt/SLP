@@ -16,13 +16,18 @@ public class mOrdersServiceImpl implements mOrdersService{
 	@Autowired 
 	mOrderArticlesDAO orderArticlesDAO;
 	@Override
-	public int saveAOrder(String o_Code, String o_ClientCode, String o_OrderDate,
-			String o_DueDate,String [] orderArticles) {
+	public int saveAOrder(String o_ClientCode, String o_OrderDate,
+			String o_DueDate,String o_DeliveryAddress,float o_DeliveryLat,float o_DeliveryLng,String o_TimeEarly,String o_TimeLate, String [] orderArticles) {
 		mOrders o= new mOrders();
-		o.setO_Code(o_Code);
+		o.setO_Code(o_ClientCode+o_OrderDate+o_OrderDate);
 		o.setO_ClientCode(o_ClientCode);
 		o.setO_OrderDate(o_OrderDate);
 		o.setO_DueDate(o_DueDate);
+		o.setO_DeliveryAddress(o_DeliveryAddress);
+		o.setO_DeliveryLat(o_DeliveryLat);
+		o.setO_DeliveryLng(o_DeliveryLng);
+		o.setO_TimeEarly(o_TimeEarly);
+		o.setO_TimeLate(o_TimeLate);
 		int id= orderDAO.saveAOrder(o);
 		
 		mOrders m_o= orderDAO.getAOrderById(id);
