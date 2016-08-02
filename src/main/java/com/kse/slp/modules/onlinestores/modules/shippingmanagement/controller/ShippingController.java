@@ -31,6 +31,7 @@ public class ShippingController extends BaseWeb{
 		List<mOrders> listOrders = mOrdersService.getList();
 		String listOrdersJson = new Gson().toJson(listOrders);
 		
+		map.put("nShippers", listShippers.size());
 		map.put("listShippers", listShippers);
 		map.put("listOrdersJson", listOrdersJson);
 		
