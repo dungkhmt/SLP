@@ -22,6 +22,7 @@
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
 				<li><a href="<c:url value="${baseUrl}/incomingArticles/list"/>">Nhập hàng</a></li>
+				<li><a href="<c:url value="${baseUrl}/outgoingarticles/list"/>">Xuất hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/ship/createRoute"/>">Giao hàng</a></li>
 			</ul>
 		</div>
