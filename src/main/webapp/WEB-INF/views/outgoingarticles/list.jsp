@@ -24,7 +24,7 @@
 		
 		<!-- /.form-group .col-sm-3  -->
 		<div class="col-sm-offset-9 col-sm-1">
-			<button type="button" class="btn btn-primary addInArticles">Thêm</button>
+			<button type="button" class="btn btn-primary addOutOrder">Thêm</button>
 		</div>
 	</div>
 	<!-- /.row -->
@@ -77,8 +77,8 @@
 $(document).ready(function(){
 	var table = $('#dataTabels-outarticles').DataTable();
 	
-	$('.addOutArticles').click(function(){
-		window.location = '${baseUrl}' + "/outgoingArticles/add-An-Order.html";
+	$('.addOutOrder').click(function(){
+		window.location = '${baseUrl}' + "/outgoingarticles/add-an-order.html";
 	});
 	
 	$('#dateInfo').text($('#inArtDate').val());

@@ -22,6 +22,13 @@ public class mShippers {
 	private int SHP_Capacity_1;
 	private int SHP_Capacity_2;
 	private String SHP_Customer_Code;
+	private String SHP_User_Name;
+	public String getSHP_User_Name() {
+		return SHP_User_Name;
+	}
+	public void setSHP_User_Name(String sHP_User_Name) {
+		SHP_User_Name = sHP_User_Name;
+	}
 	public int getSHP_ID() {
 		return SHP_ID;
 	}

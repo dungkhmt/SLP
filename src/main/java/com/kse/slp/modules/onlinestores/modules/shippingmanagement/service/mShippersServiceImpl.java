@@ -20,4 +20,11 @@ public class mShippersServiceImpl implements mShippersService{
 		return mShippersDAO.getList();
 	}
 
+	@Override
+	public mShippers loadShiperByUserName(String userName) {
+		// TODO Auto-generated method stub
+		return mShippersDAO.loadShiperByUserName(userName);
+	}
+
+	
 }

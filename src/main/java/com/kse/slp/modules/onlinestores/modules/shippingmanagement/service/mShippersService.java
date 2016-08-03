@@ -6,4 +6,5 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippe
 
 public interface mShippersService {
 	public List<mShippers> getList();
+	public mShippers loadShiperByUserName(String userName);
 }

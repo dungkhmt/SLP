@@ -36,7 +36,7 @@
 						<form:input path="orderClientCode" id="inputSearch" class="form-control" name="orderClientCode" placeholder="Number Phone"></form:input>
 						</div>
 						</div>
-						<button type="button" class="btn btn-primary active saveAClientButton" data-toggle="modal" data-target="#saveAClient">Thêm Khách Hàng</button>
+						<button type="button" class="btn btn-primary active saveAClientButton" onclick="pushPhoneModal()" data-toggle="modal" data-target="#saveAClient">Thêm Khách Hàng</button>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-sm-2">Tên Khách Hàng</label>
@@ -235,6 +235,9 @@
 	$(".saveAClientButton").hide();
 </script>
 <script type="text/javascript">
+function pushPhoneModal(){
+	$("#clientPhone").val($("#inputSearch").val());
+}
 function saveAClient(){
 	console.log("saveAClient");
 	var phone =$("#clientPhone").val();
@@ -261,10 +264,13 @@ function saveAClient(){
 	        // Success Message Handler
 	      console.log(respose);
 	        if(respose){
+	        	$( "#orderClientName" ).val( name );
+	        	$( "#orderAdress" ).val( address );
 	        	$("#saveAClient").modal('hide');
 	        }
 	    }
     });
+	
 	console.log(phone);
 }
 function pushValueLatLng(){
