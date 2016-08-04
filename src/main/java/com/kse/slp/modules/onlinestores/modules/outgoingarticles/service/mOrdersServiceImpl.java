@@ -17,7 +17,7 @@ public class mOrdersServiceImpl implements mOrdersService{
 	mOrderArticlesDAO orderArticlesDAO;
 	@Override
 	public int saveAOrder(String o_ClientCode, String o_OrderDate,
-			String o_DueDate,String o_DeliveryAddress,float o_DeliveryLat,float o_DeliveryLng,String o_TimeEarly,String o_TimeLate, String [] orderArticles) {
+			String o_DueDate,String o_DeliveryAddress,float o_DeliveryLat,float o_DeliveryLng,String o_TimeEarly,String o_TimeLate,float o_Price, String [] orderArticles) {
 		mOrders o= new mOrders();
 		o.setO_Code(o_ClientCode+o_OrderDate+o_OrderDate);
 		o.setO_ClientCode(o_ClientCode);
@@ -28,6 +28,7 @@ public class mOrdersServiceImpl implements mOrdersService{
 		o.setO_DeliveryLng(o_DeliveryLng);
 		o.setO_TimeEarly(o_TimeEarly);
 		o.setO_TimeLate(o_TimeLate);
+		o.setO_Price(o_Price);
 		int id= orderDAO.saveAOrder(o);
 		
 		mOrders m_o= orderDAO.getAOrderById(id);
@@ -57,6 +58,18 @@ public class mOrdersServiceImpl implements mOrdersService{
 	public List<mOrders> getList() {
 		// TODO Auto-generated method stub
 		return orderDAO.getList();
+	}
+	@Override
+	public mOrders loadAOrderbyOrderCode(String orderCode) {
+		// TODO Auto-generated method stub
+		return orderDAO.loadAOrderbyOrderCode(orderCode);
+	}
+	@Override
+	public void setDeliveredbyOrderCode(String orderCode) {
+		// TODO Auto-generated method stub
+		mOrders o= loadAOrderbyOrderCode(orderCode);
+		o.setO_Delivered(1);
+		orderDAO.setDeliveredOrder(o);
 	}
 
 }

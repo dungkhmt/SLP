@@ -59,4 +59,9 @@
     	<put-attribute name="title" value="Create route manual"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoute.jsp"/>
     </definition>
+    
+     <definition name="ship.getRoutes" extends="layout">
+    	<put-attribute name="title" value="View routes Shipper"/>
+    	<put-attribute name="content" value="/WEB-INF/views/shipping/viewRouteShipper.jsp"/>
+    </definition>
 </tiles-definitions>

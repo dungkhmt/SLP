@@ -138,7 +138,7 @@
 	            			<tr>
 	                        	<th>Mặt hàng</th>
 	                            <th>Số lượng</th>
-	                            <th>Giá</th>
+	                            <th>Giá/Đơn vị</th>
 	                            <th>Xóa</th>
 	                        </tr>
 	                        </thead>
@@ -153,6 +153,8 @@
 			</div>
 		</div>
 		</div>
+		<label>Tổng giá trị hóa đơn là: <h3 id="price"></h3></label>
+		<form:input type="hidden" path="orderPrice"  id="orderClientName" name="orderPrice" ></form:input>
 		<button type="submit" class="btn btn-primary" id="addANewOrder">Lưu</button>
         <button type="reset" class="btn btn-primary cancel">Hủy</button>
 	</div>
@@ -278,7 +280,7 @@ function pushValueLatLng(){
 	$(".orderDeliveryLng").show();
 	$("#orderDeliveryLat").val(getLat());
 	$("#orderDeliveryLng").val(getLng());
-	
+	$( "#orderAdress" ).val($("#pac-input").val());
 	console.log($("#orderAdress").val());
 	$(".selectMap").hide();
 	$(".ok-selectMap").hide();
@@ -320,37 +322,7 @@ function v_fClearOrderArticle(the_oElement){
 
 $( function() {
 	console.log("start");
-  
-    
-    
-   /*  $("#inputSearch").keyup(function(){
 
-		var input= document.getElementById("inputSearch").value;
-		console.log(input);
-		var jsonx={
-	    		
-	    		"inputString":input
-	    };
-    	$.ajax({ 
-    	    type:"POST", 
-    	    url:"${baseUrl}/clientSearch-byPhone",
-    	    data: JSON.stringify(jsonx),
-    	    contentType: "application/json; charset=utf-8",
-    	    dataType: "json",
-    	    //Stringified Json Object
-    	    success: function(resposeJsonObject){
-    	        // Success Message Handler
-    	        console.log(resposeJsonObject);
-    	        availableTags=[
-    	                       ];
-    	        for(var i=0;i<resposeJsonObject.length;i++){
-    	        	availableTags.push(resposeJsonObject[i].phone);
-    	        }
-    	    }
-    	   
-    	});
-   }, */
-    //function(){
     	$( "#inputSearch" ).autocomplete({
     		source: function( request, response ) {
     			var input= document.getElementById("inputSearch").value;
@@ -400,28 +372,6 @@ $( function() {
    
   //} );
 });
-/*$(document).ready(function() {
-	console.log("up autocomplete start");
-	$('.phoneinput').autocomplete({
-		serviceUrl: '${pageContext.request.contextPath}/clientSearch-byPhone',
-		paramName: "tagName",
-		delimiter: ",",
-	   transformResult: function(response) {
-		   console.log("up autocomplete result");		    	
-		return {      	
-		  //must convert json to javascript object before process
-		  suggestions: $.map($.parseJSON(response), function(item) {
-		            	
-		      return { value: item.tagName, data: item.id };
-		   })
-		            
-		 };
-		        
-            }
-	 });
-				
-  });
-  
-  */
+
 </script>
 

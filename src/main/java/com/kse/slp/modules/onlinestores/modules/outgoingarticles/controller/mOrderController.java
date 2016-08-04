@@ -71,7 +71,7 @@ public class mOrderController extends BaseWeb{
 			String orderDate=sCurrentDate;
 			orderService.saveAOrder( clientCode, orderDate, dueDate,address,lat,lng,timeEarly,timeLate,orderArticles);
 		}
-		return "outgoingarticles.list";
+		return "redirect:list";
 		
 	}
 	

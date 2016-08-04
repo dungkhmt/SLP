@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 
 
+
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 @Repository("mOrdersDAO")
@@ -69,6 +70,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mOrders.class);
+			criteria.add(Restrictions.eq("O_Delivered", 0));
 			List<mOrders> listOrders = criteria.list();
 			commit();
 			return listOrders;
@@ -81,6 +83,43 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			flush();
 			close();
 		}
+	}
+	@Override
+	public mOrders loadAOrderbyOrderCode(String orderCode) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mOrders.class);
+			criteria.add(Restrictions.eq("O_Code", orderCode));
+			List<mOrders> o= criteria.list();
+			commit();
+			if(o.size()>0)
+			return o.get(0);
+			else return null;
+		} catch (HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally {
+			flush();
+			close();
+		}
+	}
+	@Override
+	public void setDeliveredOrder(mOrders order) {
+		try {
+	           begin();
+	           getSession().update(order);
+	           commit();
+	        } catch (HibernateException e) {
+	            e.printStackTrace();
+	            rollback();
+	            close();
+	        } finally {
+	            flush();
+	            close();
+	        }
 	}
 	
 

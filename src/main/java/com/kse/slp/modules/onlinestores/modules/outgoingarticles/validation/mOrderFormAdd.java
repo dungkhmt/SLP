@@ -8,7 +8,15 @@ public class mOrderFormAdd {
 	String orderTimeEarly;
 	float orderDeliveryLat;
 	float orderDeliveryLng;
-	
+	float orderPrice;
+	public float getOrderPrice() {
+		return orderPrice;
+	}
+
+	public void setOrderPrice(float orderPrice) {
+		this.orderPrice = orderPrice;
+	}
+
 	public float getOrderDeliveryLat() {
 		return orderDeliveryLat;
 	}

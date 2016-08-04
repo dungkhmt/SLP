@@ -8,4 +8,6 @@ public interface mOrdersDAO {
 	public int saveAOrder(mOrders order);
 	public mOrders getAOrderById(int id);
 	public List<mOrders> getList();
+	public mOrders loadAOrderbyOrderCode(String orderCode);
+	public void setDeliveredOrder(mOrders order);
 }
