@@ -30,7 +30,7 @@
         Bạn có chắc chắn không?
       </div>
       <div class="modal-footer">
-      	<button type="button" class="btn btn-primary active" onclick="changeStateOrder()">Close</button>
+      	<button type="button" class="btn btn-primary active" onclick="changeStateOrder()">Ok I'm sure</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>

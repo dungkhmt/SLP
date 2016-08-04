@@ -53,7 +53,7 @@
 										<td><c:out value="${outArt.o_DueDate}"/></td>
 										<td><c:out value="${outArt.o_TimeEarly}+${outArt.o_TimeLate}"/></td>
 										<td><c:out value="${outArt.o_DeliveryAddress }"/></td>	
-										<td><c:out value=""/></td>
+										<td><c:out value=""/>${outArt.o_Price }</td>
 									</tr>
 								</c:forEach>
 							</tbody>

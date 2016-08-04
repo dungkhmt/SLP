@@ -9,11 +9,12 @@ function getLng(){
 
 function initAutocomplete() {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
+          center: {lat: 21.033333, lng: 105.849998},
           zoom: 13,
           mapTypeId: 'roadmap'
         });
-
+        var input = document.getElementById('clientAddress');
+        var autocomplete = new google.maps.places.Autocomplete(input);
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
         console.log(input);

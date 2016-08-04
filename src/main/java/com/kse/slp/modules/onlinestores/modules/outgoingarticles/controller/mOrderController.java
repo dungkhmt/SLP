@@ -64,12 +64,13 @@ public class mOrderController extends BaseWeb{
 			String timeEarly= orderForm.getOrderTimeEarly();
 			String timeLate=orderForm.getOrderTimeLate();
 			String address=orderForm.getOrderAdress();
+			float price=orderForm.getOrderPrice();
 			Date date= new Date();
 			Date currentDate = new Date();
 			SimpleDateFormat dateformatyyyyMMdd = new SimpleDateFormat("yyyy.MM.dd");
 			String sCurrentDate = dateformatyyyyMMdd.format(currentDate);
 			String orderDate=sCurrentDate;
-			orderService.saveAOrder( clientCode, orderDate, dueDate,address,lat,lng,timeEarly,timeLate,orderArticles);
+			orderService.saveAOrder( clientCode, orderDate, dueDate,address,lat,lng,timeEarly,timeLate,price,orderArticles);
 		}
 		return "redirect:list";
 		

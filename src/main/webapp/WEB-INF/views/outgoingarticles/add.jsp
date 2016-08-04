@@ -73,7 +73,7 @@
 						<label class="selectMapLabel Ilabel"></label>
 						<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 						
-    					<div id="map"></div>
+    					<div id="map" style="width:100%;height:80%"></div>
     				</div>
 					<div class="form-group">
 						<label class="control-label col-sm-2">Ngày giao hàng</label>
@@ -153,8 +153,10 @@
 			</div>
 		</div>
 		</div>
-		<label>Tổng giá trị hóa đơn là: <h3 id="price"></h3></label>
-		<form:input type="hidden" path="orderPrice"  id="orderClientName" name="orderPrice" ></form:input>
+		<div class="form-group text-center">
+			<h4 >Tổng giá trị hóa đơn là: <span id="price" class=""></span></h4>
+			<form:input type="hidden" path="orderPrice"  id="orderPrice" name="orderPrice" ></form:input>
+		</div>
 		<button type="submit" class="btn btn-primary" id="addANewOrder">Lưu</button>
         <button type="reset" class="btn btn-primary cancel">Hủy</button>
 	</div>
@@ -237,6 +239,22 @@
 	$(".saveAClientButton").hide();
 </script>
 <script type="text/javascript">
+function pushPrice(){
+	var price=0;
+	var table = document.getElementById('listOrderArticles'), 
+	rows = table.getElementsByTagName('tr');
+	for (i = 0 ; i < rows.length; ++i) {
+	    cells = rows[i].getElementsByTagName('td');
+	    if (!cells.length) {
+	        continue;
+	    }
+	    price += cells[1].innerHTML*cells[2].innerHTML;
+	}
+	console.log(price);
+	$("#orderPrice").val(price);
+	document.getElementById("price").innerHTML=price;
+	
+}
 function pushPhoneModal(){
 	$("#clientPhone").val($("#inputSearch").val());
 }
@@ -307,17 +325,19 @@ function v_fAddOrderArticle(){
 		//make orderArticleRecord
 		sAddedArticle+="<tr>";
 		sAddedArticle+="<td><span>"+categoryArticle+"</span><input name='orderArticles' type='hidden' value='"+categoryArticle+ " "+articleAmount+" "+articlePrice+" "+"'/></td>";
-		sAddedArticle+="<td><span>"+articleAmount+"</span></td>";
-		sAddedArticle+="<td><span>"+articlePrice+"</span></td>";
+		sAddedArticle+="<td>"+articleAmount+"</td>";
+		sAddedArticle+="<td>"+articlePrice+"</td>";
 		sAddedArticle 	+= "<td><button type='button' onclick='v_fClearOrderArticle(this);' class='btn btn-warning btn-xs' title='Xóa hàng này' >Xóa</button></td>";
 		sAddedArticle+="</tr>";
 		//push orderArticle in table
 		$("table#listOrderArticles tbody").append(sAddedArticle);
 	}
+	pushPrice();
 }	
 
 function v_fClearOrderArticle(the_oElement){
 	$(the_oElement).parents("tr").remove();
+	pushPrice();
 }
 
 $( function() {
@@ -328,7 +348,6 @@ $( function() {
     			var input= document.getElementById("inputSearch").value;
     			console.log(input);
     			var jsonx={
-    		    		
     		    		"inputString":input
     		    };
     	    	$.ajax({ 
