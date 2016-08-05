@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
@@ -41,12 +42,18 @@ public class ShippingController extends BaseWeb{
 	public String creatRouteToShip(ModelMap map){
 		
 		List<mShippers> listShippers = mShippersService.getList();
-		List<mOrders> listOrders = mOrdersService.getList();
-		String listOrdersJson = new Gson().toJson(listOrders);
+		//List<mOrders> listOrders = mOrdersService.getList();
+		List<mOrderDetail> listOrdersDetail = mOrdersService.getListOrderDetail();
+		String listOrdersJson = new Gson().toJson(listOrdersDetail);
+		String listShippersJson = new Gson().toJson(listShippers);
+		System.out.println(name()+"::creatRouteToShip--listOrdersDetail"+listOrdersJson);
+		System.out.println(name()+"::creatRouteToShip--listShippersJson"+listShippersJson);
 		
-		map.put("nShippers", listShippers.size());
-		map.put("listShippers", listShippers);
+		//map.put("nShippers", listShippers.size());
+		//map.put("listOrdersDetail",listOrdersDetail);
+		//map.put("listShippers", listShippers);
 		map.put("listOrdersJson", listOrdersJson);
+		map.put("listShippersJson", listShippersJson);
 		
 		return "ship.createRoute";
 	}
@@ -61,6 +68,10 @@ public class ShippingController extends BaseWeb{
 		map.put("listRoutes", listRoutes);
 		
 		return "ship.getRoutes";
+	}
+	
+	public String name(){
+		return "ShippingController";
 	}
 	
 }

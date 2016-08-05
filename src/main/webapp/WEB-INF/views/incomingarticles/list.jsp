@@ -22,15 +22,13 @@
 	<!-- /.row -->
 	<div class="row">
 		<div class="col-sm-2">
-			<form role="form">
-				<div class="form-group">
-					<select class="form-control" id="inArtDate">
-						<c:forEach items="${inArtDateList}" var="inArtDate">
-							<option value="${inArtDate}">${inArtDate}</option>
-						</c:forEach>
-					</select>
-				</div>
-			</form>
+			<div class="form-group">
+				<select class="form-control" id="inArtDate">
+					<c:forEach items="${inArtDateList}" var="inArtDate">
+						<option value="${inArtDate}">${inArtDate}</option>
+					</c:forEach>
+				</select>
+			</div>
 		</div>
 		<!-- /.form-group .col-sm-3  -->
 		<div class="col-sm-offset-9 col-sm-1">

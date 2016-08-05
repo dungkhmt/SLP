@@ -119,6 +119,9 @@
  <script type="text/javascript">
 $(document).ready(function () {
 	$('#datetimepicker1').datetimepicker();
+	$('.cancel').click(function(){
+		window.location = '${baseUrl}/incomingArticles/list';
+	})
 });
 
 var nArticle=0;

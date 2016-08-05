@@ -9,6 +9,7 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrderArtic
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrdersDAO;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 @Service("mOrderService")
 public class mOrdersServiceImpl implements mOrdersService{
 	@Autowired
@@ -70,6 +71,11 @@ public class mOrdersServiceImpl implements mOrdersService{
 		mOrders o= loadAOrderbyOrderCode(orderCode);
 		o.setO_Delivered(1);
 		orderDAO.setDeliveredOrder(o);
+	}
+	@Override
+	public List<mOrderDetail> getListOrderDetail() {
+		// TODO Auto-generated method stub
+		return orderDAO.getListOrderDetail();
 	}
 
 }
