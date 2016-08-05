@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrderArticlesDAO;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrdersDAO;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
@@ -30,6 +31,7 @@ public class mOrdersServiceImpl implements mOrdersService{
 		o.setO_TimeEarly(o_TimeEarly);
 		o.setO_TimeLate(o_TimeLate);
 		o.setO_Price(o_Price);
+		o.setO_Status_Code(Constants.ORDER_STATUS_NOT_IN_ROUTE);
 		int id= orderDAO.saveAnOrder(o);
 		o.setO_Code("OR"+CodeGenerationUtility.genOrderCode(id));
 		orderDAO.updateAnOrder(o);
@@ -69,8 +71,8 @@ public class mOrdersServiceImpl implements mOrdersService{
 	public void setDeliveredbyOrderCode(String orderCode) {
 		// TODO Auto-generated method stub
 		mOrders o= loadAnOrderbyOrderCode(orderCode);
-		o.setO_Delivered(1);
-		orderDAO.setDeliveredOrder(o);
+		o.setO_Status_Code(Constants.ORDER_STATUS_DELIVERIED);
+		orderDAO.updateAnOrder(o);
 	}
 
 }

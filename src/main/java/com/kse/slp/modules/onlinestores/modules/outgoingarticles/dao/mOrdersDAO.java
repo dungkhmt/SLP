@@ -9,6 +9,6 @@ public interface mOrdersDAO {
 	public mOrders getAnOrderById(int id);
 	public List<mOrders> getList();
 	public mOrders loadAnOrderbyOrderCode(String orderCode);
-	public void setDeliveredOrder(mOrders order);
+	
 	public void updateAnOrder(mOrders order);
 }

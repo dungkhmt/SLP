@@ -21,21 +21,30 @@ public class mOrders implements Serializable {
 	float O_DeliveryLng;
 	String O_TimeEarly;
 	String O_TimeLate;
-	int O_Delivered;
+	String O_Status_Code;
+	String O_RouteCode;
 	float O_Price;
 	
+	
+	public String getO_Status_Code() {
+		return O_Status_Code;
+	}
+	public void setO_Status_Code(String o_Status_Code) {
+		O_Status_Code = o_Status_Code;
+	}
+	public String getO_RouteCode() {
+		return O_RouteCode;
+	}
+	public void setO_RouteCode(String o_RouteCode) {
+		O_RouteCode = o_RouteCode;
+	}
 	public float getO_Price() {
 		return O_Price;
 	}
 	public void setO_Price(float o_Price) {
 		O_Price = o_Price;
 	}
-	public int getO_Delivered() {
-		return O_Delivered;
-	}
-	public void setO_Delivered(int o_Delivered) {
-		O_Delivered = o_Delivered;
-	}
+	
 	public String getO_DeliveryAddress() {
 		return O_DeliveryAddress;
 	}
