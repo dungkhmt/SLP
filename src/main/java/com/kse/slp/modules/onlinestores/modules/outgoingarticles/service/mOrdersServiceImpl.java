@@ -9,6 +9,7 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrderArtic
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrdersDAO;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.utilities.CodeGenerationUtility;
 @Service("mOrderService")
 public class mOrdersServiceImpl implements mOrdersService{
 	@Autowired
@@ -16,10 +17,10 @@ public class mOrdersServiceImpl implements mOrdersService{
 	@Autowired 
 	mOrderArticlesDAO orderArticlesDAO;
 	@Override
-	public int saveAOrder(String o_ClientCode, String o_OrderDate,
+	public int saveAnOrder(String o_ClientCode, String o_OrderDate,
 			String o_DueDate,String o_DeliveryAddress,float o_DeliveryLat,float o_DeliveryLng,String o_TimeEarly,String o_TimeLate,float o_Price, String [] orderArticles) {
 		mOrders o= new mOrders();
-		o.setO_Code(o_ClientCode+o_OrderDate+o_OrderDate);
+		o.setO_Code(o_ClientCode);
 		o.setO_ClientCode(o_ClientCode);
 		o.setO_OrderDate(o_OrderDate);
 		o.setO_DueDate(o_DueDate);
@@ -29,9 +30,10 @@ public class mOrdersServiceImpl implements mOrdersService{
 		o.setO_TimeEarly(o_TimeEarly);
 		o.setO_TimeLate(o_TimeLate);
 		o.setO_Price(o_Price);
-		int id= orderDAO.saveAOrder(o);
-		
-		mOrders m_o= orderDAO.getAOrderById(id);
+		int id= orderDAO.saveAnOrder(o);
+		o.setO_Code("OR"+CodeGenerationUtility.genOrderCode(id));
+		orderDAO.updateAnOrder(o);
+		mOrders m_o= orderDAO.getAnOrderById(id);
 		for(int i=0;i<orderArticles.length;i++)
 		if (orderArticles[i]!=""){
 			String s= orderArticles[i];
@@ -41,7 +43,6 @@ public class mOrdersServiceImpl implements mOrdersService{
 			String oA_Amount=s.substring(0,s.indexOf(' '));
 			s=s.substring(s.indexOf(' ')+1);
 			String oA_Price=s;
-			
 			
 			mOrderArticles mOA= new mOrderArticles();
 			mOA.setOA_Code(oA_Code);
@@ -60,14 +61,14 @@ public class mOrdersServiceImpl implements mOrdersService{
 		return orderDAO.getList();
 	}
 	@Override
-	public mOrders loadAOrderbyOrderCode(String orderCode) {
+	public mOrders loadAnOrderbyOrderCode(String orderCode) {
 		// TODO Auto-generated method stub
-		return orderDAO.loadAOrderbyOrderCode(orderCode);
+		return orderDAO.loadAnOrderbyOrderCode(orderCode);
 	}
 	@Override
 	public void setDeliveredbyOrderCode(String orderCode) {
 		// TODO Auto-generated method stub
-		mOrders o= loadAOrderbyOrderCode(orderCode);
+		mOrders o= loadAnOrderbyOrderCode(orderCode);
 		o.setO_Delivered(1);
 		orderDAO.setDeliveredOrder(o);
 	}

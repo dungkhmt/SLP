@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.onlinestores.modules.incomingarticles.controller.IncomingArticlesController;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
@@ -24,7 +26,7 @@ import com.kse.slp.modules.usermanagement.model.User;
 @Controller("ShippingController")
 @RequestMapping(value={"/ship"})
 public class ShippingController extends BaseWeb{
-	
+	private static final Logger log = Logger.getLogger(ShippingController.class);
 	@Autowired
 	private mShippersService mShippersService;
 	
@@ -38,7 +40,7 @@ public class ShippingController extends BaseWeb{
 	private mRouteDetailService mRouteDetailService;
 	
 	@RequestMapping(value="/createRoute")
-	public String creatRouteToShip(ModelMap map){
+	public String creatRouteToShip(ModelMap map,HttpSession session){
 		
 		List<mShippers> listShippers = mShippersService.getList();
 		List<mOrders> listOrders = mOrdersService.getList();
@@ -47,7 +49,8 @@ public class ShippingController extends BaseWeb{
 		map.put("nShippers", listShippers.size());
 		map.put("listShippers", listShippers);
 		map.put("listOrdersJson", listOrdersJson);
-		
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
 		return "ship.createRoute";
 	}
 	
@@ -59,7 +62,8 @@ public class ShippingController extends BaseWeb{
 		List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode("3");
 		
 		map.put("listRoutes", listRoutes);
-		
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
 		return "ship.getRoutes";
 	}
 	

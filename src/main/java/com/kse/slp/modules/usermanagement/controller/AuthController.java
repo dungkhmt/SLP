@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.controller.mOrderController;
 import com.kse.slp.modules.usermanagement.model.Role;
 import com.kse.slp.modules.usermanagement.service.RoleService;
 import com.kse.slp.modules.usermanagement.service.UserService;
@@ -35,7 +37,7 @@ import com.kse.slp.modules.usermanagement.validation.UserValidation;
 @Controller(value = "authController")
 @RequestMapping(value="/auth")
 public class AuthController extends BaseWeb {
-	
+	private static final Logger log = Logger.getLogger(AuthController.class);
 	@Autowired
 	private UserService userService;	
 	
@@ -57,24 +59,27 @@ public class AuthController extends BaseWeb {
 	public String saveAnUser(HttpServletRequest request,
 			@Valid @ModelAttribute("userForm") UserValidation userForm,
 			BindingResult result, Model model, HttpSession session) {
-
+		
 		model.addAttribute("username", userForm.getUsername());
 		model.addAttribute("password", userForm.getPassword());
 		model.addAttribute("repassword", userForm.getRepassword());
 		
 		if(result.hasErrors()){
+			log.info(" FAIL");
 			return "register";
 		}
 		
 		if(userService.getByUsername(userForm.getUsername()) != null){			
 			model.addAttribute("status", "Username exists");		
 			model.addAttribute("userForm", new UserValidation());
+			log.info(" FAIL");
 			return "register";			
 		}
 				
 		if(!userForm.getPassword().equals(userForm.getRepassword())){			
 			model.addAttribute("status", "Password and repassword not match");
 			model.addAttribute("userForm", new UserValidation());
+			log.info(" FAIL");
 			return "register";
 		}
 		
@@ -93,6 +98,7 @@ public class AuthController extends BaseWeb {
 			return "register";			
 		}		
 		model.addAttribute("status", "You have registered successfully the account, please login to continue");
+		log.info(userForm.getUsername()+" DONE");
 		return "login";	
 		
 	}	

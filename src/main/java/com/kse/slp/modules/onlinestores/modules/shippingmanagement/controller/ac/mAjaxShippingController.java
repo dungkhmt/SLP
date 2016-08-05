@@ -3,6 +3,9 @@ package com.kse.slp.modules.onlinestores.modules.shippingmanagement.controller.a
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -17,13 +20,16 @@ import com.kse.slp.modules.onlinestores.modules.clientmanagment.model.mClients;
 import com.kse.slp.modules.onlinestores.modules.clientmanagment.validation.mClientSearchTag;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.controller.ShippingController;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mPoiInRoute;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailService;
+import com.kse.slp.modules.usermanagement.model.User;
 
 @Controller("mAjaxShippingController")
 @RequestMapping(value={"/ship"})
 public class mAjaxShippingController {
+	private static final Logger log = Logger.getLogger(mAjaxShippingController.class);
 	@Autowired
 	private mRouteDetailService mRouteDetailService;
 	
@@ -31,7 +37,7 @@ public class mAjaxShippingController {
 	private mOrdersService mOrdersService;
 	
 	@ResponseBody @RequestMapping(value="/loadRouteDetail", method = RequestMethod.POST)
-	public  mPoiInRoute[] getTags(@RequestBody String jsonRouteCode) {
+	public  mPoiInRoute[] getTags(@RequestBody String jsonRouteCode,HttpSession session) {
 		System.out.println(name()+" "+jsonRouteCode);
 		JSONParser parser = new JSONParser();
 		JSONObject json;
@@ -44,22 +50,25 @@ public class mAjaxShippingController {
 			mPoiInRoute[] mPIR= new mPoiInRoute[l.size()] ;
 			for(int i=0;i<l.size();i++){
 				mRouteDetail rd= l.get(i);
-				mOrders o= mOrdersService.loadAOrderbyOrderCode(rd.getRTD_OrderCode());
+				mOrders o= mOrdersService.loadAnOrderbyOrderCode(rd.getRTD_OrderCode());
 				mPoiInRoute r= new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code());
 				System.out.println(name()+" "+o+" "+rd.getRTD_Sequence());
 				mPIR[Integer.parseInt(rd.getRTD_Sequence())]= r;
 			}
-			
+			User u=(User) session.getAttribute("currentUser");
+			log.info(u.getUsername()+" DONE");
 			return mPIR;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			User u=(User) session.getAttribute("currentUser");
+			log.info(u.getUsername()+" FAIL");
 			return null;
 		}
 	}
 	
 	@ResponseBody @RequestMapping(value="/set-order-delivered", method = RequestMethod.POST)
-	public boolean setOrderDelivered(@RequestBody String jsonOrderCode) {
+	public boolean setOrderDelivered(HttpSession session ,@RequestBody String jsonOrderCode) {
 		System.out.print(name()+" setOrderDelivered");
 		JSONParser parser = new JSONParser();
 		JSONObject json;
@@ -67,10 +76,14 @@ public class mAjaxShippingController {
 			json = (JSONObject) parser.parse(jsonOrderCode);
 			String orderCode= (String) json.get("orderCode");
 			mOrdersService.setDeliveredbyOrderCode(orderCode);
+			User u=(User) session.getAttribute("currentUser");
+			log.info(u.getUsername()+" DONE");
 			return true;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			User u=(User) session.getAttribute("currentUser");
+			log.info(u.getUsername()+" FAIL");
 			return false;
 		}
 	}

@@ -28,7 +28,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
         this.sessionFactory = sessionFactory;
     }
 	@Override
-	public int saveAOrder(mOrders order) {
+	public int saveAnOrder(mOrders order) {
 		try{
 			begin();
 			int id = 0;
@@ -46,7 +46,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		}
 	}
 	@Override
-	public mOrders getAOrderById(int id) {
+	public mOrders getAnOrderById(int id) {
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mOrders.class);
@@ -85,7 +85,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		}
 	}
 	@Override
-	public mOrders loadAOrderbyOrderCode(String orderCode) {
+	public mOrders loadAnOrderbyOrderCode(String orderCode) {
 		// TODO Auto-generated method stub
 		try{
 			begin();
@@ -120,6 +120,22 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 	            flush();
 	            close();
 	        }
+	}
+	@Override
+	public void updateAnOrder(mOrders order) {
+		try {
+	           begin();
+	           getSession().update(order);
+	           commit();
+	        } catch (HibernateException e) {
+	            e.printStackTrace();
+	            rollback();
+	            close();
+	        } finally {
+	            flush();
+	            close();
+	        }
+		
 	}
 	
 

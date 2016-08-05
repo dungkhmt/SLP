@@ -3,6 +3,9 @@ package com.kse.slp.modules.onlinestores.modules.clientmanagment.controller.ac;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -17,14 +20,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kse.slp.modules.onlinestores.modules.clientmanagment.model.mClients;
 import com.kse.slp.modules.onlinestores.modules.clientmanagment.service.mClientsService;
 import com.kse.slp.modules.onlinestores.modules.clientmanagment.validation.mClientSearchTag;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.controller.mOrderController;
+import com.kse.slp.modules.usermanagement.model.User;
 
 
 @Controller
 public class mClientAjaxController {
+	private static final Logger log = Logger.getLogger(mClientAjaxController.class);
 	@Autowired
 	mClientsService clientsService;
 	@ResponseBody @RequestMapping(value="/clientSearch-byPhone", method = RequestMethod.POST)
-	public  List<mClientSearchTag> getTags(@RequestBody String tag_Json) {
+	public  List<mClientSearchTag> getTags(@RequestBody String tag_Json ,HttpSession session) {
 		System.out.println(name()+" "+tag_Json);
 		JSONParser parser = new JSONParser();
 		JSONObject json;
@@ -36,10 +42,14 @@ public class mClientAjaxController {
 			for(int i=0;i<lClients.size();i++){
 				lCT.add(new mClientSearchTag(lClients.get(i).getC_PhoneNumber(), lClients.get(i).getC_Name(), lClients.get(i).getC_Address()));
 			}
+			User u=(User) session.getAttribute("currentUser");
+			log.info(u.getUsername()+" DONE");
 			return lCT;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			User u=(User) session.getAttribute("currentUser");
+			log.info(u.getUsername()+" FAIL");
 			return null;
 		}
 	}
