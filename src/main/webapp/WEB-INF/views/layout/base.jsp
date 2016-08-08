@@ -37,5 +37,10 @@
 		<tiles:insertAttribute name="content"/>
 		<tiles:insertAttribute name="footer"/>	
 	</div>
+	
+	<script type="text/javascript">
+		var baseUrl = '${baseUrl}';
+		var assetsUrl = '${assetsUrl}';
+	</script>
 </body>
 </html>

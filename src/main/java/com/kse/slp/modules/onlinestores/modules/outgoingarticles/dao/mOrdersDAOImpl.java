@@ -18,7 +18,9 @@ import org.springframework.stereotype.Repository;
 
 
 
+
 import com.kse.slp.dao.BaseDao;
+import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 @Repository("mOrdersDAO")
@@ -31,7 +33,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
         this.sessionFactory = sessionFactory;
     }
 	@Override
-	public int saveAOrder(mOrders order) {
+	public int saveAnOrder(mOrders order) {
 		try{
 			begin();
 			int id = 0;
@@ -49,7 +51,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		}
 	}
 	@Override
-	public mOrders getAOrderById(int id) {
+	public mOrders getAnOrderById(int id) {
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mOrders.class);
@@ -73,7 +75,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mOrders.class);
-			criteria.add(Restrictions.eq("O_Delivered", 0));
+			criteria.add(Restrictions.ne("O_Status_Code",Constants.ORDER_STATUS_DELIVERIED ));
 			List<mOrders> listOrders = criteria.list();
 			commit();
 			return listOrders;
@@ -88,7 +90,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		}
 	}
 	@Override
-	public mOrders loadAOrderbyOrderCode(String orderCode) {
+	public mOrders loadAnOrderbyOrderCode(String orderCode) {
 		// TODO Auto-generated method stub
 		try{
 			begin();
@@ -109,8 +111,9 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 		}
 	}
+
 	@Override
-	public void setDeliveredOrder(mOrders order) {
+	public void updateAnOrder(mOrders order) {
 		try {
 	           begin();
 	           getSession().update(order);
@@ -123,6 +126,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 	            flush();
 	            close();
 	        }
+		
 	}
 	
 	@Override
@@ -130,9 +134,10 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		// TODO Auto-generated method stub
 		try {
 			begin();
-			String sql = "SELECT mo.O_Code, mo.O_DeliveryLat, mo.O_DeliveryLat ,mo.O_TimeEarly, mo.O_TimeLate, mo.O_DueDate, mc.C_Name"
+			String sql = "SELECT mo.O_Code, mo.O_DeliveryLat, mo.O_DeliveryLng ,mo.O_TimeEarly, mo.O_TimeLate, mo.O_DueDate, mc.C_Name"
 					+ " FROM mOrders mo, mClients mc"
-					+ " WHERE mo.O_Delivered=0 and mo.O_ClientCode=mc.C_Code"
+					+ " WHERE (mo.O_Status_Code='"+Constants.ORDER_STATUS_NOT_IN_ROUTE+
+								"' or mo.O_Status_Code='"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"') and mo.O_ClientCode=mc.C_Code"
 					+ " ORDER BY mo.O_DueDate ASC";
 			Query query = getSession().createQuery(sql);
 			List<Object[]> query_result = query.list();
@@ -168,5 +173,55 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 	
 	public String name(){
 		return "mOrdersDAOImpl";
+	}
+	@Override
+	public List<String> getListDueDate() {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			String sql = "SELECT DISTINCT mo.O_DueDate"
+					+ " FROM mOrders mo"
+					+ "	WHERE mo.O_Status_Code='"+Constants.ORDER_STATUS_NOT_IN_ROUTE+"' "
+							+ "OR mo.O_Status_Code='"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"'"
+					+ " ORDER BY mo.O_DueDate ASC";
+			List<String> lstOrDate = getSession().createQuery(sql).list();
+			System.out.println(name()+"::getListDueDate--lstOrDate: "+lstOrDate.toString());
+			commit();
+			
+			return lstOrDate;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+	@Override
+	public List<mOrders> getListOrderByDueDate(String DueDate) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mOrders.class);
+			criteria.add(Restrictions.eq("O_DueDate", DueDate));
+			List<mOrders> o= criteria.list();
+			commit();
+			for(int i=0; i<o.size(); i++){
+				System.out.println(name()+"::getListOrderByDueDate--"+o.get(i).toString());
+			}
+			return o;
+		} catch (HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally {
+			flush();
+			close();
+		}
 	}
 }

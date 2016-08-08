@@ -6,10 +6,12 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 
 public interface mOrdersDAO {
-	public int saveAOrder(mOrders order);
-	public mOrders getAOrderById(int id);
+	public int saveAnOrder(mOrders order);
+	public mOrders getAnOrderById(int id);
 	public List<mOrders> getList();
-	public mOrders loadAOrderbyOrderCode(String orderCode);
-	public void setDeliveredOrder(mOrders order);
-	public List<mOrderDetail> getListOrderDetail();
+	public mOrders loadAnOrderbyOrderCode(String orderCode);
+	public void updateAnOrder(mOrders order);
+	public List<mOrderDetail> getListOrderDetail();	
+	public List<String> getListDueDate();
+	public List<mOrders> getListOrderByDueDate(String DueDate);
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.dao.mRoutesDAO;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 @Service("mRoutesService")
 public class mRoutesServiceImpl implements mRoutesService {
@@ -16,6 +17,12 @@ public class mRoutesServiceImpl implements mRoutesService {
 	public List<mRoutes> loadRoutebyShipperCode(String shipperCode) {
 		// TODO Auto-generated method stub
 		return routeDAO.loadRoutebyShipperCode(shipperCode);
+	}
+
+	@Override
+	public List<mRouteUnderCreation> getLstRTUnderCreation() {
+		// TODO Auto-generated method stub
+		return routeDAO.getLstRTUnderCreation();
 	}
 
 }

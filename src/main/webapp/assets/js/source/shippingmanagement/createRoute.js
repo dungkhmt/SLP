@@ -1,15 +1,64 @@
-/**
- * 
- */
-var lstOrders=${listOrdersJson};
-var markerOfOrder = [];
-var routePath=[];//route to save lat and lng of each shipper
-var map;
-var lstOfShippers = ${listShippersJson};
-var routeOfShipper = [[]];//route to display table of each shipper
-var colorOfShipper = [];
-var depotOfShipper = [];
+$(document).ready(function(){
+	$('#select-listOrderDate').change(function(){
+		var dateSelected = $(this).val();
+		$('#tile_routeDate').html(dateSelected);
+		
+		$.ajax({
+			type: 'POST',
+			url: baseUrl+'/ship/viewAssignedRoute',
+			data: dateSelected,
+			contentType: 'application/text',
+			success: constructFields
+				
+		});
+	});
+	
+	//click button change time start of shipper
+	$('#btnChangeTime').click(function(){
+		if($(this).attr("value")==="change"){
+			$('.inputTimeStartOfShipper').attr('readonly',false);
+			$(this).attr('value',"save");
+			$(this).attr('class','btn btn-primary');
+			$(this).html("Save");
+		}else{
+			$('.inputTimeStartOfShipper').attr('readonly',true);
+			$(this).attr('value',"change");
+			$(this).attr('class','btn btn-info');
+			$(this).html("Change");
+		}
+	});
+	
+	//click button remove point change value of button
+	$('#btnRemove').click(function(){
+		if($(this).attr("value")==="cancel"){
+			$(this).attr("value","remove");
+			$(this).attr('class','btn btn-primary');
+			$(this).html("Cancel")
+		}else{
+			$(this).attr("value","cancel");
+			$(this).attr('class','btn btn-warning');
+			$(this).html("Xóa");
+		}
+	});
+	
+	//change shipper -> show input time of this shipper
+	$('#lstShippers').change(function(){
+		var indexOfShipper = parseInt($('select#lstShippers').find(":selected").val());
+		for(var i=0; i<lstOfShippers.length; i++){
+			if(i==indexOfShipper){
+				$('#inputTimeStartOfShipper'+i).removeAttr('type');
+			}else{
+				$('#inputTimeStartOfShipper'+i).attr('type','hidden');
+			}
+		}
+	});
+	
+	$('.btnCancelCreateRoute').click(function(){
+		window.location = '${baseUrl}/';
+	})
+});
 
+var map;
 function initialize() {
 	//construct google map
 	var mapProp = {
@@ -18,11 +67,70 @@ function initialize() {
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
-	
+}
+
+var lstOrders = [];
+var markerOfOrder = [];
+var routePath=[];//route to save lat and lng of each shipper
+var map;
+var lstOfShippers = [];
+var routeOfShipper = [[]];//route to display table of each shipper
+var routeCodeOfShipper=[];//route code of each route of shipper
+var colorOfShipper = [];
+var depotOfShipper = [];
+
+function constructFields(response){
+	console.log("response: "+JSON.stringify(response));
+	lstOrders = response.lstOrders;
+	console.log("lstOrders: "+JSON.stringify(lstOrders));
+	lstOfShippers = response.lstShippers;
+	console.log("lstOfShippers: "+JSON.stringify(lstOfShippers));
 	//construct routePath and routeOfShipper and depotOfShipper and marker for shipper
+	
+	for(var i=0; i<lstOfShippers.length; i++){
+		$('#lstShippers').append($('<option>', {
+		    value: i,
+		    text: lstOfShippers[i].shp_Code
+		}));
+		
+		var timeStart = "10:30";
+		for(var j=0; j<response.lstRTUnCreation.length; j++){
+			if(response.lstRTUnCreation[j].shipper_Code==lstOfShippers[i].shp_Code){
+				timeStart = response.lstRTUnCreation[j].route_Start_Time;
+			}
+		}
+		if(i==0){
+			$('#divTimeStartOfShipper').append('<input class="form-control inputTimeStartOfShipper" id="inputTimeStartOfShipper'+i+'" value="'+timeStart+'" readonly/>');			
+		}else{
+			$('#divTimeStartOfShipper').append('<input class="form-control inputTimeStartOfShipper" id="inputTimeStartOfShipper'+i+'" value="'+timeStart+'" type="hidden" readonly />');
+		}
+	
+		var html='<tr>'
+					+'<td>'+lstOfShippers[i].shp_Code+'</td>'
+					+'<td id="route'+i+'"></td>'
+					+'<td id="distance'+i+'">0m</td>'
+					+'<td id="time'+i+'">0s</td>'
+				+'</tr>';
+		$('#tblRouteOfShippers tbody').append(html);
+	}
+	
+	for(var i=0; i<response.lstRTUnCreation.length; i++){
+		for(var j=0; j<response.lstShippers.length; j++){
+			for(var k=0; k<response.lstOrders.length; i++){
+				//if order k in route i and route i is shipper j
+				if(response.lstRTUnCreation[i].shipper_Code == response.lstShippers[j].shp_Code
+						&& response.lstRTUnCreation[i].order_Code == response.lstOrders[k].o_Code){
+					//add order k to routOfShipper j at sequence in route i
+					routeOfShipper[j][response.lstRTUnCreation[i].order_Sequence] = k;
+					routeCodeOfShipper[j] = response.lstRTUnCreation[i].route_Code;
+				}
+			}
+		}
+	}
 	var markerOfShipper = [];
 	for(var i=0; i<lstOfShippers.length; i++){
 		colorOfShipper[i] = getRandomColor();
+		$('#infoOfRoute').append('<div class="col-sm-2" style="background-color:'+colorOfShipper[i]+'">'+lstOfShippers[i].shp_Code+'</div>')
 		routePath[i] = new google.maps.Polyline({
 		    strokeColor: colorOfShipper[i],
 		    strokeOpacity: 1.0,
@@ -30,8 +138,8 @@ function initialize() {
 		});
 		routePath[i].setMap(map);	
 		routeOfShipper[i] = [];
-		var shp_depotLat = lstOfShippers[i].SHP_DepotLat;
-		var shp_depotLng = lstOfShippers[i].SHP_DepotLng;
+		var shp_depotLat = lstOfShippers[i].shp_DepotLat;
+		var shp_depotLng = lstOfShippers[i].shp_DepotLng;
 		//console.log("initialize()::shp-"+i+" shp_depotLat: "+shp_depotLat+" shp_depotLng"+shp_depotLng);
 		depotOfShipper[i] = new google.maps.LatLng(shp_depotLat,shp_depotLng);
 		markerOfShipper[i] = new google.maps.Marker({
@@ -43,13 +151,20 @@ function initialize() {
 	
 	//add listener for each markerOfOrder
 	for(var i=0; i<lstOrders.length; i++){
-		var location = new google.maps.LatLng(lstOrders[i].O_DeliveryLat,lstOrders[i].O_DeliveryLng);
-		
+		var location = new google.maps.LatLng(lstOrders[i].o_DeliveryLat,lstOrders[i].o_DeliveryLng);
+		for(var j=0; j<lstOfShippers.length; j++){
+			for(var k=0; k<routeOfShipper[j].length; k++){
+				if(routeOfShipper[j][k] == i){
+					routePath[j].getPath().push(location);
+				}
+			}
+		}
 		markerOfOrder[i] = new google.maps.Marker({position:location});
 		markerOfOrder[i].setMap(map);
 		markerOfOrder[i].addListener('click',changeRoute);
 	}
 }
+
 
 //add and remove one point of route for each shipper
 var indexOfMarker;
@@ -106,8 +221,8 @@ function caculateTimeAndDistance(indexOfShipper){
 			console.log("time to first client"+t_SHP_toFirstClient);
 			var timeToComeThis = plusTime(timeStartOfShipper,t_SHP_toFirstClient);
 			console.log("time to come first client: "+timeToComeThis);
-			var newRow = "<tr 'bgcolor='"+colorOfShipper[indexOfShipper]+"'class='rowOfShipper"+indexOfShipper+"'><td>"+lstOrders[routeOfShipper[indexOfShipper][0]].C_Name+"</td>"+"<td>"+timeToComeThis+"</td>"
-					+"<td>"+lstOrders[routeOfShipper[indexOfShipper][0]].O_TimeEarly+"-"+lstOrders[routeOfShipper[indexOfShipper][0]].O_TimeLate+"</td></tr>";
+			var newRow = "<tr bgcolor='"+colorOfShipper[indexOfShipper]+"'class='rowOfShipper"+indexOfShipper+"'><td>"+lstOrders[routeOfShipper[indexOfShipper][0]].o_ClientCode+"</td>"+"<td>"+timeToComeThis+"</td>"
+					+"<td>"+lstOrders[routeOfShipper[indexOfShipper][0]].o_TimeEarly+"-"+lstOrders[routeOfShipper[indexOfShipper][0]].o_TimeLate+"</td></tr>";
 			$('#tblRouteDetail tbody').append(newRow);
 		});
 		
@@ -145,8 +260,8 @@ function caculateTimeAndDistance(indexOfShipper){
 					var timeToComeThis = plusTime(timeStartOfShipper,t_SHP_toFirstClient);
 					console.log("time from shipper depot to this client-"+routeOfShipper[indexOfShipper][indexOfClientInRoute]+"): "+timeToComeThis);
 					var indexOfClientInList = routeOfShipper[indexOfShipper][indexOfClientInRoute];
-					var newRow = "<tr id='rowOfOrder"+indexOfMarker+"'bgcolor='"+colorOfShipper[indexOfShipper]+"'class='rowOfShipper"+indexOfShipper+"'><td>"+lstOrders[indexOfClientInList].C_Name+"</td>"+"<td>"+timeToComeThis+"</td>"
-							+"<td>"+lstOrders[indexOfClientInList].O_TimeEarly+"-"+lstOrders[indexOfClientInList].O_TimeLate+"</td></tr>";
+					var newRow = "<tr bgcolor='"+colorOfShipper[indexOfShipper]+"'class='rowOfShipper"+indexOfShipper+"'><td>"+lstOrders[indexOfClientInList].o_ClientCode+"</td>"+"<td>"+timeToComeThis+"</td>"
+							+"<td>"+lstOrders[indexOfClientInList].o_TimeEarly+"-"+lstOrders[indexOfClientInList].o_TimeLate+"</td></tr>";
 					$('#tblRouteDetail tbody').append(newRow);
 				});
 			}
@@ -225,89 +340,44 @@ function secondsToHms(t){
 	return h;
 }
 
-$(document).ready(function(){
-	for(var i=0; i<lstOrders.length; i++){
-		if(i>0){
-			if(lstOrders[i].O_DueDate != lstOrders[i-1].O_DueDate){
-				$('#select-listOrderDate').append($('<option>', {
-					value: i,
-				    text: lstOrders[i].O_DueDate
-				}));
-			}
-		}else{
-			$('#select-listOrderDate').append($('<option>', {
-				value: i,
-			    text: lstOrders[i].O_DueDate
-			}));
+function cf_saveRouteCreated(){
+	var data = "[";
+//	var routeOfShipper = [[]];//route to display table of each shipper
+//	var routeCodeOfShipper=[];//route code of each route of shippe
+	for(var i=0; i<lstOfShippers.length;i++){
+		data += '{"route_Code" : "' +routeCodeOfShipper[i]+'", ';
+		//console.log("::cf_saveRouteCreated--data["+i+"].route_Code: "+ routeCodeOfShipper[i]);
+		data += '"shipper_Code" : "'+ lstOfShippers[i].shp_Code+'", ';
+		//console.log("::cf_saveRouteCreated--data["+i+"].shipper_Code: "+  lstOfShippers[i].shp_Code);
+		data += '"route_Start_Time" : "'+ $('#inputTimeStartOfShipper'+i).val()+'", ';
+		//console.log("::cf_saveRouteCreated--data["+i+"].route_Start_Time: "+ data[i].route_Start_Time);
+		data += '"orders_In_Route": [';
+		for(var j=0; j<routeOfShipper[i].length-1; j++){
+			data += '"'+lstOrders[routeOfShipper[i][j]].o_Code + '",';
+			//console.log("::cf_saveRouteCreated--data["+i+"].orders_In_Route["+j+"]: "+ data[i].orders_In_Route[j]);
 		}
+		data += '"'+lstOrders[routeOfShipper[i][routeOfShipper[i].length-1]].o_Code + '"]},';
 	}
-	for(var i=0; i<lstOfShippers.length; i++){
-		$('#lstShippers').append($('<option>', {
-		    value: i,
-		    text: lstOfShippers[i].SHP_Code
-		}));
-		
-		if(i==0){
-			$('#divTimeStartOfShipper').append('<input class="form-control inputTimeStartOfShipper" id="inputTimeStartOfShipper'+i+'" value="'+lstOfShippers[i].SHP_Code+'" readonly/>');			
-		}else{
-			$('#divTimeStartOfShipper').append('<input class="form-control inputTimeStartOfShipper" id="inputTimeStartOfShipper'+i+'" value="'+lstOfShippers[i].SHP_Code+'" type="hidden" readonly />');
-		}
-	
-		var html='<tr>'
-					+'<td>'+lstOfShippers[i].SHP_Code+'</td>'
-					+'<td id="route'+i+'"></td>'
-					+'<td id="distance'+i+'">0m</td>'
-					+'<td id="time'+i+'">0s</td>'
-					+'<td id="confirmRouteOfShipper'+i+'" class="center"><button class="btn btn-primary btn-xs">Chốt tuyến</button></td>'
-				+'</tr>';
-		$('#tblRouteOfShippers tbody').append(html);
-	}
-	
-	//click button change time start of shipper
-	$('#btnChangeTime').click(function(){
-		if($(this).attr("value")==="change"){
-			$('.inputTimeStartOfShipper').attr('readonly',false);
-			$(this).attr('value',"save");
-			$(this).attr('class','btn btn-primary');
-			$(this).html("Save");
-		}else{
-			$('.inputTimeStartOfShipper').attr('readonly',true);
-			$(this).attr('value',"change");
-			$(this).attr('class','btn btn-info');
-			$(this).html("Change");
+	data = data.substring(0,data.length-1);
+	data += "]";
+	console.log("data"+data);
+	var jsonData = JSON.parse(data);
+	$.ajax({
+		type: 'POST',
+		url: baseUrl+'/ship/saveRouteCreated',
+		data: jsonData,
+		contentType: 'application/json',
+		cache : true,
+		success: function(response){
+			console.log("success--"+response);
+		},
+		error: function(response){
+			console.log("error--"+response);
 		}
 	});
 	
-	//click button remove point change value of button
-	$('#btnRemove').click(function(){
-		if($(this).attr("value")==="cancel"){
-			$(this).attr("value","remove");
-			$(this).attr('class','btn btn-primary');
-			$(this).html("Cancel")
-		}else{
-			$(this).attr("value","cancel");
-			$(this).attr('class','btn btn-warning');
-			$(this).html("Xóa");
-		}
-	});
+}
+
+function cf_confirmRouteCreated(){
 	
-	//change shipper -> show input time of this shipper
-	$('#lstShippers').change(function(){
-		var indexOfShipper = parseInt($('select#lstShippers').find(":selected").val());
-		for(var i=0; i<lstOfShippers.length; i++){
-			if(i==indexOfShipper){
-				$('#inputTimeStartOfShipper'+i).removeAttr('type');
-			}else{
-				$('#inputTimeStartOfShipper'+i).attr('type','hidden');
-			}
-		}
-	});
-	
-	$('.btnCancelCreateRoute').click(function(){
-		window.location = '${baseUrl}/';
-	})
-	
-	$('#saveRouteCreated').click(function(){
-		
-	});
-})
+}

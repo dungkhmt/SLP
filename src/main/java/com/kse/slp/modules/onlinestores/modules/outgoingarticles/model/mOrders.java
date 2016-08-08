@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 @Entity
 @Table(name="tblorders")
 public class mOrders implements Serializable {
@@ -21,21 +22,39 @@ public class mOrders implements Serializable {
 	float O_DeliveryLng;
 	String O_TimeEarly;
 	String O_TimeLate;
-	int O_Delivered;
+	String O_Status_Code;
+	String O_RouteCode;
 	float O_Price;
 	
+	//@Transient
+	//String c_name;
+	
+	
+//	public String getRoute_Code() {
+//		return Route_Code;
+//	}
+//	public void setRoute_Code(String route_Code) {
+//		Route_Code = route_Code;
+//	}
+	public String getO_Status_Code() {
+		return O_Status_Code;
+	}
+	public void setO_Status_Code(String o_Status_Code) {
+		O_Status_Code = o_Status_Code;
+	}
+	public String getO_RouteCode() {
+		return O_RouteCode;
+	}
+	public void setO_RouteCode(String o_RouteCode) {
+		O_RouteCode = o_RouteCode;
+	}
 	public float getO_Price() {
 		return O_Price;
 	}
 	public void setO_Price(float o_Price) {
 		O_Price = o_Price;
 	}
-	public int getO_Delivered() {
-		return O_Delivered;
-	}
-	public void setO_Delivered(int o_Delivered) {
-		O_Delivered = o_Delivered;
-	}
+	
 	public String getO_DeliveryAddress() {
 		return O_DeliveryAddress;
 	}
@@ -97,14 +116,37 @@ public class mOrders implements Serializable {
 	public void setO_DueDate(String o_DueDate) {
 		O_DueDate = o_DueDate;
 	}
+	public mOrders(int o_ID, String o_Code, String o_ClientCode, String o_OrderDate, String o_DueDate,
+			String o_DeliveryAddress, float o_DeliveryLat, float o_DeliveryLng, String o_TimeEarly, String o_TimeLate,
+			String o_Status_Code, String o_RouteCode, float o_Price, String route_Code) {
+		super();
+		O_ID = o_ID;
+		O_Code = o_Code;
+		O_ClientCode = o_ClientCode;
+		O_OrderDate = o_OrderDate;
+		O_DueDate = o_DueDate;
+		O_DeliveryAddress = o_DeliveryAddress;
+		O_DeliveryLat = o_DeliveryLat;
+		O_DeliveryLng = o_DeliveryLng;
+		O_TimeEarly = o_TimeEarly;
+		O_TimeLate = o_TimeLate;
+		O_Status_Code = o_Status_Code;
+		O_RouteCode = o_RouteCode;
+		O_Price = o_Price;
+		//Route_Code = route_Code;
+	}
+	public mOrders() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public String toString() {
-		return "mOrders [O_ID=" + O_ID + ", O_Code=" + O_Code
-				+ ", O_ClientCode=" + O_ClientCode + ", O_OrderDate="
-				+ O_OrderDate + ", O_DueDate=" + O_DueDate
-				+ ", O_DeliveryAdress=" + O_DeliveryAddress + ", O_DeliveryLat="
-				+ O_DeliveryLat + ", O_DeliveryLng=" + O_DeliveryLng
-				+ ", O_TimeEarly=" + O_TimeEarly + ", O_TimeLate=" + O_TimeLate
-				+ "]";
+		return "mOrders [O_ID=" + O_ID + ", O_Code=" + O_Code + ", O_ClientCode=" + O_ClientCode + ", O_OrderDate="
+				+ O_OrderDate + ", O_DueDate=" + O_DueDate + ", O_DeliveryAddress=" + O_DeliveryAddress
+				+ ", O_DeliveryLat=" + O_DeliveryLat + ", O_DeliveryLng=" + O_DeliveryLng + ", O_TimeEarly="
+				+ O_TimeEarly + ", O_TimeLate=" + O_TimeLate + ", O_Status_Code=" + O_Status_Code + ", O_RouteCode="
+				+ O_RouteCode + ", O_Price=" + O_Price +"]";
 	}
+	
+	
 }

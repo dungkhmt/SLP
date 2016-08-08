@@ -3,6 +3,9 @@ package com.kse.slp.modules.onlinestores.modules.incomingarticles.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,11 +24,13 @@ import com.kse.slp.modules.onlinestores.modules.incomingarticles.service.mSuppli
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.validation.mIncomingArticleValidation;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.validation.mListIncomingArticlesForm;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
+import com.kse.slp.modules.usermanagement.controller.AuthController;
+import com.kse.slp.modules.usermanagement.model.User;
 
 @Controller("incomingArticlesController")
 @RequestMapping(value={"/incomingArticles"})
 public class IncomingArticlesController extends BaseWeb{
-	
+	private static final Logger log = Logger.getLogger(IncomingArticlesController.class);
 	@Autowired
 	private mSuppliersService mSuppliersService;
 	@Autowired
@@ -34,7 +39,7 @@ public class IncomingArticlesController extends BaseWeb{
 	private mIncomingArticlesService mIncomingArticlesService;
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
-	public String listIncommingArticles(ModelMap model){
+	public String listIncommingArticles(ModelMap model,HttpSession session){
 		
 		List<mIncomingArticles> inArtList = mIncomingArticlesService.getOrderedListByDate();
 		
@@ -57,12 +62,13 @@ public class IncomingArticlesController extends BaseWeb{
 		System.out.println(name()+":: inArtDateList"+inArtDateList.toString());
 		model.put("inArtList", inArtList);
 		model.put("inArtDateList", inArtDateList);
-		
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
 		return "in.listIncommingArticles";
 	}
 	
 	@RequestMapping(value="/addArticles", method = RequestMethod.GET)
-	public String addArticles(ModelMap model){
+	public String addArticles(ModelMap model,HttpSession session){
 		
 		List<mSuppliers> listSuppliers = mSuppliersService.getList();
 		List<mArticlesCategory> lstArticlesCat = mArticlesCategoryService.getList();
@@ -71,12 +77,13 @@ public class IncomingArticlesController extends BaseWeb{
 		model.put("lstArticlesCat", lstArticlesCat);
 		model.put("articleFormAdd", new mIncomingArticleValidation());
 		model.put("lstArtForm", new mListIncomingArticlesForm());
-		
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
 		return "in.addArticles";
 	}
 	
 	@RequestMapping(value="/saveIncomingArticles", method=RequestMethod.POST)
-	public String saveIncomingArticles(@ModelAttribute("lstArtForm") mListIncomingArticlesForm lstArtForm, @ModelAttribute("articleFormAdd") mIncomingArticleValidation articleFormValid,BindingResult result){
+	public String saveIncomingArticles(HttpSession session ,@ModelAttribute("lstArtForm") mListIncomingArticlesForm lstArtForm, @ModelAttribute("articleFormAdd") mIncomingArticleValidation articleFormValid,BindingResult result){
 		for(int i=0; i<lstArtForm.getLstIncomingArticles().size(); i++){
 			mIncomingArticleValidation article = lstArtForm.getLstIncomingArticles().get(i);
 			System.out.println(name()+"::saveIncomingArticles--article "+i+" "+article.toString());
@@ -87,6 +94,8 @@ public class IncomingArticlesController extends BaseWeb{
 			String article_date = article.getDate();
 			mIncomingArticlesService.saveAIncomingArticle(article_code, article_amount, article_price, article_spcode, article_date);
 		}
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
 		return "redirect:"+this.baseUrl+"/incomingArticles/list.html";
 	}
 	

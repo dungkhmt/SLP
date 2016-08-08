@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 <script src="<c:url value="/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.js"/>"></script>
 
-<script src="<c:url value="/assets/js/selectAddress.js"/>"> </script>
-<link href="<c:url value="/assets/css/selectAddress.css" />" rel="stylesheet" type="text/css" media="all" />
+<script src="<c:url value="/assets/js/source/shippingmanagement/selectAddress.js"/>"> </script>
+<link href="<c:url value="/assets/css/source/shippingmanagement/selectAddress.css" />" rel="stylesheet" type="text/css" media="all" />
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&libraries=places&callback=initAutocomplete" async defer></script>
 <div id="page-wrapper">
 	<div class="row">
@@ -231,7 +231,9 @@
 		$("#orderAdress").val($("#pac-input").val());		
 	});
 
-	$('.timepicker').timepicker();
+	$('.timepicker').timepicker({
+		showMeridian: false 
+	});
 	$(".selectMap").hide();
 	$(".ok-selectMap").hide();
 	$(".orderDeliveryLat").hide();
