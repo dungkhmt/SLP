@@ -266,7 +266,7 @@ function constructFields(response){
 	}
 	for(var i=0; i<lstOfShippers.length; i++){
 		caculateTimeAndDistance(i);
-		$('#route'+i).html(routeOfShipper[i]);
+		//$('#route'+i).html(routeOfShipper[i]);
 	}
 }
 
@@ -296,7 +296,7 @@ function changeRoute(event){
 		}
 	}
 	caculateTimeAndDistance(indexOfPath);
-	$('#route'+indexOfPath).html(routeOfShipper[indexOfPath]);
+	//$('#route'+indexOfPath).html(routeOfShipper[indexOfPath]);
 }
 
 //caculate time and distance to display table #tblRouteDetail and #tblRouteOfShippers
@@ -384,7 +384,7 @@ function btnResetRoute_cf(){
 		i--;
 	}
 	routeOfShipper[indexOfShipper].splice(0);
-	$('#route'+indexOfShipper).html(routeOfShipper[indexOfShipper]);
+	//$('#route'+indexOfShipper).html(routeOfShipper[indexOfShipper]);
 	caculateTimeAndDistance(indexOfShipper);
 	//alert("path length"+path.length);
 }
