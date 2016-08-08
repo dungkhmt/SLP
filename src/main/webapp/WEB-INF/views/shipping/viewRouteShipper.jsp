@@ -46,6 +46,7 @@ var routePath=[];
 var map;
 var listPoi=[];
 var listOrderCode=[];
+var listOrderDeliveriedMark=[];
 function selectRoute(){
 	var routeCode= $(".selectRoute").val();
 	var jsonx={
@@ -60,8 +61,15 @@ function selectRoute(){
 	    //Stringified Json Object
 	    success: function(response){
 	        // Success Message Handler
+	        for(i=0;i<marker.length;i++)
+	        	marker[i].setMap(null);
+	        for(i=0;i<routePath.length;i++)
+	        	routePath[i].setMap(null);
+	        
+	        marker=[];
 	        listPoi=[];
 	        listOrderCode=[];
+	        listOrderDeliveriedMark=[];
 	      	console.log(response);
 	      	for(var i=0;i<response.length;i++){
 	        	listPoi.push({
@@ -69,6 +77,7 @@ function selectRoute(){
 	        		"lng":response[i].lng,
 	        	});
 	        	listOrderCode.push(response[i].orderCode);
+	        	listOrderDeliveriedMark.push(response[i].deliveried);
 	        }
 	      viewRoute(listPoi);
 	    }
@@ -92,7 +101,17 @@ var storeMarker;
 function viewRoute(listPoi){
 	for(var i=0;i<listPoi.length;i++){
 		console.log(listPoi[i]);
-		marker[i]=new google.maps.Marker({position:listPoi[i]});
+		if(listOrderDeliveriedMark[i]==0)
+		marker[i]=new google.maps.Marker({
+			position:listPoi[i],
+			
+			});
+		else {
+			marker[i]=new google.maps.Marker({
+				position:listPoi[i],
+				icon:"https://www.google.com/mapfiles/marker_green.png"
+				});
+		}
 		
 		marker[i].setMap(map);
 		marker[i].addListener('click',function(i){
@@ -105,12 +124,21 @@ function viewRoute(listPoi){
 		
 	}
 	for(var i=0;i<listPoi.length-1;i++){
+		if(listOrderDeliveriedMark[i+1]==0 && (i!=0))
 		routePath[i] = new google.maps.Polyline({
 			path: [listPoi[i],listPoi[i+1]],
 			strokeColor: '#FF0000',
 		    strokeOpacity: 1.0,
 		    strokeWeight: 5,
 		});
+		else {
+			routePath[i] = new google.maps.Polyline({
+				path: [listPoi[i],listPoi[i+1]],
+				strokeColor: 'gray',
+			    strokeOpacity: 1.0,
+			    strokeWeight: 5,
+			});
+		}
 		routePath[i].setMap(map);
 		routePath[i].addListener('click',function(){
 			viewDirection(marker[routePath.indexOf(this)],marker[routePath.indexOf(this)+1])
