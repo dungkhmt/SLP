@@ -454,10 +454,15 @@ function cf_saveRouteCreated(){
 		data += '"shipper_Code" : "'+ lstOfShippers[i].shp_Code+'", ';
 		data += '"route_Start_Time" : "'+ $('#inputTimeStartOfShipper'+i).val()+'", ';
 		data += '"orders_In_Route": [';
-		for(var j=0; j<routeOfShipper[i].length-1; j++){
+		var test=0;
+		for(var j=0; j<routeOfShipper[i].length; j++){
 			data += '"'+lstOrders[routeOfShipper[i][j]].o_Code + '",';
+			test++;
 		}
-		data += '"'+lstOrders[routeOfShipper[i][routeOfShipper[i].length-1]].o_Code + '"]},';
+		if(test != 0){
+			data = data.substring(0,data.length-1);
+		}
+		data += ']},';
 	}
 	data = data.substring(0,data.length-1);
 	data += "]}";
