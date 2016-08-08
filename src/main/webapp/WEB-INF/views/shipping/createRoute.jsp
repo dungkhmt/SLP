@@ -171,6 +171,7 @@ var markerOfOrder = [];
 var routePath=[];//route to save lat and lng of each shipper
 var map;
 var lstOfShippers = [];
+var nShipper;
 var routeOfShipper = [[]];//route to display table of each shipper
 var routeCodeOfShipper=[];//route code of each route of shipper
 var colorOfShipper = [];
@@ -180,14 +181,15 @@ function constructFields(response){
 	lstOrders = response.lstOrders;
 	//console.log("lstOrders: "+JSON.stringify(lstOrders));
 	lstOfShippers = response.lstShippers;
+	nShipper = lstOfShippers.length;
 	//console.log("lstOfShippers: "+JSON.stringify(lstOfShippers));
 	//construct routePath and routeOfShipper and depotOfShipper and marker for shipper
 	
-	for(var i=0; i<lstOfShippers.length;i++){
+	for(var i=0; i<nShipper;i++){
 		routeOfShipper[i] = [];
 	}
 	
-	for(var i=0; i<lstOfShippers.length; i++){
+	for(var i=0; i<nShipper; i++){
 		$('#lstShippers').append($('<option>', {
 		    value: i,
 		    text: lstOfShippers[i].shp_Code
@@ -216,7 +218,7 @@ function constructFields(response){
 	console.log("lstRTUnCreation: "+JSON.stringify(response.lstRTUnCreation));
 	for(var i=0; i<response.lstRTUnCreation.length; i++){
 		console.log("RTUnCreation["+i+"].shipper_Code: "+JSON.stringify(response.lstRTUnCreation[i].shipper_Code));
-		for(var j=0; j<response.lstShippers.length; j++){
+		for(var j=0; j<nShipper; j++){
 			for(var k=0; k<response.lstOrders.length; k++){
 				//if order k in route i and route i is shipper j
 				if(response.lstRTUnCreation[i].shipper_Code == response.lstShippers[j].shp_Code
@@ -226,13 +228,13 @@ function constructFields(response){
 					routeCodeOfShipper[j] = response.lstRTUnCreation[i].route_Code;
 				}
 			}
-			console.log("routeOfShipper["+j+"]: "+routeOfShipper[j]);
+			//console.log("routeOfShipper["+j+"]: "+routeOfShipper[j]);
 		}
-		console.log("routeCodeOfShipper["+j+"]: "+routeCodeOfShipper);
+		//console.log("routeCodeOfShipper["+j+"]: "+routeCodeOfShipper);
 	}
 	
 	var markerOfShipper = [];
-	for(var i=0; i<lstOfShippers.length; i++){
+	for(var i=0; i<nShipper; i++){
 		colorOfShipper[i] = getRandomColor();
 		$('#infoOfRoute').append('<div class="col-sm-2" style="background-color:'+colorOfShipper[i]+'">'+lstOfShippers[i].shp_Code+'</div>')
 		routePath[i] = new google.maps.Polyline({
@@ -266,7 +268,7 @@ function constructFields(response){
 		markerOfOrder[i].setMap(map);
 		markerOfOrder[i].addListener('click',changeRoute);
 	}
-	for(var i=0; i<lstOfShippers.length; i++){
+	for(var i=0; i<nShipper; i++){
 		caculateTimeAndDistance(i);
 		//$('#route'+i).html(routeOfShipper[i]);
 	}
@@ -274,10 +276,10 @@ function constructFields(response){
 
 
 //add and remove one point of route for each shipper
-var indexOfMarker;
+//var indexOfMarker;
 function changeRoute(event){
 	var indexOfPath = parseInt($('select#lstShippers').find(":selected").val());
-	indexOfMarker = markerOfOrder.indexOf(this);
+	var indexOfMarker = markerOfOrder.indexOf(this);
 	var path = routePath[indexOfPath].getPath();
 	var indexOfRemove = path.indexOf(event.latLng);
 	if($('#btnRemove').attr("value")==="remove"){
@@ -292,7 +294,14 @@ function changeRoute(event){
 			
 		}
 	}else{
-		if(indexOfRemove < 0){
+		var test = 0;
+		//check clicked marker is in another route  
+		for(var i=0; i<nShipper; i++){
+			if((routeOfShipper[i].indexOf(indexOfMarker))>=0){
+				test++;
+			}
+		}
+		if(indexOfRemove < 0 && test == 0){
 			path.push(event.latLng);	
 			routeOfShipper[indexOfPath].push(indexOfMarker);
 		}
@@ -306,6 +315,7 @@ function caculateTimeAndDistance(indexOfShipper){
 	var service = new google.maps.DistanceMatrixService; 
 	$('#distance'+indexOfShipper).html("0km");
 	$('#time'+indexOfShipper).html("0s");
+	//remove all old displayed info of route row
 	var rowOfRemove = document.querySelectorAll(".rowOfShipper"+indexOfShipper);
 	for(var i=0; i<rowOfRemove.length; i++){
 		$(rowOfRemove[i]).remove();
@@ -324,10 +334,10 @@ function caculateTimeAndDistance(indexOfShipper){
 			t_SHP_toFirstClient += response.rows[0].elements[0].duration.value;
 			//var timeToFirstClienthms = sendsToHms(t_SHP_toFirstClient);
 			var timeStartOfShipper = $('#inputTimeStartOfShipper'+indexOfShipper).val();
-			console.log("indexOfShipper in response function:"+indexOfShipper);
-			console.log("time to first client"+t_SHP_toFirstClient);
+			//console.log("indexOfShipper in response function:"+indexOfShipper);
+			console.log("time from shipper depot to first client"+t_SHP_toFirstClient);
 			var timeToComeThis = plusTime(timeStartOfShipper,t_SHP_toFirstClient);
-			console.log("time to come first client: "+timeToComeThis);
+			//console.log("time to come first client: "+timeToComeThis);
 			var newRow = "<tr bgcolor='"+colorOfShipper[indexOfShipper]+"'class='rowOfShipper"+indexOfShipper+"'><td>"+lstOrders[routeOfShipper[indexOfShipper][0]].o_ClientCode+"</td>"+"<td>"+timeToComeThis+"</td>"
 					+"<td>"+lstOrders[routeOfShipper[indexOfShipper][0]].o_TimeEarly+"-"+lstOrders[routeOfShipper[indexOfShipper][0]].o_TimeLate+"</td></tr>";
 			$('#tblRouteDetail tbody').append(newRow);
@@ -351,7 +361,7 @@ function caculateTimeAndDistance(indexOfShipper){
 					console.log("time from previous to this: "+response.rows[0].elements[0].duration.value);
 					indexOfClientInRoute++;
 					//caculate time of total route
-					console.log("distance"+distance);
+					//console.log("distance"+distance);
 					distance += response.rows[0].elements[0].distance.value;
 					time += response.rows[0].elements[0].duration.value;
 					$('#distance'+indexOfShipper).html(distance/1000+"km");
@@ -359,14 +369,16 @@ function caculateTimeAndDistance(indexOfShipper){
 					$('#time'+indexOfShipper).html(timeHms[0]+"h"+timeHms[1]+"p"+timeHms[2]+"s");
 					
 					//caculate time to each client
-					t_SHP_toFirstClient += response.rows[0].elements[0].duration.value;
+					//t_SHP_toFirstClient += response.rows[0].elements[0].duration.value;
+					timeFromDepotToThis = t_SHP_toFirstClient + time;
 					//var timeToThisClienthms = secondsToHms(t_SHP_toFirstClient);
 					var timeStartOfShipper = $('#inputTimeStartOfShipper'+indexOfShipper).val();
-					console.log("indexOfShipper in response function:"+indexOfShipper);
-					console.log("indexOfClientInRoute"+indexOfClientInRoute);
-					var timeToComeThis = plusTime(timeStartOfShipper,t_SHP_toFirstClient);
-					console.log("time from shipper depot to this client-"+routeOfShipper[indexOfShipper][indexOfClientInRoute]+"): "+timeToComeThis);
+					//console.log("indexOfShipper in response function:"+indexOfShipper);
+					//console.log("indexOfClientInRoute"+indexOfClientInRoute);
+					var timeToComeThis = plusTime(timeStartOfShipper,timeFromDepotToThis);
+					//console.log("time from shipper depot to this client-"+routeOfShipper[indexOfShipper][indexOfClientInRoute]+"): "+timeToComeThis);
 					var indexOfClientInList = routeOfShipper[indexOfShipper][indexOfClientInRoute];
+					console.log("time from depot to this ("+lstOrders[indexOfClientInList].o_ClientCode+"): " +timeFromDepotToThis);
 					var newRow = "<tr bgcolor='"+colorOfShipper[indexOfShipper]+"'class='rowOfShipper"+indexOfShipper+"'><td>"+lstOrders[indexOfClientInList].o_ClientCode+"</td>"+"<td>"+timeToComeThis+"</td>"
 							+"<td>"+lstOrders[indexOfClientInList].o_TimeEarly+"-"+lstOrders[indexOfClientInList].o_TimeLate+"</td></tr>";
 					$('#tblRouteDetail tbody').append(newRow);
@@ -410,18 +422,22 @@ function getRandomColor() {
 }
 
 function plusTime(time,addition){
+	console.log("plus time parameter (time: "+time+",addtion:"+addition);
 	var indexOfCut = time.indexOf(":");
 	var hourOfTime = parseInt(time.substring(0,indexOfCut));
 	var minOfTime = parseInt(time.substring(indexOfCut+1));
-	var additionHms = secondsToHms(addition);
-	var minResult = Math.floor((minOfTime + additionHms[1])%60);
-	var hourResult =  hourOfTime + Math.floor((minOfTime + additionHms[1])/60);
+	var secondTime = hourOfTime*60*60 + minOfTime*60;
+	var timeResult = secondTime + addition;
+	var timehmsResult = secondsToHms(timeResult);
+	var minResult=timehmsResult[1];
+	var hourResult=timehmsResult[0];
 	if(minResult<10){
 		minResult = "0"+minResult;
 	}
 	if(hourResult<10){
 		hourResult = "0"+hourResult;
 	}
+	console.log("plus time result: "+(hourResult + ":" + minResult));
 	return (hourResult + ":" + minResult);
 }
 
@@ -470,13 +486,13 @@ function cf_saveRouteCreated(){
 	var jsonData = JSON.parse(data);
 	$.ajax({
 		type: 'POST',
-		url: '${baseUrl}/ship/saveRouteCreated/save',
+		url: baseUrl+'/ship/saveRouteCreated/save',
 		data: data,
 		contentType: 'application/json',
 		success: function(response){
 			console.log("success--"+response);
 			if(response=="400"){
-				window.location = '${baseUrl}/';
+				window.location = baseUrl + '/';
 			}
 			if(response=="404"){
 				alert("Error");
@@ -495,10 +511,15 @@ function cf_confirmRouteCreated(){
 		data += '"shipper_Code" : "'+ lstOfShippers[i].shp_Code+'", ';
 		data += '"route_Start_Time" : "'+ $('#inputTimeStartOfShipper'+i).val()+'", ';
 		data += '"orders_In_Route": [';
-		for(var j=0; j<routeOfShipper[i].length-1; j++){
+		var test = 0;
+		for(var j=0; j<routeOfShipper[i].length; j++){
 			data += '"'+lstOrders[routeOfShipper[i][j]].o_Code + '",';
+			test++;
 		}
-		data += '"'+lstOrders[routeOfShipper[i][routeOfShipper[i].length-1]].o_Code + '"]},';
+		if(test != 0){
+			data = data.substring(0,data.length-1);
+		}
+		data += ']},';
 	}
 	data = data.substring(0,data.length-1);
 	data += "]}";
@@ -506,13 +527,13 @@ function cf_confirmRouteCreated(){
 	var jsonData = JSON.parse(data);
 	$.ajax({
 		type: 'POST',
-		url: '${baseUrl}/ship/saveRouteCreated/confirm',
+		url: baseUrl+'/ship/saveRouteCreated/confirm',
 		data: data,
 		contentType: 'application/json',
 		success: function(response){
 			console.log("success--"+response);
 			if(response=="400"){
-				window.location = '${baseUrl}/';
+				window.location = baseUrl+'/';
 			}
 			if(response=="404"){
 				alert("Error");
