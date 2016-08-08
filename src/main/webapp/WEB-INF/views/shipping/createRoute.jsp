@@ -120,6 +120,8 @@ $(document).ready(function(){
 			$(this).attr('value',"change");
 			$(this).attr('class','btn btn-info');
 			$(this).html("Change");
+			var indexOfShipper = parseInt($('select#lstShippers').find(":selected").val());
+			caculateTimeAndDistance(indexOfShipper);
 		}
 	});
 	
@@ -245,7 +247,7 @@ function constructFields(response){
 		depotOfShipper[i] = new google.maps.LatLng(shp_depotLat,shp_depotLng);
 		markerOfShipper[i] = new google.maps.Marker({
 			position : depotOfShipper[i],
-			//icon : '${baseUrl}/assets/img/motorcycle-icon.png'
+			icon : "https://www.google.com/mapfiles/marker_green.png"
 		});
 		markerOfShipper[i].setMap(map);
 	}
