@@ -72,6 +72,7 @@ public class mOrdersServiceImpl implements mOrdersService{
 	@Override
 	public void setDeliveredbyOrderCode(String orderCode) {
 		// TODO Auto-generated method stub
+		//System.out.print(name()+" "+orderCode);
 		mOrders o= loadAnOrderbyOrderCode(orderCode);
 		o.setO_Status_Code(Constants.ORDER_STATUS_DELIVERIED);
 		orderDAO.updateAnOrder(o);
@@ -96,5 +97,7 @@ public class mOrdersServiceImpl implements mOrdersService{
 		// TODO Auto-generated method stub
 		orderDAO.updateStatus(order_Code, status);
 	}
-
+	String name(){
+		return "mOrdersServiceImpl";
+	}
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.clientmanagment.model.mClients;
 import com.kse.slp.modules.onlinestores.modules.clientmanagment.validation.mClientSearchTag;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -51,7 +52,12 @@ public class mAjaxShippingController {
 			for(int i=0;i<l.size();i++){
 				mRouteDetail rd= l.get(i);
 				mOrders o= mOrdersService.loadAnOrderbyOrderCode(rd.getRTD_OrderCode());
-				mPoiInRoute r= new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code());
+				mPoiInRoute r;
+				System.out.print(name()+o.getO_Status_Code()+" "+Constants.ORDER_STATUS_DELIVERIED);
+				if(o.getO_Status_Code().equals(Constants.ORDER_STATUS_DELIVERIED))
+					r = new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code(),1);
+				
+				else r= new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code(),0);
 				System.out.println(name()+" "+o+" "+rd.getRTD_Sequence());
 				mPIR[rd.getRTD_Sequence()]= r;
 			}
