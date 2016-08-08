@@ -14,4 +14,5 @@ public interface mOrdersDAO {
 	public List<mOrderDetail> getListOrderDetail();	
 	public List<String> getListDueDate();
 	public List<mOrders> getListOrderByDueDate(String DueDate);
+	public void updateStatus(String order_Code,String status);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.controller.IncomingArticlesController;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
@@ -32,6 +33,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRout
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
 @Controller("ShippingController")
 @RequestMapping(value={"/ship"})
@@ -60,7 +62,7 @@ public class ShippingController extends BaseWeb{
 		//System.out.println(name()+"::creatRouteToShip--listOrdersDetail"+listOrdersJson);
 		//System.out.println(name()+"::creatRouteToShip--listShippersJson"+listShippersJson);
 		List<String> listOrderDueDate = mOrdersService.getListDueDate();
-		System.out.println(name()+"::creatRouteToShip--listOrderDueDate: "+listOrderDueDate.toString());
+		//System.out.println(name()+"::creatRouteToShip--listOrderDueDate: "+listOrderDueDate.toString());
 		//map.put("nShippers", listShippers.size());
 		//map.put("listOrdersDetail",listOrdersDetail);
 		//map.put("listShippers", listShippers);
@@ -80,7 +82,9 @@ public class ShippingController extends BaseWeb{
 		List<mOrders> lstOrders = mOrdersService.getListOrderByDueDate(date);
 		List<mRouteUnderCreation> lstRTUnCreation = mRoutesService.getLstRTUnderCreation();
 		List<mShippers> lstShippers = mShippersService.getList();
-	
+		
+		//System.out.println(name()+"::viewAssignedRoute--lstOrders: "+lstOrders.toString());
+		
 		mJSONResponseToCreateRoute jsonReturn = new mJSONResponseToCreateRoute();
 		jsonReturn.setLstOrders(lstOrders);
 		jsonReturn.setLstRTUnCreation(lstRTUnCreation);
@@ -91,36 +95,42 @@ public class ShippingController extends BaseWeb{
 	
 	@RequestMapping(value="/saveRouteCreated/{method}", method = RequestMethod.POST)
 	public @ResponseBody String saveRouteCreated (@PathVariable("method") String method, @RequestBody lstJSONResquestCreateRoute request){
-		System.out.println(name()+"::saveRouteCreated");
+		//System.out.println(name()+"::saveRouteCreated");
 		
-		System.out.println(name()+"::saveRouteCreated--(method: "+method+")request data"+request.toString());
+		//System.out.println(name()+"::saveRouteCreated--(method: "+method+")request data"+request.toString());
 		List<mJSONRequestCreateRoute>  lstResRoute= request.getLstJSONresroute();
-		
-		if(method.equals("save")){
-			System.out.println(name()+"::saveRouteCreated method = save");
-			for(int i=0; i<lstResRoute.size(); i++){
-				String route_Code = lstResRoute.get(i).getRoute_Code();
-				String route_Shipper_Code = lstResRoute.get(i).getShipper_Code();
-				String route_Start_Time = lstResRoute.get(i).getRoute_Start_Time();
-				String[] orders_in_route = lstResRoute.get(i).getOrders_In_Route();
-				for(int j=0; j<orders_in_route.length;j++){
-					String orderCode = orders_in_route[i];
-				}
+		int checkSaveRoute=0;
+		int checkSaveRouteDetail=0;
+		for(int i=0; i<lstResRoute.size(); i++){
+			String route_Code = lstResRoute.get(i).getRoute_Code();
+			mRoutesService.removeRoutesByRouteCode(route_Code);
+			mRouteDetailService.removeRoutesByRouteCode(route_Code);
+			
+			String route_Shipper_Code = lstResRoute.get(i).getShipper_Code();
+			route_Code = route_Shipper_Code + GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+			String route_Start_Time = lstResRoute.get(i).getRoute_Start_Time();
+				
+			if(method.equals("save")){
+				checkSaveRoute = mRoutesService.saveARoute(route_Code, route_Shipper_Code, route_Start_Time, Constants.ROUTE_STATUS_UNDER_CREATION);
+			}else if(method.equals("confirm")){
+				checkSaveRoute = mRoutesService.saveARoute(route_Code, route_Shipper_Code, route_Start_Time, Constants.ROUTE_STATUS_CONFIRMED);
 			}
-		}else if(method.equals("confirm")){
-			System.out.println(name()+"::saveRouteCreated method = save");
-			for(int i=0; i<lstResRoute.size(); i++){
-				String route_Code = lstResRoute.get(i).getRoute_Code();
-				String route_Shipper_Code = lstResRoute.get(i).getShipper_Code();
-				String route_Start_Time = lstResRoute.get(i).getRoute_Start_Time();
-				String[] orders_in_route = lstResRoute.get(i).getOrders_In_Route();
-				for(int j=0; j<orders_in_route.length;j++){
-					String orderCode = orders_in_route[i];
+			
+			String[] orders_in_route = lstResRoute.get(i).getOrders_In_Route();
+			for(int j=0; j<orders_in_route.length;j++){
+				String orderCode = orders_in_route[j];
+				checkSaveRouteDetail = mRouteDetailService.saveARouteDetail(orderCode, route_Code, j);
+				if(method.equals("confirm")){
+					mOrdersService.updateStatus(orders_in_route[j], Constants.ORDER_STATUS_IN_ROUTE);
 				}
 			}
 		}
 		
-		return "400";
+		if(checkSaveRouteDetail == 0 || checkSaveRoute == 0){
+			return "404";
+		}else{
+			return "400";
+		}
 	}
 	
 	@RequestMapping(value="/getRoutes")

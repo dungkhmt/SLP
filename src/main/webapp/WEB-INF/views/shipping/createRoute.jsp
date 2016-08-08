@@ -175,12 +175,15 @@ var colorOfShipper = [];
 var depotOfShipper = [];
 
 function constructFields(response){
-	console.log("response: "+JSON.stringify(response));
 	lstOrders = response.lstOrders;
-	console.log("lstOrders: "+JSON.stringify(lstOrders));
+	//console.log("lstOrders: "+JSON.stringify(lstOrders));
 	lstOfShippers = response.lstShippers;
-	console.log("lstOfShippers: "+JSON.stringify(lstOfShippers));
+	//console.log("lstOfShippers: "+JSON.stringify(lstOfShippers));
 	//construct routePath and routeOfShipper and depotOfShipper and marker for shipper
+	
+	for(var i=0; i<lstOfShippers.length;i++){
+		routeOfShipper[i] = [];
+	}
 	
 	for(var i=0; i<lstOfShippers.length; i++){
 		$('#lstShippers').append($('<option>', {
@@ -208,10 +211,11 @@ function constructFields(response){
 				+'</tr>';
 		$('#tblRouteOfShippers tbody').append(html);
 	}
-	
+	console.log("lstRTUnCreation: "+JSON.stringify(response.lstRTUnCreation));
 	for(var i=0; i<response.lstRTUnCreation.length; i++){
+		console.log("RTUnCreation["+i+"].shipper_Code: "+JSON.stringify(response.lstRTUnCreation[i].shipper_Code));
 		for(var j=0; j<response.lstShippers.length; j++){
-			for(var k=0; k<response.lstOrders.length; i++){
+			for(var k=0; k<response.lstOrders.length; k++){
 				//if order k in route i and route i is shipper j
 				if(response.lstRTUnCreation[i].shipper_Code == response.lstShippers[j].shp_Code
 						&& response.lstRTUnCreation[i].order_Code == response.lstOrders[k].o_Code){
@@ -220,8 +224,11 @@ function constructFields(response){
 					routeCodeOfShipper[j] = response.lstRTUnCreation[i].route_Code;
 				}
 			}
+			console.log("routeOfShipper["+j+"]: "+routeOfShipper[j]);
 		}
+		console.log("routeCodeOfShipper["+j+"]: "+routeCodeOfShipper);
 	}
+	
 	var markerOfShipper = [];
 	for(var i=0; i<lstOfShippers.length; i++){
 		colorOfShipper[i] = getRandomColor();
@@ -232,7 +239,6 @@ function constructFields(response){
 		    strokeWeight: 3,
 		});
 		routePath[i].setMap(map);	
-		routeOfShipper[i] = [];
 		var shp_depotLat = lstOfShippers[i].shp_DepotLat;
 		var shp_depotLng = lstOfShippers[i].shp_DepotLng;
 		//console.log("initialize()::shp-"+i+" shp_depotLat: "+shp_depotLat+" shp_depotLng"+shp_depotLng);
@@ -257,6 +263,10 @@ function constructFields(response){
 		markerOfOrder[i] = new google.maps.Marker({position:location});
 		markerOfOrder[i].setMap(map);
 		markerOfOrder[i].addListener('click',changeRoute);
+	}
+	for(var i=0; i<lstOfShippers.length; i++){
+		caculateTimeAndDistance(i);
+		$('#route'+i).html(routeOfShipper[i]);
 	}
 }
 
@@ -458,6 +468,12 @@ function cf_saveRouteCreated(){
 		contentType: 'application/json',
 		success: function(response){
 			console.log("success--"+response);
+			if(response=="400"){
+				window.location = '${baseUrl}/';
+			}
+			if(response=="404"){
+				alert("Error");
+			}
 		},
 		error: function(response){
 			console.log("error--"+JSON.stringify(response));
@@ -488,6 +504,12 @@ function cf_confirmRouteCreated(){
 		contentType: 'application/json',
 		success: function(response){
 			console.log("success--"+response);
+			if(response=="400"){
+				window.location = '${baseUrl}/';
+			}
+			if(response=="404"){
+				alert("Error");
+			}
 		},
 		error: function(response){
 			console.log("error--"+JSON.stringify(response));

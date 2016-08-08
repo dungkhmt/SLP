@@ -13,7 +13,7 @@ public class mRouteDetail {
 	private int RTD_ID;
 	private String RTD_OrderCode;
 	private String RTD_RouteCode;
-	private String RTD_Sequence;
+	private int RTD_Sequence;
 	public int getRTD_ID() {
 		return RTD_ID;
 	}
@@ -32,10 +32,10 @@ public class mRouteDetail {
 	public void setRTD_RouteCode(String rTD_RouteCode) {
 		RTD_RouteCode = rTD_RouteCode;
 	}
-	public String getRTD_Sequence() {
+	public int getRTD_Sequence() {
 		return RTD_Sequence;
 	}
-	public void setRTD_Sequence(String rTD_Sequence) {
+	public void setRTD_Sequence(int rTD_Sequence) {
 		RTD_Sequence = rTD_Sequence;
 	}
 	@Override

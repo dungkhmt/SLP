@@ -7,6 +7,8 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,7 +188,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 							+ "OR mo.O_Status_Code='"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"'"
 					+ " ORDER BY mo.O_DueDate ASC";
 			List<String> lstOrDate = getSession().createQuery(sql).list();
-			System.out.println(name()+"::getListDueDate--lstOrDate: "+lstOrDate.toString());
+			//System.out.println(name()+"::getListDueDate--lstOrDate: "+lstOrDate.toString());
 			commit();
 			
 			return lstOrDate;
@@ -208,11 +210,19 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			begin();
 			Criteria criteria = getSession().createCriteria(mOrders.class);
 			criteria.add(Restrictions.eq("O_DueDate", DueDate));
+			
+			Criterion status1 = Restrictions.eq("O_Status_Code", Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED);
+			Criterion status2 = Restrictions.eq("O_Status_Code", Constants.ORDER_STATUS_NOT_IN_ROUTE);
+			
+			LogicalExpression orExp = Restrictions.or(status1, status2);
+			
+			criteria.add(orExp);
+			
 			List<mOrders> o= criteria.list();
 			commit();
-			for(int i=0; i<o.size(); i++){
-				System.out.println(name()+"::getListOrderByDueDate--"+o.get(i).toString());
-			}
+//			for(int i=0; i<o.size(); i++){
+//				System.out.println(name()+"::getListOrderByDueDate--"+o.get(i).toString());
+//			}
 			return o;
 		} catch (HibernateException e){
 			e.printStackTrace();
@@ -220,6 +230,28 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 			return null;
 		}finally {
+			flush();
+			close();
+		}
+	}
+	@Override
+	public void updateStatus(String order_Code,String status) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			String hql = "UPDATE mOrders set O_Status_Code = :status "  + 
+		             "WHERE O_Code = :order_Code";
+			Query query = getSession().createQuery(hql);
+			query.setParameter("status", status);
+			query.setParameter("order_Code", order_Code);
+			int result = query.executeUpdate();
+			System.out.println(name()+"Rows affected: " + result);
+			commit();
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
 			flush();
 			close();
 		}

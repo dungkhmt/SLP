@@ -8,4 +8,5 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteD
 public interface mRouteDetailDAO {
 	public List<mRouteDetail> loadRouteDetailbyRouteCode(String routeCode);
 	public void deleteRoutesbyRouteCode(String routeCode);
+	public int saveARouteDetail(mRouteDetail route);
 }

@@ -145,7 +145,7 @@ public class mOrders implements Serializable {
 				+ O_OrderDate + ", O_DueDate=" + O_DueDate + ", O_DeliveryAddress=" + O_DeliveryAddress
 				+ ", O_DeliveryLat=" + O_DeliveryLat + ", O_DeliveryLng=" + O_DeliveryLng + ", O_TimeEarly="
 				+ O_TimeEarly + ", O_TimeLate=" + O_TimeLate + ", O_Status_Code=" + O_Status_Code + ", O_RouteCode="
-				+ O_RouteCode + ", O_Price=" + O_Price +"]";
+				+ O_RouteCode + ", O_Price=" + O_Price +"]\n";
 	}
 	
 	

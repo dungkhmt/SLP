@@ -17,5 +17,20 @@ public class mRouteDetailServiceImpl implements mRouteDetailService {
 		// TODO Auto-generated method stub
 		return routeDetailDAO.loadRouteDetailbyRouteCode(routeCode);
 	}
+	@Override
+	public int saveARouteDetail(String rTD_OrderCode, String rTD_RouteCode, int rTD_Sequence) {
+		// TODO Auto-generated method stub
+		mRouteDetail routeDetail = new mRouteDetail();
+		routeDetail.setRTD_OrderCode(rTD_OrderCode);
+		routeDetail.setRTD_RouteCode(rTD_RouteCode);
+		routeDetail.setRTD_Sequence(rTD_Sequence);
+		int id = routeDetailDAO.saveARouteDetail(routeDetail);
+		return id;
+	}
+	@Override
+	public void removeRoutesByRouteCode(String route_Code) {
+		// TODO Auto-generated method stub
+		routeDetailDAO.deleteRoutesbyRouteCode(route_Code);
+	}
 
 }

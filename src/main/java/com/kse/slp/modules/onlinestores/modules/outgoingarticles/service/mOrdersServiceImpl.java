@@ -91,5 +91,10 @@ public class mOrdersServiceImpl implements mOrdersService{
 		// TODO Auto-generated method stub
 		return orderDAO.getListOrderByDueDate(DueDate);
 	}
+	@Override
+	public void updateStatus(String order_Code, String status) {
+		// TODO Auto-generated method stub
+		orderDAO.updateStatus(order_Code, status);
+	}
 
 }

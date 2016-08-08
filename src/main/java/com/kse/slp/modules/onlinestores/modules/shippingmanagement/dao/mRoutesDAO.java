@@ -11,4 +11,5 @@ public interface mRoutesDAO {
 	public int removeARoute(int route_Id);
 	public int saveARoute(mRoutes route);
 	public List<mRoutes> loadRoutebyRouteCode(String routeCode);
+	public void removeRouteByRouteCode(String route_Code);
 }

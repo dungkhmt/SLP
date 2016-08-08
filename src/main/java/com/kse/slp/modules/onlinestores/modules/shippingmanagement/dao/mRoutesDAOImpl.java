@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
@@ -63,7 +64,7 @@ public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
 			}
 			
 			commit();
-			System.out.println(name()+"getLstRTUnderCreation--return result: "+lstRTUnCreation.toString());
+			//System.out.println(name()+"getLstRTUnderCreation--return result: "+lstRTUnCreation.toString());
 			return lstRTUnCreation;
 		}catch(HibernateException e){
 			e.printStackTrace();
@@ -114,10 +115,6 @@ public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
 		}
 	}
 	
-	public String name(){
-		return "mRoutesDAOImpl::";
-	}
-		
 	@Override
 	public List<mRoutes> loadRoutebyRouteCode(String routeCode) {
 		try{
@@ -138,4 +135,33 @@ public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
 			close();
 		}
 	}
+
+	@Override
+	public void removeRouteByRouteCode(String route_Code) {
+		// TODO Auto-generated method stub
+		try{
+			System.out.println(name()+"deleteRoutesbyRouteCode--routeCode: "+route_Code);
+			begin();
+			List<mRoutes> lsr = getSession().createCriteria(mRoutes.class).add(Restrictions.eq("Route_Code", route_Code)).list();
+			if(lsr != null){
+				for(mRoutes r: lsr){
+					getSession().delete(r);
+				}
+			}
+			commit();
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+	}
+	
+	public String name(){
+		return "mRoutesDAOImpl::";
+	}
+		
 }
