@@ -53,7 +53,7 @@ public class mAjaxShippingController {
 				mOrders o= mOrdersService.loadAnOrderbyOrderCode(rd.getRTD_OrderCode());
 				mPoiInRoute r= new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code());
 				System.out.println(name()+" "+o+" "+rd.getRTD_Sequence());
-				mPIR[Integer.parseInt(rd.getRTD_Sequence())]= r;
+				mPIR[rd.getRTD_Sequence()]= r;
 			}
 			User u=(User) session.getAttribute("currentUser");
 			log.info(u.getUsername()+" DONE");

@@ -138,7 +138,7 @@ public class ShippingController extends BaseWeb{
 		User user  =(User) session.getAttribute("currentUser");
 		mShippers shipper= mShippersService.loadShiperByUserName(user.getUsername());
 		System.out.println(name()+"loadRouteShiper "+user.getUsername()+" "+shipper.getSHP_Code());
-		List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode("3");
+		List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(shipper.getSHP_Code());
 		
 		map.put("listRoutes", listRoutes);
 		User u=(User) session.getAttribute("currentUser");
