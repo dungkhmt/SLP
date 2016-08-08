@@ -11,7 +11,10 @@ import org.springframework.stereotype.Repository;
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
+import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
+
 @Repository("mRoutesDAO")
 @SuppressWarnings({"unchecked","rawtypes"})
 public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
@@ -73,7 +76,66 @@ public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
 		}
 	}
 	
+	public int removeARoute(int route_Id) {
+		mRoutes route = new mRoutes();
+		route.setRoute_ID(route_Id);
+		try{
+			begin();
+			getSession().delete(route);
+			commit();
+			return 1;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		}finally{
+			flush();
+			close();
+		}
+		
+	}
+	@Override
+	public int saveARoute(mRoutes route){
+		try{
+			begin();
+			int id = 0;
+			id = (int)getSession().save(route);
+			commit();
+			return id;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		}finally{
+			flush();
+			close();
+		}
+	}
+	
 	public String name(){
 		return "mRoutesDAOImpl::";
+	}
+		
+	@Override
+	public List<mRoutes> loadRoutebyRouteCode(String routeCode) {
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mRoutes.class);
+			criteria.add(Restrictions.eq("Route_Code", routeCode));
+			List<mRoutes> l= criteria.list();
+			commit();
+		
+			return l;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
 	}
 }

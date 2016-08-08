@@ -36,4 +36,26 @@ public class mRouteDetailDAOImpl extends BaseDao implements mRouteDetailDAO {
 		}
 	}
 
+	@Override
+	public void deleteRoutesbyRouteCode(String routeCode) {
+		// TODO Auto-generated method stub
+	try{
+		begin();
+		mRouteDetail r = (mRouteDetail) getSession().createCriteria(mRouteDetail.class).add(Restrictions.eq("RTD_RouteCode	", routeCode)).uniqueResult();
+		getSession().delete(r);
+		
+		commit();
+		
+	}catch(HibernateException e){
+		e.printStackTrace();
+		rollback();
+		close();
+		
+	}finally{
+		flush();
+		close();
+	}
+	 
+	}
+
 }
