@@ -134,17 +134,17 @@ function viewRoute(listPoi){
 		
 	}
 	for(var i=0;i<listPoi.length-1;i++){
-		if(listOrderDeliveriedMark[i+1]==0 && (i!=0))
+		if(listOrderDeliveriedMark[i+1]!=0)
 		routePath[i] = new google.maps.Polyline({
 			path: [listPoi[i],listPoi[i+1]],
-			strokeColor: '#FF0000',
+			strokeColor: 'gray',
 		    strokeOpacity: 1.0,
 		    strokeWeight: 5,
 		});
 		else {
 			routePath[i] = new google.maps.Polyline({
 				path: [listPoi[i],listPoi[i+1]],
-				strokeColor: 'gray',
+				strokeColor: '#FF0000',
 			    strokeOpacity: 1.0,
 			    strokeWeight: 5,
 			});

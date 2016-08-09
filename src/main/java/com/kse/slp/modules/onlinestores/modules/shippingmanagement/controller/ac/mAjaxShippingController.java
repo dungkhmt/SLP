@@ -57,7 +57,7 @@ public class mAjaxShippingController {
 				if(o.getO_Status_Code().equals(Constants.ORDER_STATUS_DELIVERIED))
 					r = new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code(),1);
 				
-				else if(o.getO_Status_Code().equals(Constants.ORDER_STATUS_DELIVERIED))r= new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code(),2);
+				else if(o.getO_Status_Code().equals(Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED))r= new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code(),2);
 				else r= new mPoiInRoute(o.getO_DeliveryLat(), o.getO_DeliveryLng(),o.getO_Code(),0);
 				System.out.println(name()+" "+o+" "+rd.getRTD_Sequence());
 				mPIR[rd.getRTD_Sequence()]= r;
