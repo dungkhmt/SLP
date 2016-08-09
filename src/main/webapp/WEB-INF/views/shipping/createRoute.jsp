@@ -247,9 +247,10 @@ function constructFields(response){
 		var shp_depotLng = lstOfShippers[i].shp_DepotLng;
 		//console.log("initialize()::shp-"+i+" shp_depotLat: "+shp_depotLat+" shp_depotLng"+shp_depotLng);
 		depotOfShipper[i] = new google.maps.LatLng(shp_depotLat,shp_depotLng);
+		routePath[i].getPath().push(depotOfShipper[i]);
 		markerOfShipper[i] = new google.maps.Marker({
 			position : depotOfShipper[i],
-			icon : "https://www.google.com/mapfiles/marker_green.png"
+			icon : "http://maps.google.com/mapfiles/ms/micons/motorcycling.png"
 		});
 		markerOfShipper[i].setMap(map);
 	}
