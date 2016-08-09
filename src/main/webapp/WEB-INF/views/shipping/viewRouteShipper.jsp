@@ -28,6 +28,11 @@
       
       <div class="modal-body">
         Bạn có chắc chắn không?
+        <select class="form-control selectStatus"  >
+				<option value="">Chọn Route</option>
+				<option value="DELIVERIED">Đã giao thành công</option>
+				<option value="ARRIVED_BUT_NOT_DELIVERIED">Đã đến nhưng chưa giao được</option>
+        </select>
       </div>
       <div class="modal-footer">
       	<button type="button" class="btn btn-primary active" onclick="changeStateOrder()">Ok I'm sure</button>
@@ -106,15 +111,20 @@ function viewRoute(listPoi){
 			position:listPoi[i],
 			
 			});
-		else {
+		else if(listOrderDeliveriedMark[i]==1){
 			marker[i]=new google.maps.Marker({
 				position:listPoi[i],
 				icon:"https://www.google.com/mapfiles/marker_green.png"
 				});
+		} else {
+			marker[i]=new google.maps.Marker({
+				position:listPoi[i],
+				icon:"http://maps.google.com/mapfiles/ms/icons/yellow.png"
+				});
 		}
 		
 		marker[i].setMap(map);
-		marker[i].addListener('click',function(i){
+		marker[i].addListener('click',function(){
 			storeMarker=this;
 			$('#sureModal').modal('show');
 			
@@ -171,14 +181,24 @@ function viewDirection(marker1,marker2){
 }
 
 function changeStateOrder(){
+	var status= $(".selectStatus").val();
 	$('#sureModal').modal('hide');
+	console.log("storeMarker "+storeMarker);
+	if(status=== "DELIVERIED")
 	storeMarker.setIcon("https://www.google.com/mapfiles/marker_green.png");
+	else if(status=== "ARRIVED_BUT_NOT_DELIVERIED")
+	storeMarker.setIcon("http://maps.google.com/mapfiles/ms/icons/yellow.png");
 	if(marker.indexOf(storeMarker)>0){
 		routePath[marker.indexOf(storeMarker)-1].setOptions({strokeColor: 'gray'});
 		
 	};
+	console.log(storeMarker);
+	console.log(marker);
+	console.log("index of marker"+marker.indexOf(storeMarker));
+	console.log(listOrderCode[marker.indexOf(storeMarker)]);
 	var jsonx={
-			"orderCode": listOrderCode[marker.indexOf(storeMarker)]
+			"orderCode": listOrderCode[marker.indexOf(storeMarker)],
+			"status":status
 	}
 	console.log(jsonx);
 	$.ajax({ 
@@ -190,8 +210,6 @@ function changeStateOrder(){
 	    //Stringified Json Object
 	    success: function(response){
 	        // Success Message Handler
-	       
-	      
 	    }
     });
 }

@@ -24,6 +24,7 @@
 				<li><a href="<c:url value="${baseUrl}/incomingArticles/list"/>">Nhập hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/outgoingarticles/list"/>">Nhận đơn hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/ship/createRoute"/>">Lập tuyến giao hàng</a></li>
+				<li><a href="<c:url value="${baseUrl}/ship/getRoutes"/>">Xem Route</a></li>
 			</ul>
 		</div>
 	</div>

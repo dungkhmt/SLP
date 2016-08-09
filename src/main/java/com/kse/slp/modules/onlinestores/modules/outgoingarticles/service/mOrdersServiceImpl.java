@@ -70,12 +70,17 @@ public class mOrdersServiceImpl implements mOrdersService{
 		return orderDAO.loadAnOrderbyOrderCode(orderCode);
 	}
 	@Override
-	public void setDeliveredbyOrderCode(String orderCode) {
+	public void setStatusbyOrderCode(String orderCode,String status) {
 		// TODO Auto-generated method stub
-		//System.out.print(name()+" "+orderCode);
+		System.out.println(name()+" "+orderCode+" "+status);
 		mOrders o= loadAnOrderbyOrderCode(orderCode);
-		o.setO_Status_Code(Constants.ORDER_STATUS_DELIVERIED);
-		orderDAO.updateAnOrder(o);
+		if(status.equals(Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED)){
+			o.setO_Status_Code(Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED);
+			orderDAO.updateAnOrder(o);
+		} else if(status.equals(Constants.ORDER_STATUS_DELIVERIED)){
+			o.setO_Status_Code(Constants.ORDER_STATUS_DELIVERIED);
+			orderDAO.updateAnOrder(o);
+		}
 	}
 	@Override
 	public List<mOrderDetail> getListOrderDetail() {
