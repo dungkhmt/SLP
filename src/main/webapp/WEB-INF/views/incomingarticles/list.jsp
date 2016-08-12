@@ -52,6 +52,11 @@
 									<th>Ngày nhập</th>
 								</tr>
 							</thead>
+							<tfoot>
+								<tr>
+									<th colspan="5" style="text-align:right;">Tổng: </th>	
+								</tr>
+							</tfoot>
 							<tbody>
 								<c:forEach items="${inArtList}" var="inArt">
 									<tr>
@@ -78,18 +83,46 @@
 <!-- /#page-wrapper -->
 
 <script>
-$.fn.dataTable.ext.search.push(function(settings,data,dataIndex){
-	var artDateSelected = $('#inArtDate').val();
-	var indexCut = data[4].indexOf(" ");
-	var date = data[4].substring(0,indexCut);
-	if(date === artDateSelected){
-		return true;
-	}
-	return false;
-});
+
 
 $(document).ready(function(){
-	var table = $('#dataTabels-inarticles').DataTable();
+	
+	$.fn.dataTable.ext.search.push(function(settings,data,dataIndex){
+		var artDateSelected = $('#inArtDate').val();
+		var indexCut = data[4].indexOf(" ");
+		var date = data[4].substring(0,indexCut);
+		if(date === artDateSelected){
+			return true;
+		}
+		return false;
+	});
+	
+	var table = $('#dataTabels-inarticles').DataTable( {
+		"footerCallback": function ( row, data, start, end, display ) {
+	    	var api = this.api(), data;
+	 
+	        // Remove the formatting to get integer data for summation
+	        var intVal = function ( i ) {
+	        	return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
+	        };
+
+	        var pageTotalPrice = api
+	        		.column(2, { page: 'current'} )
+	        		.data();
+	       	var pageTotalAmount = api
+	        		.column(1, { page: 'current'} )
+	        		.data();
+	        var pageTotal = 0;
+			for(var i=0; i<pageTotalPrice.length; i++){
+				 pageTotal += pageTotalPrice[i]*pageTotalAmount[i];
+			}	       
+	        
+	            
+	       	// Update footer
+	       	$( api.column(2).footer() ).html("Tổng: "+pageTotal+" VND");
+	    }, 
+	    "bInfo":false
+	});
 	
 	$('.addInArticles').click(function(){
 		window.location = '${baseUrl}' + "/incomingArticles/addArticles.html";
