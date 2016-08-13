@@ -118,7 +118,9 @@
 
  <script type="text/javascript">
 $(document).ready(function () {
-	$('#datetimepicker1').datetimepicker();
+	$('#datetimepicker1').datetimepicker({
+		format : "DD/MM/YYYY HH:mm"
+	});
 	$('.cancel').click(function(){
 		window.location = '${baseUrl}/incomingArticles/list';
 	})

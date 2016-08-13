@@ -117,9 +117,22 @@ $(document).ready(function(){
 				 pageTotal += pageTotalPrice[i]*pageTotalAmount[i];
 			}	       
 	        
-	            
+	        var SpageTotal = "";
+	        var tmp = ""+pageTotal;
+	        var check=0;
+	        for(var i=tmp.length-1;i>=0; i--){
+	        	SpageTotal = tmp[i] + SpageTotal;
+	        	check++;
+	        	if(check==3){
+	        		SpageTotal = "." + SpageTotal;
+	        		check = 0;
+	        	}
+	        }
+	        if(tmp.length % 3 == 0){
+	        	SpageTotal = SpageTotal.substring(1);
+	        }
 	       	// Update footer
-	       	$( api.column(2).footer() ).html("Tổng: "+pageTotal+" VND");
+	       	$( api.column(2).footer() ).html("Tổng: "+SpageTotal+" VND");
 	    }, 
 	    "bInfo":false
 	});
