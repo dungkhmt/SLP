@@ -9,5 +9,11 @@ public class CodeGenerationUtility {
 		return s;
 	}
 	
-	
+	public static String genPickupDeliveryOrderCode(int id){
+		String s = "" + id;
+		while(s.length() < 6)
+			s = "0" + s;
+		return s;
+	}
+
 }
