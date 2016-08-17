@@ -53,7 +53,9 @@ public class mPickupDeliveryController extends BaseWeb{
 	}
 	@RequestMapping(value = "/add-a-pickupdelivery-order", method = RequestMethod.GET)
 	public String addAPickupDeliveryOrder(ModelMap model, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
 		model.put("orderPickupDeliveryFormAdd", new mOrderPickupDeliveryFormAdd());
+		log.info(u.getUsername());
 		return "containerdelivery.addapickupdeliveryorder";
 	}
 	@RequestMapping(value = "/save-a-pickupdelivery-order", method = RequestMethod.POST)
