@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
+import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.controller.IncomingArticlesController;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -50,6 +54,9 @@ public class ShippingController extends BaseWeb{
 	
 	@Autowired
 	private mRouteDetailService mRouteDetailService;
+	
+	@Autowired
+	private mPickupDeliveryOrdersService mPickupDeliveryService;
 	
 	@RequestMapping(value="/createRoute")
 	public String creatRouteToShip(ModelMap map,HttpSession session){
@@ -132,7 +139,15 @@ public class ShippingController extends BaseWeb{
 			return "400";
 		}
 	}
-	
+	@RequestMapping(value="/save-routes", method= RequestMethod.POST)
+	public String saveRoutes(ModelMap model,HttpSession session,HttpServletRequest request){
+		User user  =(User) session.getAttribute("currentUser");
+		String route = request.getParameter("dataRoute");
+		String dateTimeStart=request.getParameter("dateTimeStart");
+		System.out.println(name()+route+" "+dateTimeStart);
+		log.info(user.getUsername());
+		return null;
+	}
 	@RequestMapping(value="/getRoutes")
 	public String loadRouteShiper(ModelMap map,HttpSession session){
 		User user  =(User) session.getAttribute("currentUser");
@@ -145,7 +160,44 @@ public class ShippingController extends BaseWeb{
 		log.info(u.getUsername());
 		return "ship.getRoutes";
 	}
-	
+	@RequestMapping(value="/create-pickupdelivery-route")
+	public String createPickupDelivery(ModelMap model,HttpSession session){
+		User u  =(User) session.getAttribute("currentUser");
+		List<mShippers> listShipper= mShippersService.getList();
+		List<mPickupDeliveryOrders> listPDOrder= mPickupDeliveryService.getListOrderPickupDelivery();
+		JSONArray listPDO= new JSONArray();
+		for(int i=0;i<listPDOrder.size();i++){
+			JSONObject js= new JSONObject();
+			mPickupDeliveryOrders mPDO= listPDOrder.get(i);
+			js.put("OPD_Code", mPDO.getOPD_Code());
+			js.put("OPD_ClientCode", mPDO.getOPD_ClientCode());
+			js.put("OPD_PickupLat", mPDO.getOPD_PickupLat());
+			js.put("OPD_PickupLng", mPDO.getOPD_PickupLng());
+			js.put("OPD_EarlyPickupDateTime", mPDO.getOPD_EarlyPickupDateTime());
+			js.put("OPD_LatePickupDateTime", mPDO.getOPD_LatePickupDateTime());
+			js.put("OPD_DeliveryLat", mPDO.getOPD_DeliveryLat());
+			js.put("OPD_DeliveryLng", mPDO.getOPD_DeliveryLng());
+			js.put("OPD_EarlyDeliveryDateTime", mPDO.getOPD_EarlyDeliveryDateTime());
+			js.put("OPD_LateDeliveryDateTime", mPDO.getOPD_LateDeliveryDateTime());
+			js.put("OPD_Volumn",mPDO.getOPD_Volumn());
+			listPDO.add(js);
+		}
+		
+		JSONArray listShipperJson= new JSONArray();
+		for(int i=0;i<listShipper.size();i++){
+			JSONObject js= new JSONObject();
+			mShippers mShp= listShipper.get(i);
+			js.put("SHP_Code", mShp.getSHP_Code());
+			js.put("SHP_DepotLat", mShp.getSHP_DepotLat());
+			js.put("SHP_DepotLng", mShp.getSHP_DepotLng());
+			listShipperJson.add(js);
+		}
+		model.put("listShipper",listShipper);
+		model.put("listPDOrder",listPDO);
+		model.put("listShipperJson", listShipperJson);
+		log.info(u.getUsername());
+		return "ship.createpickupdeliveryroute";
+	}
 	public String name(){
 		return "ShippingController";
 	}

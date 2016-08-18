@@ -10,7 +10,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12 center">
-            <h1 class="page-header">Hệ thống quản lý bán hàng</h1>
+            <h1 class="page-header">Thêm mới hóa đơn chuyển hàng</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -18,9 +18,7 @@
     <form:form action="${baseUrl}/containerdelivery/save-a-pickupdelivery-order.html" method="POST" commandName="orderPickupDeliveryFormAdd" role="form" class="form-horizontal">
     <div class="row">
     	<div class="panel panel-default">
-    		<div class="panel-heading">
-					Thêm mới hóa đơn chuyển hàng
-			</div>
+    		
 			<div class="panel-body">
 				<div class="form-group">
 					<label class="control-label col-lg-2 phoneinput">Số điện thoại</label>
@@ -31,7 +29,7 @@
 					</div>
 					<button type="button" class="btn btn-primary active saveAClientButton" onclick="pushPhoneModal()" data-toggle="modal" data-target="#saveAClient">Thêm Khách Hàng</button>
 				</div>
-			</div>
+			
 			<div class="form-group">
 				<label class="control-label col-lg-2">Tên Khách Hàng</label>
 				<div class="col-lg-6">
@@ -115,6 +113,7 @@
 			
     	</div>
     	
+    </div>
     </div>
     <button type="submit" class="btn btn-primary" id="addANewOrder">Lưu</button>
     <button type="reset" class="btn btn-primary cancel">Hủy</button>

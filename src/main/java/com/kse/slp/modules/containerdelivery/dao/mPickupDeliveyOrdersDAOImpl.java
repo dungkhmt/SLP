@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
+import com.kse.slp.modules.onlinestores.common.Constants;
 
 
 @Repository("mPickupDeliveyOrdersDAO")
@@ -47,7 +48,7 @@ public class mPickupDeliveyOrdersDAOImpl extends BaseDao implements mPickupDeliv
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mPickupDeliveryOrders.class);
-			//criteria.add(Restrictions.ne("O_Status_Code",Constants.ORDER_STATUS_DELIVERIED ));
+			criteria.add(Restrictions.ne("OPD_StatusCode",Constants.ORDER_STATUS_DELIVERIED ));
 			List<mPickupDeliveryOrders > listOrders = criteria.list();
 			commit();
 			return listOrders;
