@@ -5,9 +5,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -37,6 +40,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRout
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.usermanagement.service.UserService;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
 @Controller("ShippingController")
@@ -57,6 +61,9 @@ public class ShippingController extends BaseWeb{
 	
 	@Autowired
 	private mPickupDeliveryOrdersService mPickupDeliveryService;
+	
+	@Autowired 
+	private UserService mUserService;
 	
 	@RequestMapping(value="/createRoute")
 	public String creatRouteToShip(ModelMap map,HttpSession session){
@@ -201,5 +208,24 @@ public class ShippingController extends BaseWeb{
 	public String name(){
 		return "ShippingController";
 	}
-	
+	@ResponseBody @RequestMapping(value="/get-route-android",method=RequestMethod.POST)
+	public List<mRoutes> getRouteAndroid(@RequestBody String jsonLoginCode){
+		JSONParser parser = new JSONParser();
+		JSONObject json;
+		
+		try {
+			json = (JSONObject) parser.parse(jsonLoginCode);
+			String user= (String) json.get("username");
+			String pass= (String) json.get("password");
+			User u= mUserService.getByUsernameAndPassword(user, DigestUtils.md5Hex(pass));
+			System.out.print(u);
+			if(u==null) return null;
+			List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(user);
+			return listRoutes;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
