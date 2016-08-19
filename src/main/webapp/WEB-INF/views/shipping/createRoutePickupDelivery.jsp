@@ -142,6 +142,18 @@ function saveData(){
 	$("#dataRoute").val(JSON.stringify(data));
 	
 }
+function getColorTimeCheck(early,late,x){
+	
+	var mEarly=	moment(early,"YYYY-MM-DD HH:mm");
+	var mLate= moment(late,"YYYY-MM-DD HH:mm");
+	var xDate=moment(x,"YYYY-MM-DD HH:mm");
+	console.log(mEarly);
+	console.log(mLate);
+	console.log(xDate);
+	if (mLate.isBefore(xDate) ) return "rgb(255, 102, 0)";
+	if (mEarly.isAfter(xDate)) return "rgb(0, 153, 51)";
+}
+
 function modelDataToSave(){
 	var x=[];
 	var xi=0;
@@ -222,9 +234,14 @@ function makeRightPanel(){
 			console.log(parseInt((index-nShipper)/2));
 			
 			str+="<td>"+lOPD[parseInt((index-nShipper)/2)].OPD_ClientCode +"</td>"
-			str+="<td>"+dt_tmp.year()+"/"+dt_tmp.month()+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes()+"</td>";
-			if((index-nShipper)%2==1) str+="<td>"+lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_EarlyDeliveryDateTime+"</td>";
-			else str+="<td>"+lOPD[parseInt((index-nShipper)/2)].OPD_EarlyPickupDateTime+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_EarlyPickupDateTime+"</td>";
+			
+			if((index-nShipper)%2==1){
+				str+="<td style='color:"+getColorTimeCheck(lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime,lOPD[parseInt((index-nShipper)/2)].OPD_LateDeliveryDateTime,dt_tmp.year()+"/"+parseInt( dt_tmp.month()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes())+"'>"+dt_tmp.year()+"/"+parseInt( dt_tmp.months()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes()+"</td>";
+				str+="<td>"+lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_LateDeliveryDateTime+"</td>";
+			} else {
+				str+="<td style='color:"+getColorTimeCheck(lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyPickupDateTime,lOPD[parseInt((index-nShipper)/2)].OPD_LatePickupDateTime,dt_tmp.year()+"/"+parseInt( dt_tmp.month()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes())+"'>"+dt_tmp.year()+"/"+parseInt( dt_tmp.months()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes()+"</td>";
+				str+="<td>"+lOPD[parseInt((index-nShipper)/2)].OPD_EarlyPickupDateTime+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_LatePickupDateTime+"</td>";
+			}
 			str+="</tr>";
 			//console.log(dt_tmp.year()+" "+dt_tmp.month()+" "+dt_tmp.date()+" "+dt_tmp.hours()+" "+ dt_tmp.minutes());
 		}

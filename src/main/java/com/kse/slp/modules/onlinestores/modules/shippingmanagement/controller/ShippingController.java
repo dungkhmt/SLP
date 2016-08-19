@@ -139,7 +139,7 @@ public class ShippingController extends BaseWeb{
 			return "400";
 		}
 	}
-	@RequestMapping(value="/save-routes", method= RequestMethod.POST)
+	/*@RequestMapping(value="/save-routes", method= RequestMethod.POST)
 	public String saveRoutes(ModelMap model,HttpSession session,HttpServletRequest request){
 		User user  =(User) session.getAttribute("currentUser");
 		String route = request.getParameter("dataRoute");
@@ -147,7 +147,7 @@ public class ShippingController extends BaseWeb{
 		System.out.println(name()+route+" "+dateTimeStart);
 		log.info(user.getUsername());
 		return null;
-	}
+	}*/
 	@RequestMapping(value="/getRoutes")
 	public String loadRouteShiper(ModelMap map,HttpSession session){
 		User user  =(User) session.getAttribute("currentUser");
