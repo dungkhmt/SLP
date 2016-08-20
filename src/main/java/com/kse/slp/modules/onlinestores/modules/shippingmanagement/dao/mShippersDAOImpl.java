@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.modules.clientmanagment.model.mClients;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 
 @Repository("mShippersDAO")
@@ -59,6 +60,23 @@ public class mShippersDAOImpl extends BaseDao implements mShippersDAO {
 			flush();
 			close();
 		}
+	}
+	
+	@Override
+	public void updateAShipper(mShippers shipper) {
+		try {
+	           begin();
+	           getSession().update(shipper);
+	           commit();
+	        } catch (HibernateException e) {
+	            e.printStackTrace();
+	            rollback();
+	            close();
+	        } finally {
+	            flush();
+	            close();
+	        }
+		
 	}
 
 }

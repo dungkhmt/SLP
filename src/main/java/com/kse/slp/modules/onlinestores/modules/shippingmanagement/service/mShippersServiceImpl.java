@@ -26,5 +26,13 @@ public class mShippersServiceImpl implements mShippersService{
 		return mShippersDAO.loadShiperByUserName(userName);
 	}
 
+	@Override
+	public void updateShipperCurrentLocation(double lat, double lng, String user) {
+		// TODO Auto-generated method stub
+		mShippers shipper= mShippersDAO.loadShiperByUserName(user);
+		shipper.setSHP_CurrentLocation(lat + ", "+lng);
+		mShippersDAO.updateAShipper(shipper);
+	}
+
 	
 }

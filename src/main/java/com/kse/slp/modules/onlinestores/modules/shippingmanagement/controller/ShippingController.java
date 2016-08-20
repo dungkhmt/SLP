@@ -210,6 +210,7 @@ public class ShippingController extends BaseWeb{
 	}
 	@ResponseBody @RequestMapping(value="/get-route-android",method=RequestMethod.POST)
 	public List<mRoutes> getRouteAndroid(@RequestBody String jsonLoginCode,HttpSession session){
+		
 		JSONParser parser = new JSONParser();
 		JSONObject json;
 		
@@ -222,11 +223,33 @@ public class ShippingController extends BaseWeb{
 			System.out.print(u);
 			if(u==null) return null;
 			List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(user);
+			log.info(u.getUsername());
 			return listRoutes;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		log.info("FAIL ");
 		return null;
+	}
+	
+	@ResponseBody @RequestMapping(value="/update-shipper-location",method=RequestMethod.POST)
+	public boolean updateShipperLocation(@RequestBody String location,HttpSession session){
+		User u  =(User) session.getAttribute("currentUser");
+		JSONParser parser = new JSONParser();
+		JSONObject json;
+		try {
+			json = (JSONObject) parser.parse(location);
+			double lat= Double.parseDouble((String)json.get("lat"));
+			double lng= Double.parseDouble((String)json.get("lng"));
+			
+			mShippersService.updateShipperCurrentLocation(lat, lng, u.getUsername());
+			log.info(u.getUsername());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return true;
 	}
 }

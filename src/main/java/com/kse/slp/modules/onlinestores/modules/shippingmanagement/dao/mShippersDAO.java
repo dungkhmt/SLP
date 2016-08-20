@@ -7,4 +7,5 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippe
 public interface mShippersDAO {
 	public List<mShippers> getList();
 	public mShippers loadShiperByUserName(String userName);
+	public void updateAShipper(mShippers shipper);
 }
