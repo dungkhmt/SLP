@@ -209,7 +209,7 @@ public class ShippingController extends BaseWeb{
 		return "ShippingController";
 	}
 	@ResponseBody @RequestMapping(value="/get-route-android",method=RequestMethod.POST)
-	public List<mRoutes> getRouteAndroid(@RequestBody String jsonLoginCode){
+	public List<mRoutes> getRouteAndroid(@RequestBody String jsonLoginCode,HttpSession session){
 		JSONParser parser = new JSONParser();
 		JSONObject json;
 		
@@ -218,6 +218,7 @@ public class ShippingController extends BaseWeb{
 			String user= (String) json.get("username");
 			String pass= (String) json.get("password");
 			User u= mUserService.getByUsernameAndPassword(user, DigestUtils.md5Hex(pass));
+			session.setAttribute("currentUser", u);
 			System.out.print(u);
 			if(u==null) return null;
 			List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(user);
