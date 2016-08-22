@@ -234,17 +234,21 @@ public class ShippingController extends BaseWeb{
 	}
 	
 	@ResponseBody @RequestMapping(value="/update-shipper-location",method=RequestMethod.POST)
-	public boolean updateShipperLocation(@RequestBody String location,HttpSession session){
-		User u  =(User) session.getAttribute("currentUser");
+	public boolean updateShipperLocation(@RequestBody String location){
+		
 		JSONParser parser = new JSONParser();
 		JSONObject json;
 		try {
 			json = (JSONObject) parser.parse(location);
+			String shipperCode = (String) json.get("shipperCode");
 			double lat= Double.parseDouble((String)json.get("lat"));
 			double lng= Double.parseDouble((String)json.get("lng"));
 			
-			mShippersService.updateShipperCurrentLocation(lat, lng, u.getUsername());
-			log.info(u.getUsername());
+			mShippers shipper= mShippersService.loadShiperByUserName(shipperCode);
+			if(shipper!=null){
+				mShippersService.updateShipperCurrentLocation(lat, lng, shipperCode);
+			}
+			log.info(shipperCode);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
