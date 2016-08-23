@@ -14,6 +14,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -146,15 +147,14 @@ public class ShippingController extends BaseWeb{
 			return "400";
 		}
 	}
-	/*@RequestMapping(value="/save-routes", method= RequestMethod.POST)
-	public String saveRoutes(ModelMap model,HttpSession session,HttpServletRequest request){
+	@ResponseBody @RequestMapping(value="/save-container-routes", method= RequestMethod.POST)
+	public boolean saveRoutes(ModelMap model,HttpSession session,@RequestBody String route){
 		User user  =(User) session.getAttribute("currentUser");
-		String route = request.getParameter("dataRoute");
-		String dateTimeStart=request.getParameter("dateTimeStart");
-		System.out.println(name()+route+" "+dateTimeStart);
+		
+		System.out.println(name()+route+" ");
 		log.info(user.getUsername());
-		return null;
-	}*/
+		return true;
+	}
 	@RequestMapping(value="/getRoutes")
 	public String loadRouteShiper(ModelMap map,HttpSession session){
 		User user  =(User) session.getAttribute("currentUser");
@@ -219,9 +219,10 @@ public class ShippingController extends BaseWeb{
 			String user= (String) json.get("username");
 			String pass= (String) json.get("password");
 			User u= mUserService.getByUsernameAndPassword(user, DigestUtils.md5Hex(pass));
-			session.setAttribute("currentUser", u);
+			
 			System.out.print(u);
 			if(u==null) return null;
+			session.setAttribute("currentUser", u);
 			List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(user);
 			log.info(u.getUsername());
 			return listRoutes;

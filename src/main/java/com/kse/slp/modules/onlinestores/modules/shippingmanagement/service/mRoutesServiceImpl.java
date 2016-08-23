@@ -34,7 +34,7 @@ public class mRoutesServiceImpl implements mRoutesService {
 		mRoutes route=new mRoutes();
 		route.setRoute_Code(routeCode);
 		route.setRoute_Shipper_Code(route_Shipper_Code);
-		route.setRoute_Start_Time(route_Start_Time);
+		route.setRoute_Start_DateTime(route_Start_Time);
 		route.setRoute_Status_Code(route_StatusCode);
 		int id = routeDAO.saveARoute(route);
 		return id;

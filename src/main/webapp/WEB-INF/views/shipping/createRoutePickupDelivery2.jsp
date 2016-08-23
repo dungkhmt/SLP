@@ -6,7 +6,7 @@
 
 
 <div id="page-wrapper">
-	<form action="${baseUrl}/ship/save-routes.html" method="post">
+	
     <div class="row">
         <div class="col-lg-12 center">
             <h1 class="page-header">Lật một kế hoạch chuyển hàng</h1>
@@ -92,10 +92,9 @@
      </div>
      
      
-     <input id="dataRoute" name="dataRoute" type='hidden' value="" ></input>
-     <button type="submit" class="btn btn-primary active" >Save</button>
+     <button type="submit" class="btn btn-primary active" onclick="saveData()" >Save</button>
      <button type="button" class="btn btn-default" >Close</button>
-     </form>
+ 
 </div>
 <script>
 var status=0;
@@ -106,6 +105,7 @@ var route=[];
 var routePath=[];
 var distanceMatrix=[];
 var routeLatLng=[];
+var listInfoWindow=[];
 var distanceMatrix=[];
 var serviceDistance ;
 var lOPD=JSON.parse('${listPDOrder}');
@@ -133,13 +133,24 @@ function initColorShipper(){
 		var p3;
 		[p1,p2,p3]=randomColor(p1,p2,p3);
 		lShipper[i].color="rgb("+p1+","+p2+","+p3+ ")";
-		console.log(lShipper[i].color);
+		
 		
 	}
 }
 function saveData(){
+	console.log('saveData');
 	var data=modelDataToSave();
-	$("#dataRoute").val(JSON.stringify(data));
+	$.ajax({ 
+	    type:"POST", 
+	    url:"${baseUrl}/ship/save-container-routes",
+	    data: JSON.stringify(data),
+	    contentType: "application/json; charset=utf-8",
+	    dataType: "json",
+	    //Stringified Json Object
+	    success: function(response){
+	        // Success Message Handler
+	    }
+    });
 	
 }
 function getColorTimeCheck(early,late,x){
@@ -147,41 +158,45 @@ function getColorTimeCheck(early,late,x){
 	var mEarly=	moment(early,"YYYY-MM-DD HH:mm");
 	var mLate= moment(late,"YYYY-MM-DD HH:mm");
 	var xDate=moment(x,"YYYY-MM-DD HH:mm");
-	console.log(mEarly);
-	console.log(mLate);
-	console.log(xDate);
+	
 	if (mLate.isBefore(xDate) ) return "rgb(255, 102, 0)";
 	if (mEarly.isAfter(xDate)) return "rgb(0, 153, 51)";
 }
 
-/* function modelDataToSave(){
-	var x=[];
-	var xi=0;
-	var xj=0;
-	var nShipper=lShipper.length;
-	for(i=0;i<route.length;i++){
-		if(route[i].length>1){
-			x[xi]=[];
-			x[xi].push(lShipper[i].SHP_Code);
-			for(j=1;j<route[i].length;j++){
-				var index=marker.indexOf(route[i][j]);
-				x[xi].push(lOPD[parseInt((index-nShipper)/2)].OPD_Code);
-			}
-			xi++;
+ function modelDataToSave(){
+	var routesData=[];
+	var nRoute=0;
+	for(var i=0;i<route.length;i++)
+		if(route[i].length > 1){
+		routesData[nRoute]={
+			"shipperCode": null,
+			"dateTimeStart": null,
+			"orderList":null
 		}
+		console.log(lShipper[i].SHP_Code);
+		routesData[nRoute].shipperCode=lShipper[i].SHP_Code;
+		routesData[nRoute].dateTimeStart=$("#dateTimeStart").val();
+		routesData[nRoute].orderList=[];
+		for(var j=1;j<route[i].length;j++){
+			routesData[nRoute].orderList.push({
+				"orderCode": route[i][j].orderCode,
+				"isPickup": route[i][j].isPickup
+			})
+		}
+		nRoute++;
+		
 	}
-	return x;
+	console.log(routesData);
+	return routesData;
 }
- */
+ 
  function initMap(){
-	console.log(lShipper);
 	var mapDiv = document.getElementById('map');
 	map = new google.maps.Map(mapDiv, {
 		center: {lat: 21.03, lng: 105.8},
 		zoom: 12,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-	
 	initColorShipper();
 	for(var i=0;i<lShipper.length;i++){
 		var lat= lShipper[i].SHP_DepotLat;
@@ -198,7 +213,6 @@ function getColorTimeCheck(early,late,x){
 				 "isPickup":0,
 				 "marker": markerShipper[i]
 		 };
-		 
 		 routeLatLng[i]=[];
 		 routeLatLng[i][0]={
 				 lat:markerShipper[i].getPosition().lat(),
@@ -212,16 +226,99 @@ function getColorTimeCheck(early,late,x){
 			});
 		 routePath[i].setMap(map);
 	}
-	viewAllOrder();
-	console.log(marker);
+	var setPointOrderList=makeSetMarker();
+	viewAllOrder(setPointOrderList);
 	serviceDistance = new google.maps.DistanceMatrixService;
+}
+function markerSelectOrder(orderCode,pickup,marker_id){
+	console.log(orderCode+" "+pickup+" "+marker_id);
+	var indexSelectBox=$("#shipperselect option:selected").index();
+	if(status==0 ){
+		route[indexSelectBox].push({
+			"orderCode": orderCode,
+			"isPickup": pickup,
+			"marker" : marker[marker_id]
+		});
+		console.log(marker[marker_id]);
+		console.log("This is possion"+marker[marker_id].getPosition().lat()+" "+marker[marker_id].getPosition().lng());
+		routeLatLng[indexSelectBox].push({
+			lat:marker[marker_id].getPosition().lat(),
+			lng:marker[marker_id].getPosition().lng()
+		});
+		routePath[indexSelectBox].setMap(null);
+		routePath[indexSelectBox] = new google.maps.Polyline({
+			path: routeLatLng[indexSelectBox],
+			strokeColor: lShipper[indexSelectBox].color,
+		    strokeOpacity: 1.0,
+		    strokeWeight: 5,
+		});
+		routePath[indexSelectBox].setMap(map);
+		}
+	updateDistance();
 	
 }
-
+function makeSetMarker(){
+	var setPointOrder=[];
+	for(var i=0;i< lOPD.length ;i++){
+		var cpilat=lOPD[i].OPD_PickupLat;
+		var cpilng=lOPD[i].OPD_PickupLng;
+		var cdelat=lOPD[i].OPD_DeliveryLat;
+		var cdelng=lOPD[i].OPD_DeliveryLng;
+		xd=false;
+		xd2=false;
+		
+		for(var j=0;j<setPointOrder.length;j++){
+			var lat=setPointOrder[j][0].point.lat;
+			var lng=setPointOrder[j][0].point.lng;
+			if( lat==cpilat && lng== cpilng) {
+				setPointOrder[j].push({
+					"orderCode": lOPD[i].OPD_Code,
+					"isPickup": 1,
+					"point":{
+						lat: cpilat,
+						lng: cpilng
+					}
+				});
+				xd=true;
+			} else if (lat==cdelat && lng== cdelng){
+				setPointOrder[j].push({
+					"orderCode": lOPD[i].OPD_Code,
+					"isPickup": 0,
+					"point":{
+						lat: cdelat,
+						lng: cdelng
+					}
+				});
+				xd2=true;
+			} ;
+		}
+		if(xd==false){
+			setPointOrder.push([{
+				"orderCode": lOPD[i].OPD_Code,
+				"isPickup": 1,
+				"point":{
+					lat: cpilat,
+					lng: cpilng
+				}
+			}]);
+		}
+		if(xd2==false){
+			
+			setPointOrder.push([{
+				"orderCode": lOPD[i].OPD_Code,
+				"isPickup": 0,
+				"point":{
+					lat: cdelat,
+					lng: cdelng
+				}
+			}]);
+		}
+	}
+	return setPointOrder;
+}
 function makeRightPanel(){
 	$("table#rightPanel tbody").html("");
 	var dateTime = $("#dateTimeStart").val();
-	console.log(lOPD);
 	var dateTime= moment(dateTime,"YYYY-MM-DD HH:mm");
 	var nShipper=lShipper.length;
 	var str;
@@ -231,14 +328,11 @@ function makeRightPanel(){
 		str=str+"</tr>";
 		for(var j=1;j<route[i].length;j++){
 			var dt_tmp=dateTime;
-			var index=marker.indexOf(route[i][j]);
-			var indexOld=marker.indexOf(route[i][j-1]);
+			var index=marker.indexOf(route[i][j].marker);
+			var indexOld=marker.indexOf(route[i][j-1].marker);
 			var distance=distanceMatrix[indexOld][index];
 			dt_tmp.add(distance.duration,"seconds");
-			console.log(index+" "+nShipper);
 			str+="<tr>";
-			console.log(parseInt((index-nShipper)/2));
-			
 			str+="<td>"+lOPD[parseInt((index-nShipper)/2)].OPD_ClientCode +"</td>"
 			
 			if((index-nShipper)%2==1){
@@ -253,20 +347,52 @@ function makeRightPanel(){
 		}
 	}
 	$("table#rightPanel tbody").append(str);
-	modelDataToSave();
+	
 }
-function viewAllOrder(){
-	for(i=0;i<lOPD.length;i++){
+function makeInfoWindowContent(marker_id,setPointOrder){
+	console.log("makeInfoWindowContent"+marker_id);
+	var str="";
+	for(var i=0;i< setPointOrder.length;i++){
+		str+='<input type="checkbox" onclick="markerSelectOrder(\''+setPointOrder[i].orderCode  +'\','+setPointOrder[i].isPickup+','+marker_id +')">';
+		if(setPointOrder[i].isPickup==1)
+			str+=setPointOrder[i].orderCode+" Pickup";
+		else str+=setPointOrder[i].orderCode+" Delivery";
+		str+="</input><br>"
+	}
+	return str;
+}
+function viewAllOrder(setPointOrder){
+	for(i=0;i<setPointOrder.length;i++){
 		marker_tmp=new google.maps.Marker({
-			position:{lat: lOPD[i].OPD_PickupLat, lng: lOPD[i].OPD_PickupLng},
-			
+			position:{lat: setPointOrder[i][0].point.lat, lng: setPointOrder[i][0].point.lng},
 			});
+		marker.push(marker_tmp);
+		if(setPointOrder[i].length>1){
+			console.log("viewAllOrder"+marker.length);
+			listInfoWindow[marker.length]=new google.maps.InfoWindow({
+			    content: makeInfoWindowContent(marker.length-1,setPointOrder[i])
+			  });
+		}
+		marker_tmp.infoWindow=listInfoWindow[marker.length];
 		marker_tmp.setMap(map);
-		marker_tmp.predious=null;
+		if(setPointOrder[i][0].isPickup==0 ){
+			marker_tmp.setIcon("https://www.google.com/mapfiles/marker_green.png");
+		}
+		//marker_tmp.predious=null;
+		console.log(setPointOrder[i]+" "+i+ " "+marker[marker.length]);
+		marker_tmp.setPointOrder=setPointOrder[i];
 		marker_tmp.addListener('click',function(){
+			if(this.setPointOrder.length>1){
+				this.infoWindow.open(map,this);
+			}else{
 			var indexSelectBox=$("#shipperselect option:selected").index();
-			if(status==0 &&  route[indexSelectBox].indexOf(this) ==-1){
-			route[indexSelectBox].push(this);
+			
+			if(status==0 ){
+			route[indexSelectBox].push({
+				"orderCode": this.setPointOrder[0].orderCode,
+				"isPickup": this.setPointOrder[0].isPickup,
+				"marker" : this
+			});
 			routeLatLng[indexSelectBox].push({
 				lat:this.getPosition().lat(),
 				lng:this.getPosition().lng()
@@ -279,7 +405,7 @@ function viewAllOrder(){
 			    strokeWeight: 5,
 			});
 			routePath[indexSelectBox].setMap(map);
-			} else if(status==1 && route[indexSelectBox].indexOf(this) !=-1) {
+			} /* else if(status==1 && route[indexSelectBox].indexOf(this) !=-1) {
 				var indexInRoute=route[indexSelectBox].indexOf(this);
 				route[indexSelectBox].splice(indexInRoute,1);
 				routeLatLng[indexSelectBox].splice(indexInRoute,1);
@@ -291,19 +417,23 @@ function viewAllOrder(){
 				    strokeWeight: 5,
 				});
 				routePath[indexSelectBox].setMap(map);
-			}
+			} */
 			updateDistance();
 			
-			saveData();
+			
+			}
 		});
-		marker.push(marker_tmp);
-		marker_tmp2=new google.maps.Marker({
+		
+		/* marker_tmp2=new google.maps.Marker({
 			position:{lat: lOPD[i].OPD_DeliveryLat, lng: lOPD[i].OPD_DeliveryLng},
 			icon:"https://www.google.com/mapfiles/marker_green.png"
 			});
 		marker_tmp2.setMap(map);
 		marker_tmp2.predious=marker_tmp;
 		marker_tmp2.addListener('click',function(){
+			if(setPointOrder[i].lenght>1){
+				
+			}else{
 			var indexSelectBox=$("#shipperselect option:selected").index();
 			if(status==0 &&  route[indexSelectBox].indexOf(this) ==-1){
 			if(route[indexSelectBox].indexOf(this.predious)==-1) {
@@ -322,7 +452,7 @@ function viewAllOrder(){
 			    strokeWeight: 5,
 			});
 			routePath[indexSelectBox].setMap(map);
-			}} else if(status==1 && route[indexSelectBox].indexOf(this) !=-1){
+			}}  else if(status==1 && route[indexSelectBox].indexOf(this) !=-1){
 				var indexInRoute=route[indexSelectBox].indexOf(this);
 				route[indexSelectBox].splice(indexInRoute,1);
 				routeLatLng[indexSelectBox].splice(indexInRoute,1);
@@ -335,12 +465,13 @@ function viewAllOrder(){
 				});
 				routePath[indexSelectBox].setMap(map);
 				
-			}
+			} 
 			updateDistance();
 			
 			saveData();
-		});
-		marker.push(marker_tmp2);
+			}
+		}); 
+		marker.push(marker_tmp2); */
 	}
 }
 function randomColor( p1,p2,p2){
@@ -355,6 +486,9 @@ function resetRoute(){
 	route[indexSelectBox]=[route[indexSelectBox][0]];
 	routeLatLng[indexSelectBox]=[routeLatLng[indexSelectBox][0]];
 	routePath[indexSelectBox].setMap(null);
+	updateDistance();
+	makeRightPanel();
+	
 }
 
 function getDistanceGoogleMap(p1,p2,indexOld,index){
@@ -376,7 +510,7 @@ function getDistanceGoogleMap(p1,p2,indexOld,index){
 							  duration: response.rows[0].elements[0].duration.value,
 							  distance: response.rows[0].elements[0].distance.value
 					  }
-					  console.log("distance "+indexOld +" "+ index+" " +distanceMatrix[indexOld][index].distance);
+					  
 					  resCount++;
 				  }
 			  });
@@ -386,13 +520,12 @@ function getDistanceGoogleMap(p1,p2,indexOld,index){
 function updateDistance(){
 
 	var indexSelectBox=$("#shipperselect option:selected").index();
-	console.log(indexSelectBox);
-	console.log(lShipper[indexSelectBox].SHP_Code);
+	
 	reqCount=0;
 	resCount=0;
 	for(i=1;i<routeLatLng[indexSelectBox].length;i++){
-		var index=marker.indexOf(route[indexSelectBox][i]);
-		var indexOld=marker.indexOf(route[indexSelectBox][i-1]);
+		var index=marker.indexOf(route[indexSelectBox][i].marker);
+		var indexOld=marker.indexOf(route[indexSelectBox][i-1].marker);
 		
 		if(distanceMatrix[indexOld]== undefined ) distanceMatrix[indexOld]=[];
 		if(distanceMatrix[indexOld][index]== undefined ){
@@ -401,8 +534,7 @@ function updateDistance(){
 		}
 		
 	}
-	console.log("distance is");
-	console.log(distanceMatrix);
+	
 	xd=true;
 	wait();
 	
@@ -418,13 +550,13 @@ function wait(){
 	}
 }
 function pushDistance(){
-	console.log("pushDistance");
+	
 	var indexSelectBox=$("#shipperselect option:selected").index();
 	var distanceKm=0;
 	var distanceTime=0;
 	for(i=1;i<routeLatLng[indexSelectBox].length;i++){
-		var index=marker.indexOf(route[indexSelectBox][i]);
-		var indexOld=marker.indexOf(route[indexSelectBox][i-1]);
+		var index=marker.indexOf(route[indexSelectBox][i].marker);
+		var indexOld=marker.indexOf(route[indexSelectBox][i-1].marker);
 		distanceKm+=distanceMatrix[indexOld][index].distance;
 		distanceTime+=distanceMatrix[indexOld][index].duration;
 	}

@@ -61,7 +61,7 @@
     </definition>
     <definition name="ship.createpickupdeliveryroute" extends="layout">
     	<put-attribute name="title" value="Create pickup delivery route manual"/>
-    	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoutePickupDelivery.jsp"/>
+    	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoutePickupDelivery2.jsp"/>
     </definition>
      <definition name="ship.getRoutes" extends="layout">
     	<put-attribute name="title" value="View routes Shipper"/>

@@ -15,7 +15,7 @@ public class mRoutes {
 	private String Route_Code;
 	private String Route_Shipper_Code;
 	private String Route_Status_Code;
-	private String Route_Start_Time;
+	private String Route_Start_DateTime;
 	
 	public String getRoute_Status_Code() {
 		return Route_Status_Code;
@@ -23,11 +23,11 @@ public class mRoutes {
 	public void setRoute_Status_Code(String route_Status_Code) {
 		Route_Status_Code = route_Status_Code;
 	}
-	public String getRoute_Start_Time() {
-		return Route_Start_Time;
+	public String getRoute_Start_DateTime() {
+		return Route_Start_DateTime;
 	}
-	public void setRoute_Start_Time(String route_Start_Time) {
-		Route_Start_Time = route_Start_Time;
+	public void setRoute_Start_DateTime(String route_Start_DateTime) {
+		Route_Start_DateTime = route_Start_DateTime;
 	}
 	public int getRoute_ID() {
 		return Route_ID;
