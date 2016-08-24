@@ -17,12 +17,21 @@ public class mShippers {
 	private float SHP_DepotLat;
 	private float SHP_DepotLng;
 	private String SHP_CurrentLocation;
+	private String SHP_LastUpdateDateTime;
 	private String SHP_StatusCode;
 	private String SHP_VehicleType;
 	private int SHP_Capacity_1;
 	private int SHP_Capacity_2;
 	private String SHP_Customer_Code;
 	private String SHP_User_Name;
+	
+	
+	public String getSHP_LastUpdateDateTime() {
+		return SHP_LastUpdateDateTime;
+	}
+	public void setSHP_LastUpdateDateTime(String sHP_LastUpdateDateTime) {
+		SHP_LastUpdateDateTime = sHP_LastUpdateDateTime;
+	}
 	public String getSHP_User_Name() {
 		return SHP_User_Name;
 	}

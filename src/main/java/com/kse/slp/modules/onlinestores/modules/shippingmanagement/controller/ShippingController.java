@@ -1,5 +1,6 @@
 package com.kse.slp.modules.onlinestores.modules.shippingmanagement.controller;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,9 @@ import com.kse.slp.modules.onlinestores.modules.incomingarticles.controller.Inco
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.lstJSONResquestCreateRoute;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONAndroidRouteList;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONRequestCreateRoute;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONResponseBoolean;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONResponseToCreateRoute;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
@@ -151,6 +154,37 @@ public class ShippingController extends BaseWeb{
 			return "400";
 		}
 	}
+	@ResponseBody @RequestMapping(value="/confirm-container-route",method= RequestMethod.POST)
+	public boolean confirmRoute(ModelMap model,HttpSession session,@RequestBody String routeShipperObject){
+		User user  =(User) session.getAttribute("currentUser");
+		System.out.println(name()+" "+routeShipperObject);
+		JSONParser parser = new JSONParser();
+		JSONObject json;
+		try {
+			json = (JSONObject) parser.parse(routeShipperObject);
+			mRoutes routeO= mRoutesService.loadRoutesUnderCreationByShipperCode((String)json.get("shipperCode"));
+			if(routeO!= null){
+				mRoutesService.removeRoutesByRouteCode(routeO.getRoute_Code());
+				mRouteDetailService.removeRoutesByRouteCode(routeO.getRoute_Code());
+			}
+			String shipperCode=(String)json.get("shipperCode");
+			String routeCode=shipperCode+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+			String startDateTime=(String)json.get("dateTimeStart");
+			mRoutesService.saveARoute(routeCode, shipperCode, startDateTime, Constants.ROUTE_STATUS_CONFIRMED);
+			JSONArray listOrder=(JSONArray) json.get("orderList");
+			for(int j=0;j<listOrder.size();j++){
+				JSONObject orderRoute=(JSONObject) listOrder.get(j);
+				if((Long)orderRoute.get("isPickup")==1)
+				routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, 0);
+				else
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, 0);
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 	@ResponseBody @RequestMapping(value="/save-container-routes", method= RequestMethod.POST)
 	public boolean saveRoutes(ModelMap model,HttpSession session,@RequestBody String route){
 		User user  =(User) session.getAttribute("currentUser");
@@ -173,9 +207,10 @@ public class ShippingController extends BaseWeb{
 				JSONArray listOrder=(JSONArray) o.get("orderList");
 				for(int j=0;j<listOrder.size();j++){
 					JSONObject orderRoute=(JSONObject) listOrder.get(j);
-					if((Long)orderRoute.get("isPickup")==1);
+					if((Long)orderRoute.get("isPickup")==1)
 					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, 0);
-					
+					else
+						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, 0);
 				}
 			}
 			log.info(user.getUsername()+" DONE");
@@ -241,24 +276,38 @@ public class ShippingController extends BaseWeb{
 	public String name(){
 		return "ShippingController";
 	}
-	@ResponseBody @RequestMapping(value="/get-route-android",method=RequestMethod.POST)
-	public List<mRoutes> getRouteAndroid(@RequestBody String jsonLoginCode,HttpSession session){
+	@ResponseBody @RequestMapping(value="/get-route-android", method=RequestMethod.POST)
+	public mJSONAndroidRouteList getRouteAndroi(HttpSession session){
+		User u  =(User) session.getAttribute("currentUser");
+		session.setAttribute("currentUser", u);
+		List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(u.getUsername());
+		log.info(u.getUsername());
+		mJSONAndroidRouteList jsonObject= new mJSONAndroidRouteList();
+		jsonObject.setListRoute(listRoutes);
+		return jsonObject;
+	}
+	@ResponseBody @RequestMapping(value="/login-android",method=RequestMethod.POST)
+	public mJSONResponseBoolean loginAndroid(@RequestBody String jsonLoginCode,HttpSession session){
 		
 		JSONParser parser = new JSONParser();
 		JSONObject json;
-		
 		try {
 			json = (JSONObject) parser.parse(jsonLoginCode);
 			String user= (String) json.get("username");
 			String pass= (String) json.get("password");
 			User u= mUserService.getByUsernameAndPassword(user, DigestUtils.md5Hex(pass));
 			
-			System.out.print(u);
-			if(u==null) return null;
-			session.setAttribute("currentUser", u);
-			List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(user);
 			log.info(u.getUsername());
-			return listRoutes;
+			
+			if(u==null) {
+				mJSONResponseBoolean response = new mJSONResponseBoolean();
+				response.setResult(1);
+				return response;
+			}
+			session.setAttribute("currentUser", u);
+			mJSONResponseBoolean response = new mJSONResponseBoolean();
+			response.setResult(0);
+			return response;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -268,26 +317,39 @@ public class ShippingController extends BaseWeb{
 	}
 	
 	@ResponseBody @RequestMapping(value="/update-shipper-location",method=RequestMethod.POST)
-	public boolean updateShipperLocation(@RequestBody String location){
-		
+	public mJSONResponseBoolean updateShipperLocation(@RequestBody String location,HttpSession session){
+		User u  =(User) session.getAttribute("currentUser");
 		JSONParser parser = new JSONParser();
 		JSONObject json;
 		try {
 			json = (JSONObject) parser.parse(location);
-			String shipperCode = (String) json.get("shipperCode");
-			double lat= Double.parseDouble((String)json.get("lat"));
-			double lng= Double.parseDouble((String)json.get("lng"));
+			String shipperCode = u.getUsername();
+			System.out.println(name()+" "+json.get("latitude"));
+			double lat= Double.parseDouble(String.valueOf(json.get("latitude")));
+			double lng= Double.parseDouble(String.valueOf(json.get("longitude")));
+			Long timeStamp=Long.parseLong(String.valueOf(json.get("timestamp")));
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(timeStamp);
+			String timelast=""+calendar.get(Calendar.YEAR);
+			timelast+="-"+calendar.get(Calendar.MONTH);
+			timelast+="-"+calendar.get(Calendar.DATE);
+			timelast+=" "+calendar.get(Calendar.HOUR);
+			timelast+=":"+calendar.get(Calendar.MINUTE);
 			
 			mShippers shipper= mShippersService.loadShiperByUserName(shipperCode);
 			if(shipper!=null){
-				mShippersService.updateShipperCurrentLocation(lat, lng, shipperCode);
+				mShippersService.updateShipperCurrentLocation(lat, lng, shipperCode, timelast);
+				mJSONResponseBoolean response = new mJSONResponseBoolean();
+				response.setResult(0);
+				return response;
 			}
 			log.info(shipperCode);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return true;
+		mJSONResponseBoolean response = new mJSONResponseBoolean();
+		response.setResult(1);
+		return response;
 	}
 }

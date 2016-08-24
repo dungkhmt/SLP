@@ -47,7 +47,6 @@
      			<label class="control-label col-lg-1" >Chọn Shipper</label>
      			<div class="col-lg-2" >
      				<select class="form-control shipperselect" id="shipperselect" name="shipperselect" >
-     					
      					<c:forEach items="${listShipper}" var="lShp">
                                      	<option value="${lShp.SHP_Code}">${lShp.SHP_Code}</option>
                         </c:forEach>
@@ -60,8 +59,7 @@
      			
      			<button type="button" class="btn btn-primary active" title="Thay đổi thời gian bắt đầu chuyển hàng" onclick="makeRightPanel()">Thay đổi</button>
      			<button type="button" class="btn btn-danger active" title="Xóa route ứng với shipper này" onclick="resetRoute()">Reset</button>
-     			<button type="button" class="btn  active" id="deletebutton" title="Chuyển sang chế độ xóa" onclick="changeButtonDeleteStateClickMarker()">Xóa</button>
-     			
+     			<!-- <button type="button" class="btn  active" id="deletebutton" title="Chuyển sang chế độ xóa" onclick="changeButtonDeleteStateClickMarker()">Xóa</button>  -->
      		</div>
      		<div class="col-lg-9">
      		<div class="table-responsive">
@@ -92,8 +90,9 @@
      </div>
      
      
-     <button type="submit" class="btn btn-primary active" onclick="saveData()" >Save</button>
+     <button type="button" class="btn btn-primary active" onclick="saveData()" >Save</button>
      <button type="button" class="btn btn-default" >Close</button>
+     <button type="button" class="btn btn-danger active" onclick="confirmRoute()"> Chốt</button>
  
 </div>
 <script>
@@ -113,9 +112,10 @@ var lShipper=JSON.parse('${listShipperJson}');
 var reqCount=0;
 var resCount=0;
 var xdWait=true;
+var remainOrder=[];
 function changeButtonDeleteStateClickMarker(){
-	console.log("changeStateClickMarker ");
-	console.log(status);
+	
+	
 	status=parseInt(status)+1;
 	status=status % 2;
 	if(status==0) 
@@ -133,12 +133,33 @@ function initColorShipper(){
 		var p3;
 		[p1,p2,p3]=randomColor(p1,p2,p3);
 		lShipper[i].color="rgb("+p1+","+p2+","+p3+ ")";
-		
-		
 	}
 }
+
+function confirmRoute(){
+	var confirmRoute= modelDataToSave();
+	var indexSelectBox=$("#shipperselect option:selected").index();
+	var shipperCode= lShipper[indexSelectBox].SHP_Code;
+	for(var i=0;i<confirmRoute.length;i++)
+		if(confirmRoute[i].shipperCode==shipperCode){
+			
+			$.ajax({ 
+			    type:"POST", 
+			    url:"${baseUrl}/ship/confirm-container-route",
+			    data: JSON.stringify(confirmRoute[i]),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    //Stringified Json Object
+			    success: function(response){
+			        // Success Message Handler
+			    }
+		    });
+			break;
+		}
+	window.location=baseUrl+"/containerdelivery/list-pickupdelivery-order";
+}
 function saveData(){
-	console.log('saveData');
+	
 	var data=modelDataToSave();
 	$.ajax({ 
 	    type:"POST", 
@@ -148,8 +169,8 @@ function saveData(){
 	    dataType: "json",
 	    //Stringified Json Object
 	    success: function(response){
-	        // Success Message Handler
-	    }
+	        if(response==true) window.location=baseUrl+"/containerdelivery/list-pickupdelivery-order"
+ 	    }
     });
 	
 }
@@ -173,7 +194,7 @@ function getColorTimeCheck(early,late,x){
 			"dateTimeStart": null,
 			"orderList":null
 		}
-		console.log(lShipper[i].SHP_Code);
+		
 		routesData[nRoute].shipperCode=lShipper[i].SHP_Code;
 		routesData[nRoute].dateTimeStart=$("#dateTimeStart").val();
 		routesData[nRoute].orderList=[];
@@ -186,7 +207,7 @@ function getColorTimeCheck(early,late,x){
 		nRoute++;
 		
 	}
-	console.log(routesData);
+	
 	return routesData;
 }
  
@@ -198,6 +219,7 @@ function getColorTimeCheck(early,late,x){
 		mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 	initColorShipper();
+	makeRemainArray();
 	for(var i=0;i<lShipper.length;i++){
 		var lat= lShipper[i].SHP_DepotLat;
 		var lng= lShipper[i].SHP_DepotLng;
@@ -231,7 +253,7 @@ function getColorTimeCheck(early,late,x){
 	serviceDistance = new google.maps.DistanceMatrixService;
 }
 function markerSelectOrder(orderCode,pickup,marker_id){
-	console.log(orderCode+" "+pickup+" "+marker_id);
+	
 	var indexSelectBox=$("#shipperselect option:selected").index();
 	if(status==0 ){
 		route[indexSelectBox].push({
@@ -239,8 +261,6 @@ function markerSelectOrder(orderCode,pickup,marker_id){
 			"isPickup": pickup,
 			"marker" : marker[marker_id]
 		});
-		console.log(marker[marker_id]);
-		console.log("This is possion"+marker[marker_id].getPosition().lat()+" "+marker[marker_id].getPosition().lng());
 		routeLatLng[indexSelectBox].push({
 			lat:marker[marker_id].getPosition().lat(),
 			lng:marker[marker_id].getPosition().lng()
@@ -255,6 +275,7 @@ function markerSelectOrder(orderCode,pickup,marker_id){
 		routePath[indexSelectBox].setMap(map);
 		}
 	updateDistance();
+	marker[marker_id].infoWindow.close();
 	
 }
 function makeSetMarker(){
@@ -316,6 +337,15 @@ function makeSetMarker(){
 	}
 	return setPointOrder;
 }
+function makeRemainArray(){
+	for(var i=0;i<lOPD.length;i++){
+		remainOrder[i]=[];
+		for(var j=0;j<lShipper.length;j++){
+			remainOrder[i][j]=0;
+		}
+	}
+	console.log(remainOrder);
+}
 function makeRightPanel(){
 	$("table#rightPanel tbody").html("");
 	var dateTime = $("#dateTimeStart").val();
@@ -350,16 +380,57 @@ function makeRightPanel(){
 	
 }
 function makeInfoWindowContent(marker_id,setPointOrder){
-	console.log("makeInfoWindowContent"+marker_id);
-	var str="";
+	
+	var str='<table class="table table-striped table-bordered table-hover">';
+	str+="<tr>";
+	str+="<th> Hóa đơn</th>";
+	str+="<th> Số lượng </th>";
+	str+="<th> Chọn </th>";
+	str+="</tr>";
 	for(var i=0;i< setPointOrder.length;i++){
-		str+='<input type="checkbox" onclick="markerSelectOrder(\''+setPointOrder[i].orderCode  +'\','+setPointOrder[i].isPickup+','+marker_id +')">';
+		str+= "<tr>";
+		str+="<td>";
+		if(setPointOrder[i].isPickup==1)
+			str+=setPointOrder[i].orderCode+" Pickup";
+		else str+=setPointOrder[i].orderCode+" Delivery"
+		str+="</td>"
+		if(setPointOrder[i].isPickup==1){
+			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Pickup"+'"> </td>';
+			str+='<td> <button type="button" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+')> Select</button>'
+		}
+		else { 
+			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Delivery"+'"> </td>';
+			str+='<td> <button type="button" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+0+')> Select</button>'
+		}
+		
+		str+= "</tr>"
+		/* str+='<input type="checkbox" onclick="markerSelectOrder(\''+setPointOrder[i].orderCode  +'\','+setPointOrder[i].isPickup+','+marker_id +')">';
 		if(setPointOrder[i].isPickup==1)
 			str+=setPointOrder[i].orderCode+" Pickup";
 		else str+=setPointOrder[i].orderCode+" Delivery";
 		str+="</input><br>"
-	}
+ */	}
+	str+="</table>";
 	return str;
+}
+function changeRemainArrayforRoute(orderCode,isPickup){
+	
+	var quatity;
+	if(isPickup==1)
+		quatity=$("#"+orderCode+"Pickup").val();
+	else 
+		quatity=$("#"+orderCode+"Delivery").val();
+	console.log(quatity);
+	var oindex;
+	for(var i =0;i< lOPD.length;i++){
+		if(lOPD[i].O_Code==orderCode){
+			oindex= i;
+			break;
+		}
+	}
+	var indexSelectBox=$("#shipperselect option:selected").index();
+	remainOrder[oindex][indexSelectBox]=quatity;
+	console.log(remainOrder);
 }
 function viewAllOrder(setPointOrder){
 	for(i=0;i<setPointOrder.length;i++){
@@ -368,7 +439,7 @@ function viewAllOrder(setPointOrder){
 			});
 		marker.push(marker_tmp);
 		if(setPointOrder[i].length>1){
-			console.log("viewAllOrder"+marker.length);
+			
 			listInfoWindow[marker.length]=new google.maps.InfoWindow({
 			    content: makeInfoWindowContent(marker.length-1,setPointOrder[i])
 			  });
@@ -379,7 +450,7 @@ function viewAllOrder(setPointOrder){
 			marker_tmp.setIcon("https://www.google.com/mapfiles/marker_green.png");
 		}
 		//marker_tmp.predious=null;
-		console.log(setPointOrder[i]+" "+i+ " "+marker[marker.length]);
+		
 		marker_tmp.setPointOrder=setPointOrder[i];
 		marker_tmp.addListener('click',function(){
 			if(this.setPointOrder.length>1){
@@ -419,8 +490,6 @@ function viewAllOrder(setPointOrder){
 				routePath[indexSelectBox].setMap(map);
 			} */
 			updateDistance();
-			
-			
 			}
 		});
 		
@@ -475,7 +544,6 @@ function viewAllOrder(setPointOrder){
 	}
 }
 function randomColor( p1,p2,p2){
-	
 	p1=Math.floor((Math.random() * 85));
 	p2=Math.floor((Math.random() * 255));
 	p3=Math.floor((Math.random() * 255));
@@ -505,16 +573,13 @@ function getDistanceGoogleMap(p1,p2,indexOld,index){
 					  alert("Fail!");
 					  return null;
 				  }else{
-					  
 					  distanceMatrix[indexOld][index]={
 							  duration: response.rows[0].elements[0].duration.value,
 							  distance: response.rows[0].elements[0].distance.value
-					  }
-					  
+					  } 
 					  resCount++;
 				  }
 			  });
-	
 }
 
 function updateDistance(){
