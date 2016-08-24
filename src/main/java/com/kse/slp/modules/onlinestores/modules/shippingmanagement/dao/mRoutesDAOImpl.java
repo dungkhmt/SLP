@@ -46,7 +46,7 @@ public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
 		try{
 			begin();
 			List<mRouteUnderCreation> lstRTUnCreation = new ArrayList<mRouteUnderCreation>();
-			String sql = "SELECT mrd.RTD_RouteCode, mrd.RTD_OrderCode, mrd.RTD_Sequence, mr.Route_Shipper_Code, mr.Route_Start_Time"
+			String sql = "SELECT mrd.RTD_RouteCode, mrd.RTD_OrderCode, mrd.RTD_Sequence, mr.Route_Shipper_Code, mr.Route_Start_DateTime"
 					+ " FROM mRoutes mr, mRouteDetail mrd"
 					+ " WHERE mrd.RTD_RouteCode = mr.Route_Code and mr.Route_Status_Code = '"+Constants.ROUTE_STATUS_UNDER_CREATION+"'"
 					+ "	ORDER BY mrd.RTD_RouteCode ASC";
