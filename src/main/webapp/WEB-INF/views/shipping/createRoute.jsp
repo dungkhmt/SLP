@@ -1,6 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<link rel="stylesheet" type="text/css" href="<c:url value="/assets/libs/inputDate/dist/css/bootstrap-datetimepicker.css"/>"/>
+<link rel="stylesheet" type="text/css" href="<c:url value="/assets/libs/inputDate/dist/css/bootstrap-datetimepicker.min.css"/>"/>
+
+<script type="text/javascript" src="<c:url value="/assets/libs/inputDate/dist/js/moment.js" />"></script>
+<script type="text/javascript" src="<c:url value="/assets/libs/inputDate/dist/js/bootstrap-datetimepicker.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/assets/libs/bootstrap/dist/js/collapse.js" />"></script>
+
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
@@ -52,7 +60,7 @@
 			</div>
 		</div>
 		<!-- /.col-sm-2 -->
-		<div class="col-sm-1" style="padding:0px" id="divTimeStartOfShipper">
+		<div class="col-sm-2" style="padding:0px" id="divTimeStartOfShipper">
 		</div>
 		<div class="col-sm-1">
 			<button class="btn btn-info" value="change" id="btnChangeTime">Change</button>
@@ -195,7 +203,9 @@ function constructFields(response){
 		    text: lstOfShippers[i].shp_Code
 		}));
 		
-		var timeStart = "10:30";
+		var today = new Date();
+		var timeStart = "";
+		timeStart += today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate()+" "+today.getHours()+":"+today.getMinutes();
 		for(var j=0; j<response.lstRTUnCreation.length; j++){
 			if(response.lstRTUnCreation[j].shipper_Code==lstOfShippers[i].shp_Code){
 				timeStart = response.lstRTUnCreation[j].route_Start_Time;
@@ -206,7 +216,7 @@ function constructFields(response){
 		}else{
 			$('#divTimeStartOfShipper').append('<input class="form-control inputTimeStartOfShipper" id="inputTimeStartOfShipper'+i+'" value="'+timeStart+'" type="hidden" readonly />');
 		}
-	
+		constructDateTimePicker();
 		var html='<tr>'
 					+'<td>'+lstOfShippers[i].shp_Code+'</td>'
 					+'<td id="route'+i+'"></td>'
@@ -275,6 +285,14 @@ function constructFields(response){
 	}
 }
 
+//construct date time picker for input time start
+function constructDateTimePicker(){
+	for(var i=0; i<nShipper; i++){
+		$("#inputTimeStartOfShipper"+i).datetimepicker({
+			format : "YYYY-MM-DD HH:mm"
+		});
+	}
+}
 
 //add and remove one point of route for each shipper
 //var indexOfMarker;
@@ -334,7 +352,10 @@ function caculateTimeAndDistance(indexOfShipper){
 		},function(response,status){
 			t_SHP_toFirstClient += response.rows[0].elements[0].duration.value;
 			//var timeToFirstClienthms = sendsToHms(t_SHP_toFirstClient);
-			var timeStartOfShipper = $('#inputTimeStartOfShipper'+indexOfShipper).val();
+			var dateTimeStartOfShipper = $('#inputTimeStartOfShipper'+indexOfShipper).val();
+			var indexOfCut = dateTimeStartOfShipper.indexOf(" ");
+			var timeStartOfShipper = dateTimeStartOfShipper.substring(indexOfCut+1);
+			console.log("timeStartOfShipper"+timeStartOfShipper);
 			//console.log("indexOfShipper in response function:"+indexOfShipper);
 			console.log("time from shipper depot to first client"+t_SHP_toFirstClient);
 			var timeToComeThis = plusTime(timeStartOfShipper,t_SHP_toFirstClient);
@@ -373,7 +394,9 @@ function caculateTimeAndDistance(indexOfShipper){
 					//t_SHP_toFirstClient += response.rows[0].elements[0].duration.value;
 					timeFromDepotToThis = t_SHP_toFirstClient + time;
 					//var timeToThisClienthms = secondsToHms(t_SHP_toFirstClient);
-					var timeStartOfShipper = $('#inputTimeStartOfShipper'+indexOfShipper).val();
+					var dateTimeStartOfShipper = $('#inputTimeStartOfShipper'+indexOfShipper).val();
+					var indexOfCut = dateTimeStartOfShipper.indexOf(" ");
+					var timeStartOfShipper = dateTimeStartOfShipper.substring(indexOfCut+1);
 					//console.log("indexOfShipper in response function:"+indexOfShipper);
 					//console.log("indexOfClientInRoute"+indexOfClientInRoute);
 					var timeToComeThis = plusTime(timeStartOfShipper,timeFromDepotToThis);
