@@ -14,8 +14,8 @@ public class mRouteDetailContainer {
 	String RTDC_RouteCode;
 	String RTDC_OrderCode;
 	String RTDC_Type;
-	String RTDC_Sequence;
-	String RTDC_Quantity;
+	int RTDC_Sequence;
+	int RTDC_Quantity;
 	public int getRTDC_Id() {
 		return RTDC_Id;
 	}
@@ -40,16 +40,17 @@ public class mRouteDetailContainer {
 	public void setRTDC_Type(String rTDC_Type) {
 		RTDC_Type = rTDC_Type;
 	}
-	public String getRTDC_Sequence() {
+
+	public int getRTDC_Sequence() {
 		return RTDC_Sequence;
 	}
-	public void setRTDC_Sequence(String rTDC_Sequence) {
+	public void setRTDC_Sequence(int rTDC_Sequence) {
 		RTDC_Sequence = rTDC_Sequence;
 	}
-	public String getRTDC_Quantity() {
+	public int getRTDC_Quantity() {
 		return RTDC_Quantity;
 	}
-	public void setRTDC_Quantity(String rTDC_Quantity) {
+	public void setRTDC_Quantity(int rTDC_Quantity) {
 		RTDC_Quantity = rTDC_Quantity;
 	}
 	@Override

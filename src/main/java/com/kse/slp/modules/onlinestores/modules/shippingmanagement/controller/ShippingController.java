@@ -37,6 +37,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteD
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
@@ -65,6 +66,9 @@ public class ShippingController extends BaseWeb{
 	
 	@Autowired 
 	private UserService mUserService;
+	
+	@Autowired
+	private mRouteDetailContainerService routeDetailContainerService;
 	
 	@RequestMapping(value="/createRoute")
 	public String creatRouteToShip(ModelMap map,HttpSession session){
@@ -150,10 +154,39 @@ public class ShippingController extends BaseWeb{
 	@ResponseBody @RequestMapping(value="/save-container-routes", method= RequestMethod.POST)
 	public boolean saveRoutes(ModelMap model,HttpSession session,@RequestBody String route){
 		User user  =(User) session.getAttribute("currentUser");
-		
+		JSONParser parser = new JSONParser();
+		JSONArray json;
+		try {
+			json = (JSONArray) parser.parse(route);
+			for(int i=0;i<json.size();i++){
+				JSONObject o= (JSONObject) json.get(i);
+				
+				mRoutes routeO= mRoutesService.loadRoutesUnderCreationByShipperCode((String)o.get("shipperCode"));
+				if(routeO!= null){
+					mRoutesService.removeRoutesByRouteCode(routeO.getRoute_Code());
+					mRouteDetailService.removeRoutesByRouteCode(routeO.getRoute_Code());
+				}
+				String shipperCode=(String)o.get("shipperCode");
+				String routeCode=shipperCode+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+				String startDateTime=(String)o.get("dateTimeStart");
+				mRoutesService.saveARoute(routeCode, shipperCode, startDateTime, Constants.ROUTE_STATUS_UNDER_CREATION);
+				JSONArray listOrder=(JSONArray) o.get("orderList");
+				for(int j=0;j<listOrder.size();j++){
+					JSONObject orderRoute=(JSONObject) listOrder.get(j);
+					if((Long)orderRoute.get("isPickup")==1);
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, 0);
+					
+				}
+			}
+			log.info(user.getUsername()+" DONE");
+			return true;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println(name()+route+" ");
-		log.info(user.getUsername());
-		return true;
+		log.info(user.getUsername()+" FAIL");
+		return false;
 	}
 	@RequestMapping(value="/getRoutes")
 	public String loadRouteShiper(ModelMap map,HttpSession session){
