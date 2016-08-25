@@ -205,9 +205,7 @@ function getColorTimeCheck(early,late,x){
 			})
 		}
 		nRoute++;
-		
 	}
-	
 	return routesData;
 }
  
@@ -253,7 +251,6 @@ function getColorTimeCheck(early,late,x){
 	serviceDistance = new google.maps.DistanceMatrixService;
 }
 function markerSelectOrder(orderCode,pickup,marker_id){
-	
 	var indexSelectBox=$("#shipperselect option:selected").index();
 	if(status==0 ){
 		route[indexSelectBox].push({
@@ -277,6 +274,7 @@ function markerSelectOrder(orderCode,pickup,marker_id){
 	updateDistance();
 	marker[marker_id].infoWindow.close();
 	
+	
 }
 function makeSetMarker(){
 	var setPointOrder=[];
@@ -293,6 +291,7 @@ function makeSetMarker(){
 			var lng=setPointOrder[j][0].point.lng;
 			if( lat==cpilat && lng== cpilng) {
 				setPointOrder[j].push({
+					"orderIndex": i,
 					"orderCode": lOPD[i].OPD_Code,
 					"isPickup": 1,
 					"point":{
@@ -303,6 +302,7 @@ function makeSetMarker(){
 				xd=true;
 			} else if (lat==cdelat && lng== cdelng){
 				setPointOrder[j].push({
+					"orderIndex": i,
 					"orderCode": lOPD[i].OPD_Code,
 					"isPickup": 0,
 					"point":{
@@ -315,6 +315,7 @@ function makeSetMarker(){
 		}
 		if(xd==false){
 			setPointOrder.push([{
+				"orderIndex": i,
 				"orderCode": lOPD[i].OPD_Code,
 				"isPickup": 1,
 				"point":{
@@ -326,6 +327,7 @@ function makeSetMarker(){
 		if(xd2==false){
 			
 			setPointOrder.push([{
+				"orderIndex": i,
 				"orderCode": lOPD[i].OPD_Code,
 				"isPickup": 0,
 				"point":{
@@ -345,6 +347,13 @@ function makeRemainArray(){
 		}
 	}
 	console.log(remainOrder);
+}
+function sumArr(arr){
+	var sum=0;
+	for(var i=0;i< arr.length;i++){
+		sum+=arr[i];
+	}
+	return sum;
 }
 function makeRightPanel(){
 	$("table#rightPanel tbody").html("");
@@ -379,8 +388,22 @@ function makeRightPanel(){
 	$("table#rightPanel tbody").append(str);
 	
 }
+function checkInputQuatity(max,code){
+
+	var key=$("#"+code).val();
+	console.log(parseInt(key));
+	if(parseInt(key)>parseInt(max)){
+		$("#"+code).css("border", "2px solid red");
+		$("#"+code+"Button").attr("disabled", true);
+	}
+	else{ 
+		$("#"+code).css("border", "2px solid green");
+		$("#"+code+"Button").attr("disabled", false);
+	}
+}
 function makeInfoWindowContent(marker_id,setPointOrder){
-	
+	var tookOrder;
+	var indexSelectBox=$("#shipperselect option:selected").index();
 	var str='<table class="table table-striped table-bordered table-hover">';
 	str+="<tr>";
 	str+="<th> Hóa đơn</th>";
@@ -395,25 +418,30 @@ function makeInfoWindowContent(marker_id,setPointOrder){
 		else str+=setPointOrder[i].orderCode+" Delivery"
 		str+="</td>"
 		if(setPointOrder[i].isPickup==1){
-			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Pickup"+'"> </td>';
-			str+='<td> <button type="button" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+')> Select</button>'
+			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Pickup"+'"' +"value="+(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])) +' onkeyup=checkInputQuatity("'+(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])) +'","'+setPointOrder[i].orderCode+"Pickup"+'")> </td>';
+			
+			str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+')> Select</button>'
 		}
 		else { 
-			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Delivery"+'"> </td>';
-			str+='<td> <button type="button" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+0+')> Select</button>'
+			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Delivery"+'"'+'value='+ remainOrder[setPointOrder[i].orderIndex][indexSelectBox]  +' disabled> </td>';
+			if(remainOrder[setPointOrder[i].orderIndex][indexSelectBox]==0) str+='<td> <button type="button" class="btn btn-warning active" disabled> Select</button>'
+			else str+='<td> <button type="button" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+0+','+marker_id+')> Select</button>';
 		}
 		
 		str+= "</tr>"
-		/* str+='<input type="checkbox" onclick="markerSelectOrder(\''+setPointOrder[i].orderCode  +'\','+setPointOrder[i].isPickup+','+marker_id +')">';
-		if(setPointOrder[i].isPickup==1)
-			str+=setPointOrder[i].orderCode+" Pickup";
-		else str+=setPointOrder[i].orderCode+" Delivery";
-		str+="</input><br>"
- */	}
+	/* 	if(setPointOrder[i].isPickup==1)
+		for(var j=0;j< lShipper.length;j++ ){
+			tookOrder+= "<tr>";
+			tookOrder+='<td>' + setPointOrder[i].orderCode + 'Pickup'  +' </td>'
+			tookOrder+='<td>'+  remainOrder[i][j] +'</td>';
+			tookOrder+='<td>'+ lShipper[j].SHP_Code +'</td>';
+			tookOrder+="</tr>";
+		} */
+	}
 	str+="</table>";
 	return str;
 }
-function changeRemainArrayforRoute(orderCode,isPickup){
+function changeRemainArrayforRoute(orderCode,isPickup,marker_Id){
 	
 	var quatity;
 	if(isPickup==1)
@@ -423,14 +451,18 @@ function changeRemainArrayforRoute(orderCode,isPickup){
 	console.log(quatity);
 	var oindex;
 	for(var i =0;i< lOPD.length;i++){
-		if(lOPD[i].O_Code==orderCode){
+		//console.log(lOPD[i].orderCode+" "+orderCode)
+		if(lOPD[i].OPD_Code==orderCode){
 			oindex= i;
 			break;
 		}
 	}
 	var indexSelectBox=$("#shipperselect option:selected").index();
-	remainOrder[oindex][indexSelectBox]=quatity;
+	
+	console.log(indexSelectBox+" "+oindex);
+	remainOrder[oindex][indexSelectBox]=parseInt(quatity);
 	console.log(remainOrder);
+	markerSelectOrder(orderCode,isPickup,marker_Id);
 }
 function viewAllOrder(setPointOrder){
 	for(i=0;i<setPointOrder.length;i++){
@@ -438,12 +470,12 @@ function viewAllOrder(setPointOrder){
 			position:{lat: setPointOrder[i][0].point.lat, lng: setPointOrder[i][0].point.lng},
 			});
 		marker.push(marker_tmp);
-		if(setPointOrder[i].length>1){
+		//if(setPointOrder[i].length>1){
 			
 			listInfoWindow[marker.length]=new google.maps.InfoWindow({
 			    content: makeInfoWindowContent(marker.length-1,setPointOrder[i])
 			  });
-		}
+		//}
 		marker_tmp.infoWindow=listInfoWindow[marker.length];
 		marker_tmp.setMap(map);
 		if(setPointOrder[i][0].isPickup==0 ){
@@ -453,9 +485,11 @@ function viewAllOrder(setPointOrder){
 		
 		marker_tmp.setPointOrder=setPointOrder[i];
 		marker_tmp.addListener('click',function(){
-			if(this.setPointOrder.length>1){
+			//if(this.setPointOrder.length>1){
+				var marker_id= marker.indexOf(this);
+				this.infoWindow.setContent(makeInfoWindowContent(marker_id, this.setPointOrder) );
 				this.infoWindow.open(map,this);
-			}else{
+			/* }else{
 			var indexSelectBox=$("#shipperselect option:selected").index();
 			
 			if(status==0 ){
@@ -476,7 +510,7 @@ function viewAllOrder(setPointOrder){
 			    strokeWeight: 5,
 			});
 			routePath[indexSelectBox].setMap(map);
-			} /* else if(status==1 && route[indexSelectBox].indexOf(this) !=-1) {
+			}  else if(status==1 && route[indexSelectBox].indexOf(this) !=-1) {
 				var indexInRoute=route[indexSelectBox].indexOf(this);
 				route[indexSelectBox].splice(indexInRoute,1);
 				routeLatLng[indexSelectBox].splice(indexInRoute,1);
@@ -488,9 +522,9 @@ function viewAllOrder(setPointOrder){
 				    strokeWeight: 5,
 				});
 				routePath[indexSelectBox].setMap(map);
-			} */
+			} 
 			updateDistance();
-			}
+			} */
 		});
 		
 		/* marker_tmp2=new google.maps.Marker({
@@ -556,7 +590,6 @@ function resetRoute(){
 	routePath[indexSelectBox].setMap(null);
 	updateDistance();
 	makeRightPanel();
-	
 }
 
 function getDistanceGoogleMap(p1,p2,indexOld,index){
