@@ -51,4 +51,13 @@ public class mPickupDeliveryOrdersServiceImpl implements mPickupDeliveryOrdersSe
 		pickupDeliveryOrdersDAO.updateAnOrder(oPD);
 		return id;
 	}
+
+	@Override
+	public void updateStatus(String orderCode, String status) {
+		// TODO Auto-generated method stub
+		mPickupDeliveryOrders o= pickupDeliveryOrdersDAO.loadAPickupDeliveryOrderbyCode(orderCode);
+		o.setOPD_StatusCode(status);
+		pickupDeliveryOrdersDAO.updateAnOrder(o);
+		
+	}
 }

@@ -37,6 +37,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONRe
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONResponseToCreateRoute;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
@@ -165,7 +166,7 @@ public class ShippingController extends BaseWeb{
 			mRoutes routeO= mRoutesService.loadRoutesUnderCreationByShipperCode((String)json.get("shipperCode"));
 			if(routeO!= null){
 				mRoutesService.removeRoutesByRouteCode(routeO.getRoute_Code());
-				mRouteDetailService.removeRoutesByRouteCode(routeO.getRoute_Code());
+				routeDetailContainerService.deleteRoutesbyRouteCode(routeO.getRoute_Code());
 			}
 			String shipperCode=(String)json.get("shipperCode");
 			String routeCode=shipperCode+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
@@ -174,10 +175,12 @@ public class ShippingController extends BaseWeb{
 			JSONArray listOrder=(JSONArray) json.get("orderList");
 			for(int j=0;j<listOrder.size();j++){
 				JSONObject orderRoute=(JSONObject) listOrder.get(j);
+				System.out.print(name()+" "+(String)orderRoute.get("orderCode"));
+				mPickupDeliveryService.updateStatus( (String)orderRoute.get("orderCode"), Constants.ORDER_STATUS_IN_ROUTE);
 				if((Long)orderRoute.get("isPickup")==1)
-				routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, 0);
-				else
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, 0);
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
+					else
+						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, Integer.parseInt(String.valueOf(orderRoute.get("quantity"))));
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -198,7 +201,7 @@ public class ShippingController extends BaseWeb{
 				mRoutes routeO= mRoutesService.loadRoutesUnderCreationByShipperCode((String)o.get("shipperCode"));
 				if(routeO!= null){
 					mRoutesService.removeRoutesByRouteCode(routeO.getRoute_Code());
-					mRouteDetailService.removeRoutesByRouteCode(routeO.getRoute_Code());
+					routeDetailContainerService.deleteRoutesbyRouteCode(routeO.getRoute_Code());
 				}
 				String shipperCode=(String)o.get("shipperCode");
 				String routeCode=shipperCode+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
@@ -208,9 +211,9 @@ public class ShippingController extends BaseWeb{
 				for(int j=0;j<listOrder.size();j++){
 					JSONObject orderRoute=(JSONObject) listOrder.get(j);
 					if((Long)orderRoute.get("isPickup")==1)
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, 0);
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, Integer.parseInt( String.valueOf( orderRoute.get("quantity"))));
 					else
-						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, 0);
+						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
 				}
 			}
 			log.info(user.getUsername()+" DONE");
@@ -267,6 +270,30 @@ public class ShippingController extends BaseWeb{
 			js.put("SHP_DepotLng", mShp.getSHP_DepotLng());
 			listShipperJson.add(js);
 		}
+		JSONArray route= new JSONArray();
+		for(int i=0;i<listShipper.size();i++){
+			mRoutes routeShipper= mRoutesService.loadRoutesUnderCreationByShipperCode(listShipper.get(i).getSHP_Code());
+			JSONArray routei= new JSONArray();
+			if(routeShipper==null){
+				route.add(routei);
+				continue;
+			}
+			List<mRouteDetailContainer> listRouteDetail= routeDetailContainerService.loadRouteContainerDetailByRouteCode(routeShipper.getRoute_Code());
+			
+			for(int j=0;j<listRouteDetail.size();j++){
+				mRouteDetailContainer oDC=listRouteDetail.get(j);
+				JSONObject order= new JSONObject();
+				order.put("orderCode", oDC.getRTDC_OrderCode());
+				if(oDC.getRTDC_Type().equals("PICKUP"))
+					order.put("isPickup", 1);
+				else order.put("isPickup", 0);
+				order.put("quantity", oDC.getRTDC_Quantity());
+				order.put("marker",null);
+				routei.add(order);
+			}
+			route.add(routei);
+		}
+		model.put("routeOld", route);
 		model.put("listShipper",listShipper);
 		model.put("listPDOrder",listPDO);
 		model.put("listShipperJson", listShipperJson);

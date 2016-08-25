@@ -48,7 +48,8 @@ public class mPickupDeliveyOrdersDAOImpl extends BaseDao implements mPickupDeliv
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mPickupDeliveryOrders.class);
-			criteria.add(Restrictions.ne("OPD_StatusCode",Constants.ORDER_STATUS_DELIVERIED ));
+			criteria.add(Restrictions.eq("OPD_StatusCode",Constants.ORDER_STATUS_NOT_IN_ROUTE ));
+			
 			List<mPickupDeliveryOrders > listOrders = criteria.list();
 			commit();
 			return listOrders;

@@ -21,7 +21,7 @@
     	<div id="map" style="height:100%">
      		</div>
      	</div>
-     	<div class="col-lg-4" id="panelRight">
+     	<div class="col-lg-4" id="panelRight" style="padding:5px;min-height:0;max-height:800;overflow-y:scroll;">
      		<div class="table-responsive">
 	        	<table class="table table-striped table-bordered table-hover" id="rightPanel" >
 	        		<thead>
@@ -113,6 +113,40 @@ var reqCount=0;
 var resCount=0;
 var xdWait=true;
 var remainOrder=[];
+function pushOldRoute(){
+	var routeOld=JSON.parse('${routeOld}');
+	console.log("routeOld");
+	console.log(routeOld);
+	for(var i=0;i<lShipper.length;i++ ){
+		for(var j=0;j<routeOld[i].length;j++){ 
+			var orderID;
+			console.log(i+" "+j);
+			for(var k=lShipper.length;k<marker.length;k++)
+				for(var t=0;t<marker[k].setPointOrder.length;t++)
+				if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==routeOld[i][j].isPickup){
+					
+					routeOld[i][j].marker=marker[k];
+					route[i].push(routeOld[i][j]);
+					routeLatLng[i].push({
+						lat:marker[k].getPosition().lat(),
+						lng:marker[k].getPosition().lng()
+					})
+					break;
+				}
+		}
+		routePath[i].setMap(null);
+		routePath[i] = new google.maps.Polyline({
+			path: routeLatLng[i],
+			strokeColor: lShipper[i].color,
+		    strokeOpacity: 1.0,
+		    strokeWeight: 5,
+		});
+		routePath[i].setMap(map);
+		
+	}
+	console.log(route);
+	updateDistance();
+}
 function changeButtonDeleteStateClickMarker(){
 	
 	
@@ -194,14 +228,14 @@ function getColorTimeCheck(early,late,x){
 			"dateTimeStart": null,
 			"orderList":null
 		}
-		
 		routesData[nRoute].shipperCode=lShipper[i].SHP_Code;
 		routesData[nRoute].dateTimeStart=$("#dateTimeStart").val();
 		routesData[nRoute].orderList=[];
 		for(var j=1;j<route[i].length;j++){
 			routesData[nRoute].orderList.push({
 				"orderCode": route[i][j].orderCode,
-				"isPickup": route[i][j].isPickup
+				"isPickup": route[i][j].isPickup,
+				"quantity": route[i][j].quantity
 			})
 		}
 		nRoute++;
@@ -218,6 +252,7 @@ function getColorTimeCheck(early,late,x){
     });
 	initColorShipper();
 	makeRemainArray();
+	
 	for(var i=0;i<lShipper.length;i++){
 		var lat= lShipper[i].SHP_DepotLat;
 		var lng= lShipper[i].SHP_DepotLng;
@@ -248,15 +283,18 @@ function getColorTimeCheck(early,late,x){
 	}
 	var setPointOrderList=makeSetMarker();
 	viewAllOrder(setPointOrderList);
+	
 	serviceDistance = new google.maps.DistanceMatrixService;
+	pushOldRoute();
 }
-function markerSelectOrder(orderCode,pickup,marker_id){
+function markerSelectOrder(orderCode,pickup,marker_id,quantity){
 	var indexSelectBox=$("#shipperselect option:selected").index();
 	if(status==0 ){
 		route[indexSelectBox].push({
 			"orderCode": orderCode,
 			"isPickup": pickup,
-			"marker" : marker[marker_id]
+			"marker" : marker[marker_id],
+			"quantity": quantity 
 		});
 		routeLatLng[indexSelectBox].push({
 			lat:marker[marker_id].getPosition().lat(),
@@ -273,9 +311,8 @@ function markerSelectOrder(orderCode,pickup,marker_id){
 		}
 	updateDistance();
 	marker[marker_id].infoWindow.close();
-	
-	
 }
+
 function makeSetMarker(){
 	var setPointOrder=[];
 	for(var i=0;i< lOPD.length ;i++){
@@ -389,7 +426,6 @@ function makeRightPanel(){
 	
 }
 function checkInputQuatity(max,code){
-
 	var key=$("#"+code).val();
 	console.log(parseInt(key));
 	if(parseInt(key)>parseInt(max)){
@@ -419,8 +455,8 @@ function makeInfoWindowContent(marker_id,setPointOrder){
 		str+="</td>"
 		if(setPointOrder[i].isPickup==1){
 			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Pickup"+'"' +"value="+(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])) +' onkeyup=checkInputQuatity("'+(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])) +'","'+setPointOrder[i].orderCode+"Pickup"+'")> </td>';
-			
-			str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+')> Select</button>'
+			if(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])==0) str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+') disabled> Select</button>';
+			else str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+')> Select</button>'
 		}
 		else { 
 			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Delivery"+'"'+'value='+ remainOrder[setPointOrder[i].orderIndex][indexSelectBox]  +' disabled> </td>';
@@ -443,12 +479,12 @@ function makeInfoWindowContent(marker_id,setPointOrder){
 }
 function changeRemainArrayforRoute(orderCode,isPickup,marker_Id){
 	
-	var quatity;
+	var quantity;
 	if(isPickup==1)
-		quatity=$("#"+orderCode+"Pickup").val();
+		quantity=$("#"+orderCode+"Pickup").val();
 	else 
-		quatity=$("#"+orderCode+"Delivery").val();
-	console.log(quatity);
+		quantity=$("#"+orderCode+"Delivery").val();
+	console.log(quantity);
 	var oindex;
 	for(var i =0;i< lOPD.length;i++){
 		//console.log(lOPD[i].orderCode+" "+orderCode)
@@ -460,15 +496,18 @@ function changeRemainArrayforRoute(orderCode,isPickup,marker_Id){
 	var indexSelectBox=$("#shipperselect option:selected").index();
 	
 	console.log(indexSelectBox+" "+oindex);
-	remainOrder[oindex][indexSelectBox]=parseInt(quatity);
+	remainOrder[oindex][indexSelectBox]=parseInt(quantity);
 	console.log(remainOrder);
-	markerSelectOrder(orderCode,isPickup,marker_Id);
+	markerSelectOrder(orderCode,isPickup,marker_Id,quantity);
 }
 function viewAllOrder(setPointOrder){
 	for(i=0;i<setPointOrder.length;i++){
 		marker_tmp=new google.maps.Marker({
 			position:{lat: setPointOrder[i][0].point.lat, lng: setPointOrder[i][0].point.lng},
 			});
+		for(var j=0;j<setPointOrder[i].length;j++){
+			lOPD[setPointOrder[i][j].orderIndex].marker= marker_tmp;
+		}
 		marker.push(marker_tmp);
 		//if(setPointOrder[i].length>1){
 			
@@ -621,18 +660,18 @@ function updateDistance(){
 	
 	reqCount=0;
 	resCount=0;
-	for(i=1;i<routeLatLng[indexSelectBox].length;i++){
-		var index=marker.indexOf(route[indexSelectBox][i].marker);
-		var indexOld=marker.indexOf(route[indexSelectBox][i-1].marker);
+	for(k=0;k<lShipper.length;k++ ){
+	for(i=1;i<routeLatLng[k].length;i++){
+		var index=marker.indexOf(route[k][i].marker);
+		var indexOld=marker.indexOf(route[k][i-1].marker);
 		
 		if(distanceMatrix[indexOld]== undefined ) distanceMatrix[indexOld]=[];
 		if(distanceMatrix[indexOld][index]== undefined ){
 			reqCount++;
-			getDistanceGoogleMap(routeLatLng[indexSelectBox][i-1],routeLatLng[indexSelectBox][i],indexOld,index);
+			getDistanceGoogleMap(routeLatLng[k][i-1],routeLatLng[k][i],indexOld,index);
 		}
-		
 	}
-	
+	}
 	xd=true;
 	wait();
 	

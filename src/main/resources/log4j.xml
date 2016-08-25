@@ -8,7 +8,7 @@
 		
 		<param name="maxFileSize" value="50MB" />
 	   	<param name="maxBackupIndex" value="10" />
-	   	<param name="file" value="C:/logs/slp.log" />
+	   	<param name="file" value="~/logs/slp.log" />
 	   	<layout class="org.apache.log4j.PatternLayout">
 		<param name="ConversionPattern" 
 			value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}: %m- %M %n" />

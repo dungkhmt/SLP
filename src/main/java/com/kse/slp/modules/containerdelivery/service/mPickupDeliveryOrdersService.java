@@ -11,5 +11,5 @@ public interface mPickupDeliveryOrdersService {
 			,String oPD_LatePickupDateTime,String oPD_DeliveryAddress,
 			double oPD_DeliveryLat,double oPD_DeliveryLng,String oPD_EarlyDeliveryDateTime,String oPD_LateDeliveryDateTime,int oPD_Volumn);
 	public List<mPickupDeliveryOrders> getListOrderPickupDelivery();
-	
+	public void updateStatus(String orderCode,String status);
 }
