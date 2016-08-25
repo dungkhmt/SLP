@@ -627,6 +627,9 @@ function resetRoute(){
 	route[indexSelectBox]=[route[indexSelectBox][0]];
 	routeLatLng[indexSelectBox]=[routeLatLng[indexSelectBox][0]];
 	routePath[indexSelectBox].setMap(null);
+	for(var i=0;i<lOPD.length;i++){
+		remainOrder[i][indexSelectBox]=0;
+	}
 	updateDistance();
 	makeRightPanel();
 }
