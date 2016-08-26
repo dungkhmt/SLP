@@ -119,16 +119,18 @@ var resCount=0;
 var dateTimeStartShipper=[];
 var xdWait=true;
 var remainOrder=[];
-console.log("lShipper ");
-console.log(lShipper);
+
+function animationsDeliveryMarker(){
+		
+}
 function pushOldRoute(){
 	var routeOld=JSON.parse('${routeOld}');
 	dateTimeStartShipper=JSON.parse('${routeOldDateTimeStart}');
 	$("#dateTimeStart").val(dateTimeStartShipper[$("#shipperselect option:selected").index()]);
-	console.log(dateTimeStartShipper);
+	//console.log(dateTimeStartShipper);
 	
-	console.log("routeOld");
-	console.log(routeOld);
+	//console.log("routeOld");
+	//console.log(routeOld);
 	for(var i=0;i<lShipper.length;i++ ){
 		for(var j=0;j<routeOld[i].length;j++){ 
 			var orderID;
@@ -161,7 +163,7 @@ function pushOldRoute(){
 		routePath[i].setMap(map);
 		
 	}
-	console.log(route);
+	//console.log(route);
 	updateDistance();
 }
 function changeButtonDeleteStateClickMarker(){
@@ -226,16 +228,14 @@ function saveData(){
 	
 }
 function getColorTimeCheck(early,late,x){
-	
 	var mEarly=	moment(early,"YYYY-MM-DD HH:mm");
 	var mLate= moment(late,"YYYY-MM-DD HH:mm");
 	var xDate=moment(x,"YYYY-MM-DD HH:mm");
-	
 	if (mLate.isBefore(xDate) ) return "rgb(255, 102, 0)";
 	if (mEarly.isAfter(xDate)) return "rgb(0, 153, 51)";
 }
 
- function modelDataToSave(){
+function modelDataToSave(){
 	var routesData=[];
 	var nRoute=0;
 	for(var i=0;i<route.length;i++)
@@ -269,7 +269,6 @@ function getColorTimeCheck(early,late,x){
     });
 	initColorShipper();
 	makeRemainArray();
-	
 	for(var i=0;i<lShipper.length;i++){
 		var lat= lShipper[i].SHP_DepotLat;
 		var lng= lShipper[i].SHP_DepotLng;
@@ -308,7 +307,6 @@ function markerSelectOrder(orderCode,pickup,marker_id,quantity){
 	var indexSelectBox=$("#shipperselect option:selected").index();
 	if(pickup==0){
 		lShipper[indexSelectBox].SHP_currentQuantity= lShipper[indexSelectBox].SHP_currentQuantity-quantity;
-		
 	} else  {
 		lShipper[indexSelectBox].SHP_currentQuantity= lShipper[indexSelectBox].SHP_currentQuantity+quantity;
 	}
@@ -334,6 +332,18 @@ function markerSelectOrder(orderCode,pickup,marker_id,quantity){
 		}
 	updateDistance();
 	marker[marker_id].infoWindow.close();
+	if(pickup==1)
+	for(var i=lShipper.length;i<marker.length;i++){
+		
+		for(var j=0;j<marker[i].setPointOrder.length;j++){
+			if(marker[i].setPointOrder[j].isPickup==0 && marker[i].setPointOrder[j].orderCode==orderCode){
+				marker[i].setAnimation(google.maps.Animation.BOUNCE);
+			}
+		}
+	}
+	if(pickup==0){
+		marker[marker_id].setAnimation(null);
+	}
 }
 
 function makeSetMarker(){
@@ -345,7 +355,6 @@ function makeSetMarker(){
 		var cdelng=lOPD[i].OPD_DeliveryLng;
 		xd=false;
 		xd2=false;
-		
 		for(var j=0;j<setPointOrder.length;j++){
 			var lat=setPointOrder[j][0].point.lat;
 			var lng=setPointOrder[j][0].point.lng;
@@ -447,7 +456,6 @@ function makeRightPanel(){
 		}
 	}
 	$("table#rightPanel tbody").append(str);
-	
 }
 function checkInputQuatity(max,code){
 	var key=$("#"+code).val();
@@ -490,7 +498,6 @@ function makeInfoWindowContent(marker_id,setPointOrder){
 			if(remainOrder[setPointOrder[i].orderIndex][indexSelectBox]==0) str+='<td> <button type="button" class="btn btn-warning active" disabled> Select</button>'
 			else str+='<td> <button type="button" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+0+','+marker_id+')> Select</button>';
 		}
-		
 		str+= "</tr>"
 	/* 	if(setPointOrder[i].isPickup==1)
 		for(var j=0;j< lShipper.length;j++ ){
@@ -521,7 +528,6 @@ function changeRemainArrayforRoute(orderCode,isPickup,marker_Id){
 		}
 	}
 	var indexSelectBox=$("#shipperselect option:selected").index();
-	
 	console.log(indexSelectBox+" "+oindex);
 	remainOrder[oindex][indexSelectBox]=parseInt(quantity);
 	console.log(remainOrder);
