@@ -38,4 +38,10 @@ public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerSe
 		return routeDetailContainerDAO.loadRouteContainerDetailByRouteCode(routeCode);
 	}
 
+	@Override
+	public int loadQuantityOfOrderInRouteByOrderCode(String orderCode) {
+		// TODO Auto-generated method stub
+		return routeDetailContainerDAO.loadQuantityOfOrderInRouteByOrderCode(orderCode);
+	}
+
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -79,6 +81,34 @@ public class mRouteDetailContainerDAOImpl extends BaseDao implements mRouteDetai
 			flush();
 			close();
 		}
+	}
+
+	@Override
+	public int loadQuantityOfOrderInRouteByOrderCode(String orderCode) {
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mRouteDetailContainer.class).setProjection(Projections.property("RTDC_Quantity"));
+			criteria.add(Restrictions.eq("RTDC_OrderCode", orderCode));
+			List<Integer> r= criteria.list();
+			int ans=0;
+			for(int i=0;i<r.size();i++)
+				ans+=r.get(i);
+			commit();
+			return ans;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return -100000;
+		}finally{
+			flush();
+			close();
+		}
+
+	}
+	
+	String name(){
+		return "mRouteDetailContainerDAOImpl";
 	}
 
 }

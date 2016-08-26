@@ -230,6 +230,7 @@ public class ShippingController extends BaseWeb{
 	public String loadRouteShiper(ModelMap map,HttpSession session){
 		User user  =(User) session.getAttribute("currentUser");
 		mShippers shipper= mShippersService.loadShiperByUserName(user.getUsername());
+		if(shipper==null) return null; 
 		System.out.println(name()+"loadRouteShiper "+user.getUsername()+" "+shipper.getSHP_Code());
 		List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(shipper.getSHP_Code());
 		
@@ -247,6 +248,7 @@ public class ShippingController extends BaseWeb{
 		for(int i=0;i<listPDOrder.size();i++){
 			JSONObject js= new JSONObject();
 			mPickupDeliveryOrders mPDO= listPDOrder.get(i);
+			int volumeInRoute=routeDetailContainerService.loadQuantityOfOrderInRouteByOrderCode(mPDO.getOPD_Code());
 			js.put("OPD_Code", mPDO.getOPD_Code());
 			js.put("OPD_ClientCode", mPDO.getOPD_ClientCode());
 			js.put("OPD_PickupLat", mPDO.getOPD_PickupLat());
@@ -257,10 +259,9 @@ public class ShippingController extends BaseWeb{
 			js.put("OPD_DeliveryLng", mPDO.getOPD_DeliveryLng());
 			js.put("OPD_EarlyDeliveryDateTime", mPDO.getOPD_EarlyDeliveryDateTime());
 			js.put("OPD_LateDeliveryDateTime", mPDO.getOPD_LateDeliveryDateTime());
-			js.put("OPD_Volumn",mPDO.getOPD_Volumn());
+			js.put("OPD_Volumn",mPDO.getOPD_Volumn()-volumeInRoute);
 			listPDO.add(js);
 		}
-		
 		JSONArray listShipperJson= new JSONArray();
 		for(int i=0;i<listShipper.size();i++){
 			JSONObject js= new JSONObject();
@@ -268,18 +269,23 @@ public class ShippingController extends BaseWeb{
 			js.put("SHP_Code", mShp.getSHP_Code());
 			js.put("SHP_DepotLat", mShp.getSHP_DepotLat());
 			js.put("SHP_DepotLng", mShp.getSHP_DepotLng());
+			js.put("SHP_Capacity_1", mShp.getSHP_Capacity_1());
+			js.put("SHP_currentQuantity", 0);
 			listShipperJson.add(js);
 		}
 		JSONArray route= new JSONArray();
+		JSONArray routeOldDateTimeStart= new JSONArray();
 		for(int i=0;i<listShipper.size();i++){
 			mRoutes routeShipper= mRoutesService.loadRoutesUnderCreationByShipperCode(listShipper.get(i).getSHP_Code());
+			
 			JSONArray routei= new JSONArray();
 			if(routeShipper==null){
 				route.add(routei);
+				routeOldDateTimeStart.add(null);
 				continue;
 			}
 			List<mRouteDetailContainer> listRouteDetail= routeDetailContainerService.loadRouteContainerDetailByRouteCode(routeShipper.getRoute_Code());
-			
+			routeOldDateTimeStart.add(routeShipper.getRoute_Start_DateTime());
 			for(int j=0;j<listRouteDetail.size();j++){
 				mRouteDetailContainer oDC=listRouteDetail.get(j);
 				JSONObject order= new JSONObject();
@@ -293,7 +299,9 @@ public class ShippingController extends BaseWeb{
 			}
 			route.add(routei);
 		}
+		
 		model.put("routeOld", route);
+		model.put("routeOldDateTimeStart", routeOldDateTimeStart);
 		model.put("listShipper",listShipper);
 		model.put("listPDOrder",listPDO);
 		model.put("listShipperJson", listShipperJson);
@@ -343,6 +351,11 @@ public class ShippingController extends BaseWeb{
 		return null;
 	}
 	
+	@RequestMapping(value="/test")
+	public void testModules(){
+		System.out.print(routeDetailContainerService.loadQuantityOfOrderInRouteByOrderCode("ORPD000007"));
+		
+	}
 	@ResponseBody @RequestMapping(value="/update-shipper-location",method=RequestMethod.POST)
 	public mJSONResponseBoolean updateShipperLocation(@RequestBody String location,HttpSession session){
 		User u  =(User) session.getAttribute("currentUser");

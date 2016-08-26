@@ -96,6 +96,11 @@
  
 </div>
 <script>
+
+$("#shipperselect").on('change', function (){
+	console.log(dateTimeStartShipper[$("#shipperselect option:selected").index()]);
+	$("#dateTimeStart").val(dateTimeStartShipper[$("#shipperselect option:selected").index()]);
+});
 var status=0;
 var marker=[];
 var markerShipper=[];
@@ -111,28 +116,40 @@ var lOPD=JSON.parse('${listPDOrder}');
 var lShipper=JSON.parse('${listShipperJson}');
 var reqCount=0;
 var resCount=0;
+var dateTimeStartShipper=[];
 var xdWait=true;
 var remainOrder=[];
+console.log("lShipper ");
+console.log(lShipper);
 function pushOldRoute(){
 	var routeOld=JSON.parse('${routeOld}');
+	dateTimeStartShipper=JSON.parse('${routeOldDateTimeStart}');
+	$("#dateTimeStart").val(dateTimeStartShipper[$("#shipperselect option:selected").index()]);
+	console.log(dateTimeStartShipper);
+	
 	console.log("routeOld");
 	console.log(routeOld);
 	for(var i=0;i<lShipper.length;i++ ){
 		for(var j=0;j<routeOld[i].length;j++){ 
 			var orderID;
 			console.log(i+" "+j);
-			for(var k=lShipper.length;k<marker.length;k++)
+			for(var k=lShipper.length;k<marker.length;k++){
+				var xdbreak=true;
 				for(var t=0;t<marker[k].setPointOrder.length;t++)
 				if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==routeOld[i][j].isPickup){
-					
+					remainOrder[marker[k].setPointOrder[t].orderIndex][i]=routeOld[i][j].quantity;
+					lShipper[i].SHP_currentQuantity+=routeOld[i][j].quantity;
 					routeOld[i][j].marker=marker[k];
 					route[i].push(routeOld[i][j]);
 					routeLatLng[i].push({
 						lat:marker[k].getPosition().lat(),
 						lng:marker[k].getPosition().lng()
 					})
+					xdbreak=false;
 					break;
 				}
+				if(xdbreak==false) break; 
+			}
 		}
 		routePath[i].setMap(null);
 		routePath[i] = new google.maps.Polyline({
@@ -289,6 +306,12 @@ function getColorTimeCheck(early,late,x){
 }
 function markerSelectOrder(orderCode,pickup,marker_id,quantity){
 	var indexSelectBox=$("#shipperselect option:selected").index();
+	if(pickup==0){
+		lShipper[indexSelectBox].SHP_currentQuantity= lShipper[indexSelectBox].SHP_currentQuantity-quantity;
+		
+	} else  {
+		lShipper[indexSelectBox].SHP_currentQuantity= lShipper[indexSelectBox].SHP_currentQuantity+quantity;
+	}
 	if(status==0 ){
 		route[indexSelectBox].push({
 			"orderCode": orderCode,
@@ -393,6 +416,7 @@ function sumArr(arr){
 	return sum;
 }
 function makeRightPanel(){
+	dateTimeStartShipper[$("#shipperselect option:selected").index()]=$("#dateTimeStart").val();
 	$("table#rightPanel tbody").html("");
 	var dateTime = $("#dateTimeStart").val();
 	var dateTime= moment(dateTime,"YYYY-MM-DD HH:mm");
@@ -454,8 +478,11 @@ function makeInfoWindowContent(marker_id,setPointOrder){
 		else str+=setPointOrder[i].orderCode+" Delivery"
 		str+="</td>"
 		if(setPointOrder[i].isPickup==1){
-			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Pickup"+'"' +"value="+(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])) +' onkeyup=checkInputQuatity("'+(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])) +'","'+setPointOrder[i].orderCode+"Pickup"+'")> </td>';
-			if(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex])==0) str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+') disabled> Select</button>';
+			
+			var value=Math.min(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex]),lShipper[$("#shipperselect option:selected").index()].SHP_Capacity_1-lShipper[$("#shipperselect option:selected").index()].SHP_currentQuantity);
+			console.log(value);
+			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Pickup"+'"' +"value="+(Math.min(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex]),lShipper[$("#shipperselect option:selected").index()].SHP_Capacity_1-lShipper[$("#shipperselect option:selected").index()].SHP_currentQuantity)) +' onkeyup=checkInputQuatity("'+(value) +'","'+setPointOrder[i].orderCode+"Pickup"+'")> </td>';
+			if(value<=0) str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+') disabled> Select</button>';
 			else str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+')> Select</button>'
 		}
 		else { 
@@ -509,12 +536,9 @@ function viewAllOrder(setPointOrder){
 			lOPD[setPointOrder[i][j].orderIndex].marker= marker_tmp;
 		}
 		marker.push(marker_tmp);
-		//if(setPointOrder[i].length>1){
-			
-			listInfoWindow[marker.length]=new google.maps.InfoWindow({
+		listInfoWindow[marker.length]=new google.maps.InfoWindow({
 			    content: makeInfoWindowContent(marker.length-1,setPointOrder[i])
 			  });
-		//}
 		marker_tmp.infoWindow=listInfoWindow[marker.length];
 		marker_tmp.setMap(map);
 		if(setPointOrder[i][0].isPickup==0 ){
@@ -624,12 +648,14 @@ function randomColor( p1,p2,p2){
 }
 function resetRoute(){
 	var indexSelectBox=$("#shipperselect option:selected").index();
+	lShipper[indexSelectBox].SHP_currentQuantity=0;
 	route[indexSelectBox]=[route[indexSelectBox][0]];
 	routeLatLng[indexSelectBox]=[routeLatLng[indexSelectBox][0]];
 	routePath[indexSelectBox].setMap(null);
 	for(var i=0;i<lOPD.length;i++){
 		remainOrder[i][indexSelectBox]=0;
 	}
+	
 	updateDistance();
 	makeRightPanel();
 }
@@ -690,7 +716,6 @@ function wait(){
 	}
 }
 function pushDistance(){
-	
 	var indexSelectBox=$("#shipperselect option:selected").index();
 	var distanceKm=0;
 	var distanceTime=0;
@@ -700,9 +725,8 @@ function pushDistance(){
 		distanceKm+=distanceMatrix[indexOld][index].distance;
 		distanceTime+=distanceMatrix[indexOld][index].duration;
 	}
-	
 	var cellsOfShipper=document.getElementById("listShipperRoute").rows[indexSelectBox+1].cells;
-	cellsOfShipper[2].innerHTML=distanceKm;
+	cellsOfShipper[2].innerHTML=distanceKm ;
 	cellsOfShipper[3].innerHTML=moment.duration(distanceTime,'seconds').days() + "ngày "+ moment.duration(distanceTime,'seconds').hours()+" giờ "+moment.duration(distanceTime,'seconds').minutes()+"phút";
 }
 </script>
