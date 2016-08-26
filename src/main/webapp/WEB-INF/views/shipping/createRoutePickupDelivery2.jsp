@@ -147,10 +147,16 @@ function pushOldRoute(){
 						lat:marker[k].getPosition().lat(),
 						lng:marker[k].getPosition().lng()
 					})
-					xdbreak=false;
-					break;
+				if(routeOld[i][j].isPickup==1)
+				if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==0){
+					marker[k].setAnimation(google.maps.Animation.BOUNCE);
 				}
-				if(xdbreak==false) break; 
+					if(routeOld[i][j].isPickup==0)
+						if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==0){
+							marker[k].setAnimation(null);
+						}
+				}
+				
 			}
 		}
 		routePath[i].setMap(null);
@@ -163,6 +169,7 @@ function pushOldRoute(){
 		routePath[i].setMap(map);
 		
 	}
+	
 	//console.log(route);
 	updateDistance();
 }
