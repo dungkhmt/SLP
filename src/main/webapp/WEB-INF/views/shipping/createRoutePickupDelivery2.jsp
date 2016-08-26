@@ -137,7 +137,7 @@ function pushOldRoute(){
 			console.log(i+" "+j);
 			for(var k=lShipper.length;k<marker.length;k++){
 				var xdbreak=true;
-				for(var t=0;t<marker[k].setPointOrder.length;t++)
+				for(var t=0;t<marker[k].setPointOrder.length;t++){
 				if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==routeOld[i][j].isPickup){
 					remainOrder[marker[k].setPointOrder[t].orderIndex][i]=routeOld[i][j].quantity;
 					lShipper[i].SHP_currentQuantity+=routeOld[i][j].quantity;
@@ -147,14 +147,15 @@ function pushOldRoute(){
 						lat:marker[k].getPosition().lat(),
 						lng:marker[k].getPosition().lng()
 					})
+				}	
 				if(routeOld[i][j].isPickup==1)
 				if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==0){
 					marker[k].setAnimation(google.maps.Animation.BOUNCE);
 				}
-					if(routeOld[i][j].isPickup==0)
-						if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==0){
+				if(routeOld[i][j].isPickup==0)
+				if(marker[k].setPointOrder[t].orderCode==routeOld[i][j].orderCode && marker[k].setPointOrder[t].isPickup==0){
 							marker[k].setAnimation(null);
-						}
+				}
 				}
 				
 			}

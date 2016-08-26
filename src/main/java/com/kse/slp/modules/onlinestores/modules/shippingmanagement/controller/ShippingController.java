@@ -176,11 +176,15 @@ public class ShippingController extends BaseWeb{
 			for(int j=0;j<listOrder.size();j++){
 				JSONObject orderRoute=(JSONObject) listOrder.get(j);
 				System.out.print(name()+" "+(String)orderRoute.get("orderCode"));
-				mPickupDeliveryService.updateStatus( (String)orderRoute.get("orderCode"), Constants.ORDER_STATUS_IN_ROUTE);
+				mPickupDeliveryOrders opd= mPickupDeliveryService.loadAPickupDeliveryOrderbyCode((String)orderRoute.get("orderCode"));
+				
+				
 				if((Long)orderRoute.get("isPickup")==1)
 					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
-					else
-						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, Integer.parseInt(String.valueOf(orderRoute.get("quantity"))));
+				else
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, Integer.parseInt(String.valueOf(orderRoute.get("quantity"))));
+				int q= routeDetailContainerService.loadQuantityOfOrderInRouteByOrderCode((String)orderRoute.get("orderCode"));
+				if(q>= opd.getOPD_Volumn()) mPickupDeliveryService.updateStatus( (String)orderRoute.get("orderCode"), Constants.ORDER_STATUS_IN_ROUTE);
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

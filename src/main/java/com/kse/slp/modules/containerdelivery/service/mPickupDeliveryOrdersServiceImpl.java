@@ -60,4 +60,11 @@ public class mPickupDeliveryOrdersServiceImpl implements mPickupDeliveryOrdersSe
 		pickupDeliveryOrdersDAO.updateAnOrder(o);
 		
 	}
+
+	@Override
+	public mPickupDeliveryOrders loadAPickupDeliveryOrderbyCode(
+			String pickupDeliveryOrderCode) {
+		// TODO Auto-generated method stub
+		return pickupDeliveryOrdersDAO.loadAPickupDeliveryOrderbyCode(pickupDeliveryOrderCode);
+	}
 }
