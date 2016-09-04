@@ -30,7 +30,7 @@ $(document).ready(function(){
 		allowedFileExtensions:['xlsx'],
 		maxFileCount: 1
 	  }).on('fileuploaded', function() {
-		 
+		  window.location=baseUrl+"/containerdelivery/list-pickupdelivery-order";
 	 });
 });
 </script>
