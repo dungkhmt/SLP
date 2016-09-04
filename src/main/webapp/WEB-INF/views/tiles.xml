@@ -61,7 +61,7 @@
     </definition>
     <definition name="ship.createpickupdeliveryroute" extends="layout">
     	<put-attribute name="title" value="Create pickup delivery route manual"/>
-    	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoutePickupDelivery2.jsp"/>
+    	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoutePickupDelivery.jsp"/>
     </definition>
      <definition name="ship.getRoutes" extends="layout">
     	<put-attribute name="title" value="View routes Shipper"/>
@@ -72,6 +72,12 @@
     	<put-attribute name="title" value="View list Pickup Delivery Order"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/list.jsp"/>
     </definition>
+    
+    <definition name="containerdelivery.addpickupdeliveryordersbyxls" extends="layout">
+    	<put-attribute name="title" value="add pickup delivery orders by xls"/>
+    	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/addpickupdeliveryordersbyxls.jsp"/>
+    </definition>
+    
     <definition name="containerdelivery.addapickupdeliveryorder" extends="layout">
     	<put-attribute name="title" value="Add a Pickup Delivery Order"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/add.jsp"/>

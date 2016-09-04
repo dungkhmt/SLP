@@ -1,14 +1,20 @@
 package com.kse.slp.modules.containerdelivery.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,6 +22,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
@@ -57,6 +66,57 @@ public class mPickupDeliveryController extends BaseWeb{
 		model.put("orderPickupDeliveryFormAdd", new mOrderPickupDeliveryFormAdd());
 		log.info(u.getUsername());
 		return "containerdelivery.addapickupdeliveryorder";
+	}
+	@RequestMapping(value ="add-pickupdelivery-orders-by-xls", method= RequestMethod.GET )
+	public String addPickupDeliveryOrders(ModelMap model, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		return "containerdelivery.addpickupdeliveryordersbyxls";
+	}
+	@RequestMapping(value="/upload-file-pickupdelivery-orders", method=RequestMethod.POST)
+	public @ResponseBody String uploadFile(MultipartHttpServletRequest  request){
+		System.out.println(name());
+		Iterator<String> itr = request.getFileNames();
+		MultipartFile file = request.getFile(itr.next());
+		System.out.println(name()+"::uploadFile--"+file.getOriginalFilename() + " uploaded");
+		
+		if(file != null){
+			readFilePickupDeliveryOrder(file);
+		}
+		return "{}";
+	}
+	public void readFilePickupDeliveryOrder(MultipartFile file){
+		try {
+			InputStream readFile = file.getInputStream();
+			XSSFWorkbook wb = new XSSFWorkbook(readFile);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			XSSFRow row;
+			int rows = sheet.getPhysicalNumberOfRows();
+			for(int i=1;i<rows;i++){
+				System.out.println(name()+"::readFile"+"--row "+i);
+				row = sheet.getRow(i);
+				String oPD_ClientCode="XXX";
+				String oPD_PickupAddress=row.getCell(1).getStringCellValue();
+				String latlng= row.getCell(2).getStringCellValue();
+				float oPD_PickupLat =Float.parseFloat(latlng.substring(0, latlng.indexOf(',')));
+				float oPD_PickupLng =Float.parseFloat(latlng.substring(latlng.indexOf(',')+2));
+				String oPD_EarlyPickupDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(3).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
+				String oPD_LatePickupDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(4).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
+				String oPD_DeliveryAddress=row.getCell(5).getStringCellValue();
+				latlng= row.getCell(6).getStringCellValue();
+				float oPD_DeliveryLat =Float.parseFloat(latlng.substring(0, latlng.indexOf(',')));
+				float oPD_DeliveryLng =Float.parseFloat(latlng.substring(latlng.indexOf(',')+2));
+				String oPD_EarlyDeliveryDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(7).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
+				String oPD_LateDeliveryDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(8).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
+				int oPD_Volumn=(int) row.getCell(9).getNumericCellValue();
+				System.out.println(name()+" "+oPD_ClientCode+" "+oPD_PickupAddress+" "+oPD_PickupLat+" "+oPD_PickupLng+" "+oPD_EarlyPickupDateTime+" "+oPD_LatePickupDateTime+" "+oPD_DeliveryAddress+" "+oPD_DeliveryLat+" "+oPD_DeliveryLng+" "+oPD_EarlyDeliveryDateTime+" "+oPD_LateDeliveryDateTime+" "+oPD_Volumn);
+				pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently(), oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	@RequestMapping(value = "/save-a-pickupdelivery-order", method = RequestMethod.POST)
 	public String saveAPickupDeliveryOrder(ModelMap model, HttpSession session,@ModelAttribute("orderPickupDeliveryFormAdd") mOrderPickupDeliveryFormAdd orderForm,BindingResult result){

@@ -76,4 +76,9 @@
     <beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">  
         <beans:property name="definitions" value="/WEB-INF/views/tiles.xml" />  
     </beans:bean>
+    <!-- MultiPart File -->
+    <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes = 20*1024*1024*1024 B = 20 MB -->
+        <beans:property name="maxUploadSize" value="20971520"/>
+    </beans:bean>
 </beans:beans>
