@@ -9,4 +9,5 @@ public interface mRouteDetailContainerDAO {
 	public void deleteRoutesbyRouteCode(String routeCode);
 	public List<mRouteDetailContainer> loadRouteContainerDetailByRouteCode(String routeCode);
 	public int loadQuantityOfOrderInRouteByOrderCode(String orderCode);
+	public List<mRouteContainerDetailExtension> loadRouteContainerDetailExtension();
 }

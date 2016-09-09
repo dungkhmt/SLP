@@ -95,22 +95,22 @@ public class mPickupDeliveryController extends BaseWeb{
 			for(int i=1;i<rows;i++){
 				System.out.println(name()+"::readFile"+"--row "+i);
 				row = sheet.getRow(i);
-				String oPD_ClientCode="XXX";
-				String oPD_PickupAddress=row.getCell(1).getStringCellValue();
-				String latlng= row.getCell(2).getStringCellValue();
+				String oPD_ClientCode=row.getCell(1).getStringCellValue();
+				String oPD_PickupAddress=row.getCell(2).getStringCellValue();
+				String latlng= row.getCell(3).getStringCellValue();
 				float oPD_PickupLat =Float.parseFloat(latlng.substring(0, latlng.indexOf(',')));
 				float oPD_PickupLng =Float.parseFloat(latlng.substring(latlng.indexOf(',')+2));
-				String oPD_EarlyPickupDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(3).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
-				String oPD_LatePickupDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(4).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
-				String oPD_DeliveryAddress=row.getCell(5).getStringCellValue();
-				latlng= row.getCell(6).getStringCellValue();
+				String oPD_EarlyPickupDateTime = row.getCell(4).getStringCellValue();
+				String oPD_LatePickupDateTime = row.getCell(5).getStringCellValue();
+				String oPD_DeliveryAddress=row.getCell(6).getStringCellValue();
+				latlng= row.getCell(7).getStringCellValue();
 				float oPD_DeliveryLat =Float.parseFloat(latlng.substring(0, latlng.indexOf(',')));
 				float oPD_DeliveryLng =Float.parseFloat(latlng.substring(latlng.indexOf(',')+2));
-				String oPD_EarlyDeliveryDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(7).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
-				String oPD_LateDeliveryDateTime = GenerationDateTimeFormat.convertDateTimeFormat(row.getCell(8).getStringCellValue(),"yyyy:MM:dd:HH:mm:ss","yyyy/MM/dd HH:mm");
-				int oPD_Volumn=(int) row.getCell(9).getNumericCellValue();
+				String oPD_EarlyDeliveryDateTime = row.getCell(8).getStringCellValue();
+				String oPD_LateDeliveryDateTime = row.getCell(9).getStringCellValue();
+				int oPD_Volumn=(int) row.getCell(10).getNumericCellValue();
 				System.out.println(name()+" "+oPD_ClientCode+" "+oPD_PickupAddress+" "+oPD_PickupLat+" "+oPD_PickupLng+" "+oPD_EarlyPickupDateTime+" "+oPD_LatePickupDateTime+" "+oPD_DeliveryAddress+" "+oPD_DeliveryLat+" "+oPD_DeliveryLng+" "+oPD_EarlyDeliveryDateTime+" "+oPD_LateDeliveryDateTime+" "+oPD_Volumn);
-				pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently(), oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn);
+				pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, GenerationDateTimeFormat.genDateTimeFormatStandardCurrently(), oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -137,12 +137,19 @@ public class mPickupDeliveryController extends BaseWeb{
 			String oPD_EarlyDeliveryDateTime=orderForm.getOrderDelieveryDateTimeEarly();
 			String oPD_LateDeliveryDateTime=orderForm.getOrderDelieveryDateTimeLate();
 			int oPD_Volumn=orderForm.getOrderVolumn();
-			String oPD_RequestDateTime = GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+			String oPD_RequestDateTime = GenerationDateTimeFormat.genDateTimeFormatStandardCurrently();
 			pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, oPD_RequestDateTime, oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn);
 			log.info(u.getUsername()+" DONE");
 			return "redirect:list-pickupdelivery-order";
 		}
 		return "redirect:add-a-pickupdelivery-order";
+	}
+	
+	@RequestMapping(value="/view-all-route", method= RequestMethod.GET)
+	public String viewAllRoute(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername()+" DONE");
+		return "containerdelivery.viewallroutecontainer";
 	}
 	public String name(){
 		return "mPickupDeliveryController::";

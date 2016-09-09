@@ -82,4 +82,9 @@
     	<put-attribute name="title" value="Add a Pickup Delivery Order"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/add.jsp"/>
     </definition>
+    
+    <definition name="containerdelivery.viewallroutecontainer" extends="layout">
+    	<put-attribute name="title" value="View all route container"/>
+    	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/viewallroutecontainer.jsp"/>
+    </definition>
 </tiles-definitions>

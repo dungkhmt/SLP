@@ -57,7 +57,7 @@
      				<input class="form-control" name="dateTimeStart" id="dateTimeStart" />
      			</div>
      			
-     			<button type="button" class="btn btn-primary active" title="Thay đổi thời gian bắt đầu chuyển hàng" onclick="makeRightPanel()">Thay đổi</button>
+     			<button type="button" class="btn btn-primary active" title="Thay đổi thời gian bắt đầu chuyển hàng" onclick="changeTimeStart()">Thay đổi</button>
      			<button type="button" class="btn btn-danger active" title="Xóa route ứng với shipper này" onclick="resetRoute()">Reset</button>
      			<!-- <button type="button" class="btn  active" id="deletebutton" title="Chuyển sang chế độ xóa" onclick="changeButtonDeleteStateClickMarker()">Xóa</button>  -->
      		</div>
@@ -98,13 +98,16 @@
 <script>
 
 $("#shipperselect").on('change', function (){
-	console.log(dateTimeStartShipper[$("#shipperselect option:selected").index()]);
+	//console.log(dateTimeStartShipper[$("#shipperselect option:selected").index()]);
+	resetViewPath();
+	makeRightPanel();
 	$("#dateTimeStart").val(dateTimeStartShipper[$("#shipperselect option:selected").index()]);
+	
 });
 var status=0;
 var marker=[];
 var markerShipper=[];
-var map;
+var map; 
 var route=[];
 var routePath=[];
 var distanceMatrix=[];
@@ -120,8 +123,17 @@ var dateTimeStartShipper=[];
 var xdWait=true;
 var remainOrder=[];
 
-function animationsDeliveryMarker(){
-		
+function changeTimeStart(){
+	var indexSelectBox=$("#shipperselect option:selected").index();	
+	dateTimeStartShipper[indexSelectBox]=$("#dateTimeStart").val();
+	makeRightPanel();
+}
+function resetViewPath(){
+	var indexSelectBox=$("#shipperselect option:selected").index();
+	for(var i=0;i<routePath.length;i++){
+		routePath[i].setMap(null);
+	}
+	routePath[indexSelectBox].setMap(map);
 }
 function pushOldRoute(){
 	var routeOld=JSON.parse('${routeOld}');
@@ -185,7 +197,7 @@ function changeButtonDeleteStateClickMarker(){
 		$("#deletebutton").addClass("btn-warning");
 }	
 $('#dateTimeStart').datetimepicker({
-	format: 'YYYY-MM-DD HH:mm'
+	format: 'YYYY-MM-DD HH:mm:ss'
 });
 function initColorShipper(){
 	for(i=0;i<lShipper.length;i++){
@@ -222,6 +234,8 @@ function confirmRoute(){
 function saveData(){
 	
 	var data=modelDataToSave();
+	console.log(data);
+	alert();
 	$.ajax({ 
 	    type:"POST", 
 	    url:"${baseUrl}/ship/save-container-routes",
@@ -236,9 +250,9 @@ function saveData(){
 	
 }
 function getColorTimeCheck(early,late,x){
-	var mEarly=	moment(early,"YYYY-MM-DD HH:mm");
-	var mLate= moment(late,"YYYY-MM-DD HH:mm");
-	var xDate=moment(x,"YYYY-MM-DD HH:mm");
+	var mEarly=	moment(early,"YYYY-MM-DD HH:mm:ss");
+	var mLate= moment(late,"YYYY-MM-DD HH:mm:ss");
+	var xDate=moment(x,"YYYY-MM-DD HH:mm:ss");
 	if (mLate.isBefore(xDate) ) return "rgb(255, 102, 0)";
 	if (mEarly.isAfter(xDate)) return "rgb(0, 153, 51)";
 }
@@ -254,7 +268,7 @@ function modelDataToSave(){
 			"orderList":null
 		}
 		routesData[nRoute].shipperCode=lShipper[i].SHP_Code;
-		routesData[nRoute].dateTimeStart=$("#dateTimeStart").val();
+		routesData[nRoute].dateTimeStart=dateTimeStartShipper[i];
 		routesData[nRoute].orderList=[];
 		for(var j=1;j<route[i].length;j++){
 			routesData[nRoute].orderList.push({
@@ -423,7 +437,7 @@ function makeRemainArray(){
 			remainOrder[i][j]=0;
 		}
 	}
-	console.log(remainOrder);
+	
 }
 function sumArr(arr){
 	var sum=0;
@@ -436,38 +450,39 @@ function makeRightPanel(){
 	dateTimeStartShipper[$("#shipperselect option:selected").index()]=$("#dateTimeStart").val();
 	$("table#rightPanel tbody").html("");
 	var dateTime = $("#dateTimeStart").val();
-	var dateTime= moment(dateTime,"YYYY-MM-DD HH:mm");
+	var dateTime= moment(dateTime,"YYYY-MM-DD HH:mm:ss");
 	var nShipper=lShipper.length;
 	var str;
-	for(var i=0;i<lShipper.length;i++ ){
+	var indexSelectBox=$("#shipperselect option:selected").index();
+	/*for(var i=0;i<lShipper.length;i++ ){ */
 		str=str+"<tr>";
-		str+="<td colspan='3' align='center'style='color:"+ lShipper[i].color +"'>"+lShipper[i].SHP_Code+"</td>";
+		str+="<td colspan='3' align='center'style='color:"+ lShipper[indexSelectBox].color +"'>"+lShipper[indexSelectBox].SHP_Code+"</td>";
 		str=str+"</tr>";
-		for(var j=1;j<route[i].length;j++){
+		for(var j=1;j<route[indexSelectBox].length;j++){
 			var dt_tmp=dateTime;
-			var index=marker.indexOf(route[i][j].marker);
-			var indexOld=marker.indexOf(route[i][j-1].marker);
+			var index=marker.indexOf(route[indexSelectBox][j].marker);
+			var indexOld=marker.indexOf(route[indexSelectBox][j-1].marker);
 			var distance=distanceMatrix[indexOld][index];
 			dt_tmp.add(distance.duration,"seconds");
 			str+="<tr>";
 			str+="<td>"+lOPD[parseInt((index-nShipper)/2)].OPD_ClientCode +"</td>"
 			
 			if((index-nShipper)%2==1){
-				str+="<td style='color:"+getColorTimeCheck(lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime,lOPD[parseInt((index-nShipper)/2)].OPD_LateDeliveryDateTime,dt_tmp.year()+"/"+parseInt( dt_tmp.month()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes())+"'>"+dt_tmp.year()+"/"+parseInt( dt_tmp.months()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes()+"</td>";
-				str+="<td>"+lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_LateDeliveryDateTime+"</td>";
+				str+="<td style='color:"+getColorTimeCheck(lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime,lOPD[parseInt((index-nShipper)/2)].OPD_LateDeliveryDateTime,dt_tmp.year()+"-"+parseInt( dt_tmp.month()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes())+"'>"+dt_tmp.year()+"-"+parseInt( dt_tmp.months()+1)+"-"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes()+"</td>";
+				str+="<td>"+lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime.substring(0,lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyDeliveryDateTime.length-3)+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_LateDeliveryDateTime.substring(0,lOPD[parseInt((index-nShipper)/2)].OPD_LateDeliveryDateTime.length-3)+"</td>";
 			} else {
-				str+="<td style='color:"+getColorTimeCheck(lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyPickupDateTime,lOPD[parseInt((index-nShipper)/2)].OPD_LatePickupDateTime,dt_tmp.year()+"/"+parseInt( dt_tmp.month()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes())+"'>"+dt_tmp.year()+"/"+parseInt( dt_tmp.months()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes()+"</td>";
-				str+="<td>"+lOPD[parseInt((index-nShipper)/2)].OPD_EarlyPickupDateTime+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_LatePickupDateTime+"</td>";
+				str+="<td style='color:"+getColorTimeCheck(lOPD[(parseInt((index-nShipper)/2))].OPD_EarlyPickupDateTime,lOPD[parseInt((index-nShipper)/2)].OPD_LatePickupDateTime,dt_tmp.year()+"/"+parseInt( dt_tmp.month()+1)+"/"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes())+"'>"+dt_tmp.year()+"-"+parseInt( dt_tmp.months()+1)+"-"+dt_tmp.date()+" "+dt_tmp.hours()+":"+ dt_tmp.minutes()+"</td>";
+				str+="<td>"+lOPD[parseInt((index-nShipper)/2)].OPD_EarlyPickupDateTime.substring(0,lOPD[parseInt((index-nShipper)/2)].OPD_EarlyPickupDateTime.length-3)+"-"+lOPD[parseInt((index-nShipper)/2)].OPD_LatePickupDateTime.substring(0,lOPD[parseInt((index-nShipper)/2)].OPD_LatePickupDateTime.length-3)+"</td>";
 			}
 			str+="</tr>";
 			//console.log(dt_tmp.year()+" "+dt_tmp.month()+" "+dt_tmp.date()+" "+dt_tmp.hours()+" "+ dt_tmp.minutes());
 		}
-	}
+	//}
 	$("table#rightPanel tbody").append(str);
 }
 function checkInputQuatity(max,code){
 	var key=$("#"+code).val();
-	console.log(parseInt(key));
+	
 	if(parseInt(key)>parseInt(max)){
 		$("#"+code).css("border", "2px solid red");
 		$("#"+code+"Button").attr("disabled", true);
@@ -494,9 +509,13 @@ function makeInfoWindowContent(marker_id,setPointOrder){
 		else str+=setPointOrder[i].orderCode+" Delivery"
 		str+="</td>"
 		if(setPointOrder[i].isPickup==1){
-			
 			var value=Math.min(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex]),lShipper[$("#shipperselect option:selected").index()].SHP_Capacity_1-lShipper[$("#shipperselect option:selected").index()].SHP_currentQuantity);
-			console.log(value);
+			console.log(lShipper[$("#shipperselect option:selected").index()].SHP_Capacity_1);
+			console.log(lShipper[$("#shipperselect option:selected").index()].SHP_currentQuantity);
+			console.log(lOPD[setPointOrder[i].orderIndex].OPD_Volumn );
+			console.log(sumArr(remainOrder[setPointOrder[i].orderIndex]));
+			
+			console.log(remainOrder);
 			str+='<td> <input type="text" id="'+setPointOrder[i].orderCode+"Pickup"+'"' +"value="+(Math.min(lOPD[setPointOrder[i].orderIndex].OPD_Volumn -sumArr(remainOrder[setPointOrder[i].orderIndex]),lShipper[$("#shipperselect option:selected").index()].SHP_Capacity_1-lShipper[$("#shipperselect option:selected").index()].SHP_currentQuantity)) +' onkeyup=checkInputQuatity("'+(value) +'","'+setPointOrder[i].orderCode+"Pickup"+'")> </td>';
 			if(value<=0) str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+') disabled> Select</button>';
 			else str+='<td> <button type="button" id="'+setPointOrder[i].orderCode+"PickupButton"+'" class="btn btn-warning active" onclick=changeRemainArrayforRoute(\''+setPointOrder[i].orderCode+'\','+1+','+marker_id+')> Select</button>'
@@ -526,7 +545,7 @@ function changeRemainArrayforRoute(orderCode,isPickup,marker_Id){
 		quantity=$("#"+orderCode+"Pickup").val();
 	else 
 		quantity=$("#"+orderCode+"Delivery").val();
-	console.log(quantity);
+	
 	var oindex;
 	for(var i =0;i< lOPD.length;i++){
 		//console.log(lOPD[i].orderCode+" "+orderCode)
@@ -536,9 +555,9 @@ function changeRemainArrayforRoute(orderCode,isPickup,marker_Id){
 		}
 	}
 	var indexSelectBox=$("#shipperselect option:selected").index();
-	console.log(indexSelectBox+" "+oindex);
+	
 	remainOrder[oindex][indexSelectBox]=parseInt(quantity);
-	console.log(remainOrder);
+	
 	markerSelectOrder(orderCode,isPickup,marker_Id,quantity);
 }
 function viewAllOrder(setPointOrder){
@@ -666,6 +685,7 @@ function resetRoute(){
 	route[indexSelectBox]=[route[indexSelectBox][0]];
 	routeLatLng[indexSelectBox]=[routeLatLng[indexSelectBox][0]];
 	routePath[indexSelectBox].setMap(null);
+	
 	for(var i=0;i<lOPD.length;i++){
 		remainOrder[i][indexSelectBox]=0;
 	}

@@ -16,9 +16,18 @@ public class GenerationDateTimeFormat {
 		String orderDate=sCurrentDate+sCurrentTime;
 		return orderDate;
 	}
-	
+	public static String genDateTimeFormatStandardCurrently(){
+		Date date= new Date();
+		Date currentDate = new Date();
+		SimpleDateFormat dateformatyyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
+		String sCurrentDate = dateformatyyyyMMdd.format(currentDate);
+		String sCurrentTime = sdf2.format(currentDate);
+		String orderDate=sCurrentDate+" "+sCurrentTime;
+		return orderDate;
+	}
 	public static String convertDateTimeFormat(String date,String inFormat,String outFormat){
-		SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat(inFormat);
 		try {
 			Date cdate = format.parse(date);
 			SimpleDateFormat dateformatyyyyMMdd = new SimpleDateFormat(outFormat);

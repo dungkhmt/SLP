@@ -180,16 +180,16 @@ var map;
 var marker=[];
 var backupz;
 $('#datetimepicker1').datetimepicker({
-	format: 'YYYY/MM/DD HH:mm'
+	format: 'YYYY-MM-DD HH:mm:ss'
 });
 $('#datetimepicker2').datetimepicker({
-	format: 'YYYY/MM/DD HH:mm'
+	format: 'YYYY-MM-DD HH:mm:ss'
 });
 $('#datetimepicker3').datetimepicker({
-	format: 'YYYY/MM/DD HH:mm'
+	format: 'YYYY-MM-DD HH:mm:ss'
 });
 $('#datetimepicker4').datetimepicker({
-	format: 'YYYY/MM/DD HH:mm'
+	format: 'YYYY-MM-DD HH:mm:ss'
 });
 function pushLatLngValue(z){
 	if(z==2)
