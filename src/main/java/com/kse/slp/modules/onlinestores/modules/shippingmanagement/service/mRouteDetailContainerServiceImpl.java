@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.dao.mRouteDetailContainerDAO;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
 
 @Service("mRouteDetailContainerService")
@@ -43,5 +44,12 @@ public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerSe
 		// TODO Auto-generated method stub
 		return routeDetailContainerDAO.loadQuantityOfOrderInRouteByOrderCode(orderCode);
 	}
+
+	@Override
+	public List<mRouteContainerDetailExtension> loadRouteContainerDetailExtension() {
+		// TODO Auto-generated method stub
+		return routeDetailContainerDAO.loadRouteContainerDetailExtension();
+	}
+	
 
 }

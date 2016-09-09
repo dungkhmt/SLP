@@ -40,19 +40,23 @@
 									<th>Số lượng</th>
 									<th>Số thứ tự</th>
 									<th>Tài xế</th>
-									<th>Giá</th>
+									
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach items="${piDelist}" var="pDL">
+								<c:forEach items="${listR}" var="lR">
 									<tr>
-										<td><c:out value="${pDL.OPD_Code}"/></td>
-										<td><c:out value="${pDL.OPD_ClientCode}"/></td>
-										<td><c:out value="${pDL.OPD_EarlyPickupDateTime} -${pDL.OPD_LatePickupDateTime}"/></td>
-										<td><c:out value="${pDL.OPD_PickupAddress}"/></td>
-										<td><c:out value="${pDL.OPD_EarlyDeliveryDateTime} -${pDL.OPD_LateDeliveryDateTime}"/></td>
-										<td><c:out value="${pDL.OPD_DeliveryAddress}"/></td>
-										<td><c:out value=""/>${pDL.OPD_Price }</td>
+										<td><c:out value="${lR.clientCode}"/></td>
+										<td><c:out value="${lR.clientName}"/></td>
+										<td><c:out value="${lR.pickupAdress}"/></td>
+										<td><c:out value="${lR.arriveTimePickup}"/></td>
+										<td><c:out value="${lR.expectedTimePickup}"/></td>
+										<td><c:out value="${lR.deliveryAdress}"/></td>
+										<td><c:out value="${lR.arriveTimeDeleivery}"/></td>
+										<td><c:out value="${lR.expectedTimeDelivery}"/></td>
+										<td><c:out value="${lR.volumn}"/></td>
+										<td><c:out value="${lR.sequence}"/></td>
+										<td><c:out value="${pDL.driver }"/></td>
 									</tr>
 								</c:forEach>
 							</tbody>

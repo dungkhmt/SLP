@@ -36,6 +36,8 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArt
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
@@ -47,7 +49,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	private static final Logger log = Logger.getLogger(mPickupDeliveryController.class);
 	@Autowired
 	mPickupDeliveryOrdersService pickupDeliveryOrders;
-	
+	@Autowired
+	mRouteDetailContainerService routeDetailContainerService;
 
 	@RequestMapping(value="/list-pickupdelivery-order",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
@@ -149,6 +152,7 @@ public class mPickupDeliveryController extends BaseWeb{
 	public String viewAllRoute(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername()+" DONE");
+		model.put("listR", routeDetailContainerService.loadRouteContainerDetailExtension());
 		return "containerdelivery.viewallroutecontainer";
 	}
 	public String name(){

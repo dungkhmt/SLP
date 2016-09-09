@@ -2,6 +2,7 @@ package com.kse.slp.modules.onlinestores.modules.shippingmanagement.dao;
 
 import java.util.List;
 
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
 
 public interface mRouteDetailContainerDAO {
