@@ -125,7 +125,7 @@ public class mRouteDetailContainerDAOImpl extends BaseDao implements mRouteDetai
 					+ "mrdc.RTDC_Quantity, mrdc.RTDC_Sequence, mr.Route_Shipper_Code, mr.Route_Start_DateTime, mo.OPD_ClientCode "
 					+ " FROM mRouteDetailContainer mrdc, mRoutes mr, mPickupDeliveryOrders mo, mClients mc  "
 					+ " WHERE mrdc.RTDC_RouteCode = mr.Route_Code and mr.Route_Status_Code = '"+Constants.ROUTE_STATUS_CONFIRMED+"' and mrdc.RTDC_OrderCode = mo.OPD_Code and mo.OPD_ClientCode = mc.C_Code" //and mo.OPD_ClientCode = mc.C_PhoneNumber 
-					+ "	ORDER BY mrdc.RTDC_RouteCode ASC";
+					+ "	ORDER BY mrdc.RTDC_RouteCode ASC , mrdc.RTDC_Sequence DESC";
 			List<Object[]> sql_result = getSession().createQuery(sql).list();
 			
 			for(int i=0; i<sql_result.size(); i++){
