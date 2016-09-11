@@ -19,7 +19,8 @@
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
-	
+	<div id="map" style="height:100%">
+    </div>
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
@@ -56,7 +57,7 @@
 										<td><c:out value="${lR.expectedTimeDelivery}"/></td>
 										<td><c:out value="${lR.volumn}"/></td>
 										<td><c:out value="${lR.sequence}"/></td>
-										<td><c:out value="${pDL.driver }"/></td>
+										<td><c:out value="${lR.driver }"/></td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -75,15 +76,28 @@
 <!-- /#page-wrapper -->
 
 <script>
-
-
+var map;
+var directionsService;
+var listRD=JSON.parse('${listRJson}');
 $(document).ready(function(){
 	var table = $('#dataTabels-pDL').DataTable();
 	
 	$('.addOutOrder').click(function(){
 		window.location = '${baseUrl}' + "/containerdelivery/add-a-pickupdelivery-order.html";
 	});
-	
-
+	console.log(listRD);
 });
+
+function initMap() {
+	directionsService = new google.maps.DirectionsService;
+    var mapDiv = document.getElementById('map');
+    map = new google.maps.Map(mapDiv, {
+        center: {lat: 21.03, lng: 105.8},
+        zoom: 8
+    });
+    
+  }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&callback=initMap">
 </script>

@@ -12,8 +12,15 @@ public class mRouteContainerDetailExtension {
 	private int volumn;
 	private int sequence;
 	private String driver;
+	private String type;
 	private String timeStartRoute;
 	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public String getTimeStartRoute() {
 		return timeStartRoute;
 	}

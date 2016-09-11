@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
@@ -36,6 +37,7 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArt
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
@@ -152,7 +154,13 @@ public class mPickupDeliveryController extends BaseWeb{
 	public String viewAllRoute(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername()+" DONE");
-		model.put("listR", routeDetailContainerService.loadRouteContainerDetailExtension());
+		List<mRouteContainerDetailExtension> listR=routeDetailContainerService.loadRouteContainerDetailExtension(); 
+		model.put("listR",listR );
+		Gson gson= new Gson();
+		String listRJson = gson.toJson(listR);
+		System.out.println(name()+ listRJson);
+		model.put("listRJson", listRJson);
+		
 		return "containerdelivery.viewallroutecontainer";
 	}
 	public String name(){
