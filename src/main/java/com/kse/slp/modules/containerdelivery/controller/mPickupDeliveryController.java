@@ -154,7 +154,7 @@ public class mPickupDeliveryController extends BaseWeb{
 		return "redirect:add-a-pickupdelivery-order";
 	}
 	
-	@RequestMapping(value="/view-all-route", method= RequestMethod.GET)
+	@RequestMapping(value="/view-route-detail-container", method= RequestMethod.GET)
 	public String viewAllRoute(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername()+" DONE");
