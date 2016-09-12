@@ -39,7 +39,10 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrders
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteMinimizeforVRDC;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
@@ -53,7 +56,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	mPickupDeliveryOrdersService pickupDeliveryOrders;
 	@Autowired
 	mRouteDetailContainerService routeDetailContainerService;
-
+	@Autowired
+	mShippersService shipperService;
 	@RequestMapping(value="/list-pickupdelivery-order",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
@@ -160,7 +164,22 @@ public class mPickupDeliveryController extends BaseWeb{
 		String listRJson = gson.toJson(listR);
 		System.out.println(name()+ listRJson);
 		model.put("listRJson", listRJson);
+		List<mShippers> listShipper= shipperService.getList();
+		String listShJson = gson.toJson(listShipper);
+		model.put("listShJson", listShJson);
+		List<mRouteMinimizeforVRDC> listRouteM= new ArrayList<mRouteMinimizeforVRDC>();
+		for(int i=0;i<listR.size();){
+			int nST= listR.get(i).getSequence()+1;
+			mRouteMinimizeforVRDC mr= new mRouteMinimizeforVRDC();
+			mr.setTimeStartRoute(listR.get(i).getTimeStartRoute());
+			mr.setShipperCode(listR.get(i).getDriver());
+			mr.setStartId(i);
+			mr.setnStep(nST);
+			listRouteM.add(mr);
+			i+=nST;
+		}
 		
+		model.put("listRMJson",gson.toJson(listRouteM) );
 		return "containerdelivery.viewallroutecontainer";
 	}
 	public String name(){

@@ -9,12 +9,40 @@ public class mRouteContainerDetailExtension {
 	private String deliveryAdress;
 	private String arriveTimeDeleivery;
 	private String expectedTimeDelivery;
+	private double pickupLat;
+	private double pickupLng;
+	private double deliveryLat;
+	private double deliveryLng;
 	private int volumn;
 	private int sequence;
 	private String driver;
 	private String type;
 	private String timeStartRoute;
 	
+	public double getPickupLat() {
+		return pickupLat;
+	}
+	public void setPickupLat(double pickupLat) {
+		this.pickupLat = pickupLat;
+	}
+	public double getPickupLng() {
+		return pickupLng;
+	}
+	public void setPickupLng(double pickupLng) {
+		this.pickupLng = pickupLng;
+	}
+	public double getDeliveryLat() {
+		return deliveryLat;
+	}
+	public void setDeliveryLat(double deliveryLat) {
+		this.deliveryLat = deliveryLat;
+	}
+	public double getDeliveryLng() {
+		return deliveryLng;
+	}
+	public void setDeliveryLng(double deliveryLng) {
+		this.deliveryLng = deliveryLng;
+	}
 	public String getType() {
 		return type;
 	}

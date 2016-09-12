@@ -121,11 +121,11 @@ public class mRouteDetailContainerDAOImpl extends BaseDao implements mRouteDetai
 			begin();
 			List<mRouteContainerDetailExtension> list = new ArrayList<mRouteContainerDetailExtension>();
 			String sql = "SELECT mc.C_Code,  mc.C_Name, mo.OPD_PickupAddress ,mo.OPD_EarlyPickupDateTime ,"
-					+ "mo.OPD_DeliveryAddress, mo.OPD_EarlyDeliveryDateTime, "
+					+ "mo.OPD_DeliveryAddress, mo.OPD_EarlyDeliveryDateTime, mo.OPD_PickupLat , mo.OPD_PickupLng , mo.OPD_DeliveryLat , mo.OPD_DeliveryLng ,"
 					+ "mrdc.RTDC_Quantity, mrdc.RTDC_Sequence, mr.Route_Shipper_Code, mrdc.RTDC_Type , mr.Route_Start_DateTime "
 					+ " FROM mRouteDetailContainer mrdc, mRoutes mr, mPickupDeliveryOrders mo, mClients mc  "
 					+ " WHERE mrdc.RTDC_RouteCode = mr.Route_Code and mr.Route_Status_Code = '"+Constants.ROUTE_STATUS_CONFIRMED+"' and mrdc.RTDC_OrderCode = mo.OPD_Code and mo.OPD_ClientCode = mc.C_Code" //and mo.OPD_ClientCode = mc.C_PhoneNumber 
-					+ "	ORDER BY mrdc.RTDC_RouteCode ASC , mrdc.RTDC_Sequence DESC";
+					+ "	ORDER BY mrdc.RTDC_RouteCode ASC , mrdc.RTDC_Sequence ASC";
 			List<Object[]> sql_result = getSession().createQuery(sql).list();
 			
 			for(int i=0; i<sql_result.size(); i++){
@@ -137,13 +137,24 @@ public class mRouteDetailContainerDAOImpl extends BaseDao implements mRouteDetai
 				tmp.setExpectedTimePickup((String)sql_result.get(i)[3]);
 				tmp.setDeliveryAdress((String)sql_result.get(i)[4]);
 				tmp.setExpectedTimeDelivery((String)sql_result.get(i)[5]);
-				tmp.setVolumn((int)sql_result.get(i)[6]);
-				tmp.setSequence((int)sql_result.get(i)[7]);
-				tmp.setDriver((String)sql_result.get(i)[8]);
-				tmp.setType((String)sql_result.get(i)[9]);
-				tmp.setTimeStartRoute((String)sql_result.get(i)[10]);
-				tmp.setArriveTimePickup(null);
-				tmp.setArriveTimeDeleivery(null);
+				tmp.setPickupLat((double)sql_result.get(i)[6]);
+				tmp.setPickupLng((double)sql_result.get(i)[7]);
+				tmp.setDeliveryLat((double)sql_result.get(i)[8]);
+				tmp.setDeliveryLng((double)sql_result.get(i)[9]);
+				tmp.setVolumn((int)sql_result.get(i)[10]);
+				tmp.setSequence((int)sql_result.get(i)[11]);
+				tmp.setDriver((String)sql_result.get(i)[12]);
+				tmp.setType((String)sql_result.get(i)[13]);
+				if(tmp.getType().equals("PICKUP")){
+					tmp.setDeliveryAdress("-");
+					tmp.setExpectedTimeDelivery("-");
+				} else {
+					tmp.setPickupAdress("-");
+					tmp.setExpectedTimePickup("-");
+				}
+				tmp.setTimeStartRoute((String)sql_result.get(i)[14]);
+				tmp.setArriveTimePickup("-");
+				tmp.setArriveTimeDeleivery("-");
 				
 				list.add(tmp);
 			}
