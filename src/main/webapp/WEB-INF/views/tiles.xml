@@ -20,9 +20,8 @@
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/list.jsp" />                
     </definition>
     
-    <definition name="home" extends="layout">
-    	<put-attribute name="title" value="Homepage" />
-    	<put-attribute name="content" value="/WEB-INF/views/home/home.jsp" />                
+    <definition name="home" template="/WEB-INF/views/home/home.jsp">
+    	<put-attribute name="title" value="Homepage" />                
     </definition>    
        
     <!-- module incomingarticles -->  
