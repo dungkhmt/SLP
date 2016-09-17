@@ -62,12 +62,16 @@ public class mPickupDeliveryController extends BaseWeb{
 	public String listPickupDelivery(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		List<mPickupDeliveryOrders> list= pickupDeliveryOrders.getListOrderPickupDelivery();
-		
-		System.out.print(name()+ list);
 		model.put("piDelist", list);
 		log.info(u.getUsername());
 		
 		return "containerdelivery.listpickupdeliveryorder";
+	}
+	@RequestMapping(value="",method=RequestMethod.GET)
+	public String moduleHome(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		return "containerdelivery.home";
 	}
 	@RequestMapping(value = "/add-a-pickupdelivery-order", method = RequestMethod.GET)
 	public String addAPickupDeliveryOrder(ModelMap model, HttpSession session){
