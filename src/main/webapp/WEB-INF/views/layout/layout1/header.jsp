@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
 	<div class="navbar-header">
-		<span class="navbar-brand">Hệ thống quản lý bán hàng</span>
+		<a href="<c:url value="/"/>"><span class="navbar-brand">Hệ thống quản lý bán hàng</span></a>
 	</div>
 	
 	<ul class="nav navbar-top-links navbar-right">

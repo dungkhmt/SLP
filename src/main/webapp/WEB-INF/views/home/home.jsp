@@ -28,6 +28,9 @@ img{
 	opacity:1;
 	transition-delay:0.3s;
 }
+body{
+	background-color: #F9F9F9;
+}
 </style>
 
 <body>
@@ -51,7 +54,7 @@ img{
 	</nav>
 	<div class="container">
     <div class="row">
-        <div class="col-lg-12 center">
+        <div class="col-lg-12">
             <h1 class="page-header">Hệ thống quản lý bán hàng</h1>
         </div>
 	</div>
