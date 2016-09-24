@@ -11,6 +11,10 @@
 	 <!-- MetisMenu CSS -->
 	 <link href="<c:url value="/assets/libs/metisMenu/dist/metisMenu.css" />" rel="stylesheet" type="text/css" media="all" />
 	
+	 <!-- Timeline CSS -->
+	 <link href="<c:url value="/assets/css/timeline.css" />" rel="stylesheet" type="text/css" media="all" />
+	
+	
 	<!-- Custom CSS -->
 	<link href="<c:url value="/assets/css/sb-admin-2.css" />" rel="stylesheet" type="text/css" media="all" />
 	
