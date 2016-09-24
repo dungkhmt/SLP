@@ -35,10 +35,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
        
         if ("".equals(username)) {
-            throw new BadCredentialsException("Các trường không được để trống");
+            throw new BadCredentialsException("UserName không thể để trống");
         } 
         if ("".equals(password)) {
-            throw new BadCredentialsException("Các trường không được để trống");
+            throw new BadCredentialsException("Mật khẩu không thể để trống");
         }
         
         String md5EncryptedPassword = DigestUtils.md5Hex(password);

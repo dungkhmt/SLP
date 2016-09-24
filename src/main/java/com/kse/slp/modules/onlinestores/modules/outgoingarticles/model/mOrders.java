@@ -24,6 +24,7 @@ public class mOrders implements Serializable {
 	String O_TimeLate;
 	String O_Status_Code;
 	String O_RouteCode;
+	String O_BatchCode;
 	float O_Price;
 	
 	//@Transient
@@ -36,8 +37,15 @@ public class mOrders implements Serializable {
 //	public void setRoute_Code(String route_Code) {
 //		Route_Code = route_Code;
 //	}
+	
 	public String getO_Status_Code() {
 		return O_Status_Code;
+	}
+	public String getO_BatchCode() {
+		return O_BatchCode;
+	}
+	public void setO_BatchCode(String o_BatchCode) {
+		O_BatchCode = o_BatchCode;
 	}
 	public void setO_Status_Code(String o_Status_Code) {
 		O_Status_Code = o_Status_Code;

@@ -17,10 +17,37 @@
 		<!-- /.col-lg-12 -->
 	</div>
 	<div class="row">
-      	<label class="control-label ">Chọn file cần upload</label>
-		<input id="input-file" name="timetable[]" type="file" multiple=true class="file-loading" style="height:60%" />		
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="form-group">
+			<label class="control-label col-lg-2">Chọn Batch</label>
+			<div class="col-lg-8">
+					<button type="button" class="btn btn-primary active" >Tạo mới Batch</button>
+			</div>
+		</div>
+		<div class="form-group ">
+		<label class="control-label col-lg-2" for="categoryArticle">Chọn Lộ Trình</label>
+		<div class="col-sm-2">
+			<select class="form-control selectRoute" onchange="selectRoute()" name="categoryArticle" >
+				<option value="">Chọn Route</option>
+				<c:forEach items="${listBatch}" var="batchs">
+                	<option value="${batchs.REQBAT_Code}">${batchs.REQBAT_Code}</option>
+                </c:forEach>
+            </select>
+         </div>
+	</div>	
+		</div>
+		<div class="panel-body">
+		
+		
+		<div class="form-group">
+			<label class="control-label ">Chọn file cần upload</label>
+			<input id="input-file"  type="file" multiple=true class="file-loading" style="height:60%" />
+		</div>
 	</div>
 	<!-- /.row -->
+	</div>
+	</div>
 </div>
 <script>
 $(document).ready(function(){

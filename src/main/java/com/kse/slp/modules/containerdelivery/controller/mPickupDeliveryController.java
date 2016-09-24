@@ -28,8 +28,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
+import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.containerdelivery.validation.mOrderPickupDeliveryFormAdd;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
@@ -58,6 +60,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	mRouteDetailContainerService routeDetailContainerService;
 	@Autowired
 	mShippersService shipperService;
+	@Autowired
+	mRequestBatchService requestBatchService;
 	@RequestMapping(value="/list-pickupdelivery-order",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
@@ -83,6 +87,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	@RequestMapping(value ="add-pickupdelivery-orders-by-xls", method= RequestMethod.GET )
 	public String addPickupDeliveryOrders(ModelMap model, HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
+		List<RequestBatch> listBatch= requestBatchService.getList();
+		model.put("listBatch", listBatch);
 		log.info(u.getUsername());
 		return "containerdelivery.addpickupdeliveryordersbyxls";
 	}

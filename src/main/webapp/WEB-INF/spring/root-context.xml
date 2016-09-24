@@ -36,8 +36,8 @@
         <beans:property name="url" value="jdbc:mysql://localhost:3306/slp?useEncoding=true&amp;characterEncoding=UTF-8"/>
         <beans:property name="username" value="root"/>
         <beans:property name="password" value=""/>        
-        
-        <!--<beans:property name="validationQuery" value="SELECT 1"/>-->
+        <beans:property name="testOnBorrow" value="1"/>        
+        <beans:property name="validationQuery" value="SELECT 1"/>
     </beans:bean>
     
     

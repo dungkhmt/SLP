@@ -31,7 +31,15 @@ public class mPickupDeliveryOrders implements Serializable {
 	int OPD_Volumn;
 	String OPD_StatusCode;
 	String OPD_RouteCode;
+	String OPD_BatchCode;
 	double OPD_Price;
+	
+	public String getOPD_BatchCode() {
+		return OPD_BatchCode;
+	}
+	public void setOPD_BatchCode(String oPD_BatchCode) {
+		OPD_BatchCode = oPD_BatchCode;
+	}
 	public int getOPD_ID() {
 		return OPD_ID;
 	}
