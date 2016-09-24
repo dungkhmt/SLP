@@ -23,12 +23,16 @@
     	<put-attribute name="title" value="Add an Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/add.jsp" />                
     </definition>
-    
     <definition name="outgoingarticles.list" extends="layout1">
     	<put-attribute name="title" value="list Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/list.jsp" />                
     </definition>
+    <definition name="outgoingarticles.uploadFile" extends="layout1">
+    	<put-attribute name="title" value="Upload File" />
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/uploadFileExcel.jsp" />                
+    </definition>
     
+    <!-- home -->
     <definition name="home" template="/WEB-INF/views/home/home.jsp">
     	<put-attribute name="title" value="Homepage" />                
     </definition>    
