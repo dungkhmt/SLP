@@ -13,6 +13,10 @@
     	<put-attribute name="header" value="/WEB-INF/views/layout/layout2/header.jsp" />
     	<put-attribute name="footer" value="/WEB-INF/views/layout/layout2/footer.jsp" />            
     </definition> 
+    <definition name="layout3" template="/WEB-INF/views/layout/layout3/base.jsp">           
+    	<put-attribute name="header" value="/WEB-INF/views/layout/layout3/header.jsp" />
+    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout3/footer.jsp" />            
+    </definition> 
     <!-- online Store -->
     <definition name="onlinestore.home" extends="layout1">
     	<put-attribute name="title" value="Chức năng quản lú bán hàng" />
@@ -48,7 +52,7 @@
     	<put-attribute name="title" value="Danh sách hàng nhập"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
     </definition>
-
+	
 	<!-- trash -->
 	<definition name="trash.outgoingarticles.add" extends="layout1">
     	<put-attribute name="title" value="Nhập hàng"/>
@@ -104,4 +108,15 @@
     	<put-attribute name="title" value="View all route container"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/viewallroutecontainer.jsp"/>
     </definition>
+    <!-- di chung modules -->
+    
+    <definition name="dichung.home" extends="layout3">
+    	<put-attribute name="title" value="Home dichung"/>
+    	<put-attribute name="content" value="/WEB-INF/views/home/dichunghome.jsp" /> 
+    </definition>
+    <definition name="dichung.adddichungrequestsbyxls" extends="layout3">
+    	<put-attribute name="title" value="Upload xls dichung"/>
+    	<put-attribute name="content" value="/WEB-INF/views/dichung/adddichungrequestsbyxls.jsp" /> 
+    </definition>
+    
 </tiles-definitions>

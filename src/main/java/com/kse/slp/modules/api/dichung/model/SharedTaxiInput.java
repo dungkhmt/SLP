@@ -2,13 +2,13 @@ package com.kse.slp.modules.api.dichung.model;
 
 public class SharedTaxiInput {
 	private SharedTaxiRequest[] requests;
-	private int[] vehicleCapacities;
-	private int maxWaitTime;// in seconds
+	private int[] vehicleCapacities; //[4,6]
+	private int maxWaitTime;// in seconds (1800)
 	
-	private int forbidenStraightDistance;// in meters. 
+	private int forbidenStraightDistance;// in meters. (6000)
 						//If the straight distance between two pickups is greater than forbidenStraightDistance
 						// then these requests cannot be shared
-	private int forbidenTimeDistance;// in seconds
+	private int forbidenTimeDistance;// in seconds (3600)
 						// If the distance between two pickup times is greater than forbidenTimeDistance
 						// then these requests cannot be shared
 	
