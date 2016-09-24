@@ -5,39 +5,48 @@
 <tiles-definitions>
  
 	<!-- layout -->
-    <definition name="layout" template="/WEB-INF/views/layout/base.jsp">           
-    	<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
-    	<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />            
+    <definition name="layout1" template="/WEB-INF/views/layout/layout1/base.jsp">           
+    	<put-attribute name="header" value="/WEB-INF/views/layout/layout1/header.jsp" />
+    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout1/footer.jsp" />            
+    </definition> 
+    <definition name="layout2" template="/WEB-INF/views/layout/layout2/base.jsp">           
+    	<put-attribute name="header" value="/WEB-INF/views/layout/layout2/header.jsp" />
+    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout2/footer.jsp" />            
+    </definition> 
+    <!-- online Store -->
+    <definition name="onlinestore.home" extends="layout1">
+    	<put-attribute name="title" value="Chức năng quản lú bán hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/onlinestorehome.jsp" />                
     </definition> 
   	<!-- outgoing articles -->
-    <definition name="outgoingarticles.addAOrder" extends="layout">
+    <definition name="outgoingarticles.addAOrder" extends="layout1">
     	<put-attribute name="title" value="Add an Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/add.jsp" />                
     </definition>
     
-    <definition name="outgoingarticles.list" extends="layout">
+    <definition name="outgoingarticles.list" extends="layout1">
     	<put-attribute name="title" value="list Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/list.jsp" />                
     </definition>
     
-    <definition name="home" extends="layout">
-    	<put-attribute name="title" value="Homepage" />
-    	<put-attribute name="content" value="/WEB-INF/views/home/home.jsp" />                
+    <definition name="home" template="/WEB-INF/views/home/home.jsp">
+    	<put-attribute name="title" value="Homepage" />                
     </definition>    
-       
+    
+    
     <!-- module incomingarticles -->  
-    <definition name="in.addArticles" extends="layout">
+    <definition name="in.addArticles" extends="layout1">
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/addArticles.jsp"/>
     </definition>
     
-    <definition name="in.listIncommingArticles" extends="layout">
+    <definition name="in.listIncommingArticles" extends="layout1">
     	<put-attribute name="title" value="Danh sách hàng nhập"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
     </definition>
 
 	<!-- trash -->
-	<definition name="trash.outgoingarticles.add" extends="layout">
+	<definition name="trash.outgoingarticles.add" extends="layout1">
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/trash/add.jsp"/>
     </definition>
@@ -49,41 +58,45 @@
     <definition name="register" template="/WEB-INF/views/auth/register.jsp">
      
     </definition>
-    <definition name="denied" extends="layout">
+    <definition name="denied" extends="layout1">
     	<put-attribute name="title" value="Access Denied" />
     	<put-attribute name="content" value="/WEB-INF/views/auth/denied.jsp" />                
     </definition>
     
     <!-- Shipping Modules -->
-    <definition name="ship.createRoute" extends="layout">
+    <definition name="ship.createRoute" extends="layout1">
     	<put-attribute name="title" value="Create route manual"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoute.jsp"/>
     </definition>
-    <definition name="ship.createpickupdeliveryroute" extends="layout">
+    <definition name="ship.createpickupdeliveryroute" extends="layout2">
     	<put-attribute name="title" value="Create pickup delivery route manual"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoutePickupDelivery.jsp"/>
     </definition>
-     <definition name="ship.getRoutes" extends="layout">
+     <definition name="ship.getRoutes" extends="layout1">
     	<put-attribute name="title" value="View routes Shipper"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/viewRouteShipper.jsp"/>
     </definition>
     <!-- Container Delivery Modules -->
-    <definition name="containerdelivery.listpickupdeliveryorder" extends="layout">
+    <definition name="containerdelivery.home" extends="layout2">
+    	<put-attribute name="title" value="Chức năng quản lý chuyển hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/containertransportation.jsp" />                
+    </definition> 
+    <definition name="containerdelivery.listpickupdeliveryorder" extends="layout2">
     	<put-attribute name="title" value="View list Pickup Delivery Order"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/list.jsp"/>
     </definition>
     
-    <definition name="containerdelivery.addpickupdeliveryordersbyxls" extends="layout">
+    <definition name="containerdelivery.addpickupdeliveryordersbyxls" extends="layout2">
     	<put-attribute name="title" value="add pickup delivery orders by xls"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/addpickupdeliveryordersbyxls.jsp"/>
     </definition>
     
-    <definition name="containerdelivery.addapickupdeliveryorder" extends="layout">
+    <definition name="containerdelivery.addapickupdeliveryorder" extends="layout2">
     	<put-attribute name="title" value="Add a Pickup Delivery Order"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/add.jsp"/>
     </definition>
     
-    <definition name="containerdelivery.viewallroutecontainer" extends="layout">
+    <definition name="containerdelivery.viewallroutecontainer" extends="layout2">
     	<put-attribute name="title" value="View all route container"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/viewallroutecontainer.jsp"/>
     </definition>

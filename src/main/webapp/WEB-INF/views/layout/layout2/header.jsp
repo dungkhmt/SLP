@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
 	<div class="navbar-header">
-		<span class="navbar-brand">Hệ thống quản lý bán hàng</span>
+		<a href="<c:url value="/"/>"><span class="navbar-brand">Hệ thống quản lý bán hàng</span></a>
 	</div>
 	
 	<ul class="nav navbar-top-links navbar-right">
@@ -21,10 +21,7 @@
 	<div class="navbar-default sidebar" id="sidebar" role="navigation">
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
-				<li><a href="<c:url value="${baseUrl}/incomingArticles/list"/>">Nhập hàng</a></li>
-				<li><a href="<c:url value="${baseUrl}/outgoingarticles/list"/>">Nhận đơn hàng</a></li>
-				<li><a href="<c:url value="${baseUrl}/ship/createRoute"/>">Lập tuyến giao hàng</a></li>
-				<li><a href="<c:url value="${baseUrl}/ship/getRoutes"/>">Xem Route</a></li>
+				
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/list-pickupdelivery-order"/>">Xem danh sách hóa đơn chuyển hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/add-pickupdelivery-orders-by-xls"/>">Nhập đơn hàng qua file excel</a></li>
 				<li><a href="<c:url value="${baseUrl}/ship/create-pickupdelivery-route"/>">Lập tuyến giao hàng container</a></li>

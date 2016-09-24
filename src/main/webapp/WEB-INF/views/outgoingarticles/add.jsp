@@ -39,7 +39,7 @@
 						<button type="button" class="btn btn-primary active saveAClientButton" onclick="pushPhoneModal()" data-toggle="modal" data-target="#saveAClient">Thêm Khách Hàng</button>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-sm-2">Tên Khách Hàng</label>
+						<label class="control-label col-lg-2">Tên Khách Hàng</label>
 						<div class="col-lg-6">
 						<form:input path="orderClientName" class="form-control" id="orderClientName" name="orderClientName" placeholder="Client Name"></form:input>
 						</div>
@@ -76,7 +76,7 @@
     					<div id="map" style="width:100%;height:80%"></div>
     				</div>
 					<div class="form-group">
-						<label class="control-label col-sm-2">Ngày giao hàng</label>
+						<label class="control-label col-lg-2">Ngày giao hàng</label>
 						<div class="col-lg-2">
 						<form:input  path="orderDate" class="form-control datepicker" name="orderDate" placeholder="Date" ></form:input>
 						</div>
