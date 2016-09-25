@@ -15,7 +15,7 @@
     </definition> 
     <!-- online Store -->
     <definition name="onlinestore.home" extends="layout1">
-    	<put-attribute name="title" value="Chức năng quản lú bán hàng" />
+    	<put-attribute name="title" value="Chức năng quản lý bán hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/home/onlinestorehome.jsp" />                
     </definition> 
   	<!-- outgoing articles -->
@@ -28,7 +28,11 @@
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/list.jsp" />                
     </definition>
     <definition name="outgoingarticles.uploadFile" extends="layout1">
-    	<put-attribute name="title" value="Upload File" />
+    	<put-attribute name="title" value="Thêm đơn hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/uploadFileExcel.jsp" />                
+    </definition>
+    <definition name="outgoingarticles.createAutoRoute" extends="layout1">
+    	<put-attribute name="title" value="Lập tuyến giao hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/uploadFileExcel.jsp" />                
     </definition>
     

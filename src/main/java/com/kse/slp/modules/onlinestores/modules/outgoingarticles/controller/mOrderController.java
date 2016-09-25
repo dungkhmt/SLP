@@ -1,5 +1,7 @@
 package com.kse.slp.modules.onlinestores.modules.outgoingarticles.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,13 +21,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.containerdelivery.model.RequestBatch;
+import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
 import com.kse.slp.modules.usermanagement.model.User;
@@ -37,6 +47,10 @@ public class mOrderController extends BaseWeb{
 	mArticlesCategoryService articleService;
 	@Autowired
 	mOrdersService orderService;
+	@Autowired
+	mRequestBatchService mRequestBatchService;
+
+	/*
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
 	public String addAOrder(ModelMap model, HttpSession session){
 		model.put("orderFormAdd", new mOrderFormAdd());
@@ -51,6 +65,7 @@ public class mOrderController extends BaseWeb{
 		//return "trash.outgoingarticles.add";
 		
 	}
+	
 	@RequestMapping(value = "/save-an-order", method = RequestMethod.POST)
 	public String saveAOrder(ModelMap model,HttpServletRequest request, HttpSession session,@ModelAttribute("orderFormAdd") mOrderFormAdd orderForm,BindingResult result){
 		//System.out.print("This is "+orderForm.getOrderAdress());
@@ -85,6 +100,7 @@ public class mOrderController extends BaseWeb{
 		return "redirect:add-an-order";
 		
 	}
+	*/
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
 	public String listOutGoingArticles(ModelMap model,HttpSession session){
@@ -97,5 +113,97 @@ public class mOrderController extends BaseWeb{
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "outgoingarticles.list";
+	}
+	
+	@RequestMapping(value="/uploadFile",method=RequestMethod.GET)
+	public String upLoadFile(ModelMap model){
+		List<RequestBatch> lstreBatch = mRequestBatchService.getList();
+		
+		model.put("lstreBatch", lstreBatch);
+		model.put("formAdd",new mFormAddFileExcel());
+		
+		return "outgoingarticles.uploadFile";
+	}
+	
+	@RequestMapping(value="/uploadOrdersFile", method=RequestMethod.POST)
+	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest,BindingResult result){
+		//System.out.println("Upload file");
+		String batchCode = dataRequest.getBatchCode();
+		//System.out.println("batch Code: "+ batchCode);
+		
+		//String itr = dataRequest.getOrdersFile().g();
+		//String fileName = dataRequest.getOrdersFile().g
+		MultipartFile ordersFile = dataRequest.getOrdersFile();
+		
+		if(ordersFile != null){
+			try {
+				
+				InputStream readFile = ordersFile.getInputStream();
+				XSSFWorkbook wb = new XSSFWorkbook(readFile);
+				
+				XSSFSheet sheet = wb.getSheetAt(0);
+				XSSFRow row;
+				
+				int rows = sheet.getPhysicalNumberOfRows();
+				
+				for(int i=1; i<rows; i++){
+					row = sheet.getRow(i);
+					String clientCode = ""+(int)row.getCell(1).getNumericCellValue();
+					//System.out.println(name()+"readFile--O_Code["+i+"]: "+clientCode);
+				
+					String deliveryAddress = row.getCell(2).getStringCellValue();
+					//System.out.println(name()+"readFile--Adderss["+i+"]: "+deliveryAddress);
+					
+					String latlng = row.getCell(3).getStringCellValue();
+					int index = latlng.indexOf(",");
+					
+					float lat = Float.parseFloat(latlng.substring(0,index));
+					//System.out.println(name()+"readFile--lat["+i+"]: "+lat);
+					
+					float lng = Float.parseFloat(latlng.substring(index+1,latlng.length()));
+					//System.out.println(name()+"readFile--lng["+i+"]: "+lng);
+					
+					String timeEearly = row.getCell(4).getStringCellValue();
+					int index2 = timeEearly.indexOf(" ");
+					String orderDate = timeEearly.substring(0,index2);
+					//System.out.println(name()+"readFile--orderDate["+i+"]: "+orderDate);
+					
+					String timeEarly = timeEearly.substring(index2+1,timeEearly.length());
+					//System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEarly);
+					
+					String timeDueTo = row.getCell(5).getStringCellValue();
+					int index3 = timeDueTo.indexOf(" ");
+					String dueDate = timeDueTo.substring(0,index3);
+					//System.out.println(name()+"readFile--dueDate["+i+"]: "+dueDate);
+					
+					String timeLate = timeDueTo.substring(index3+1,timeDueTo.length());
+					//System.out.println(name()+"readFile--timeLate["+i+"]: "+timeLate);
+					orderService.saveAnOrder(clientCode, orderDate, dueDate, deliveryAddress, lat, lng, timeEarly, timeLate, 0 , null,batchCode);
+					//System.out.println("=========");
+				}
+			
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		//System.out.println("Upload file done");
+		return "redirect:/onlinestore";
+	}
+
+	@RequestMapping(value="/createAutoRoute",method = RequestMethod.GET)
+	public String createAutoRoute(ModelMap model){
+		List<RequestBatch> lstreBatch = mRequestBatchService.getList();
+		
+		model.put("lstreBatch", lstreBatch);
+		
+		return "outgoingarticles.createAutoRoute";
+	}
+	
+	@RequestMapping(value="/callServiceCreateRoute", method=RequestMethod.POST)
+	public String callServiceCreateRoute(){
+		System.out.println("batch");
+		return "redirect:/onlinestore";
 	}
 }

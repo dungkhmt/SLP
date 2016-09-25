@@ -21,11 +21,16 @@
 	<div class="navbar-default sidebar" id="sidebar" role="navigation">
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
+				<!--  
 				<li><a href="<c:url value="${baseUrl}/incomingArticles/list"/>">Nhập hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/outgoingarticles/list"/>">Nhận đơn hàng</a></li>
+				-->
 				<li><a href="<c:url value="${baseUrl}/outgoingarticles/uploadFile"/>">Nhận đơn hàng qua Excel</a></li>
+				<!-- 
 				<li><a href="<c:url value="${baseUrl}/ship/createRoute"/>">Lập tuyến giao hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/ship/getRoutes"/>">Xem Route</a></li>
+				 -->
+				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/createAutoRoute"/>">Lập tuyến giao hàng</a></li>
 			</ul>
 		</div>
 	</div>
