@@ -19,6 +19,14 @@ public class RequestDiChung implements Serializable {
 	String REQDC_PickupAddress;
 	String REQDC_DeliveryAddress;
 	int 	REQDC_NumberPassengers;
+	String REQDC_BatchCode;
+	
+	public String getREQDC_BatchCode() {
+		return REQDC_BatchCode;
+	}
+	public void setREQDC_BatchCode(String rEQDC_BatchCode) {
+		REQDC_BatchCode = rEQDC_BatchCode;
+	}
 	public int getREQDC_ID() {
 		return REQDC_ID;
 	}
