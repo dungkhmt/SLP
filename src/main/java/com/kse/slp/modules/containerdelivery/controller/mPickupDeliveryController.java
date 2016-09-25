@@ -68,7 +68,6 @@ public class mPickupDeliveryController extends BaseWeb{
 		List<mPickupDeliveryOrders> list= pickupDeliveryOrders.getListOrderPickupDelivery();
 		model.put("piDelist", list);
 		log.info(u.getUsername());
-		
 		return "containerdelivery.listpickupdeliveryorder";
 	}
 	@RequestMapping(value="",method=RequestMethod.GET)
@@ -93,18 +92,19 @@ public class mPickupDeliveryController extends BaseWeb{
 		return "containerdelivery.addpickupdeliveryordersbyxls";
 	}
 	@RequestMapping(value="/upload-file-pickupdelivery-orders", method=RequestMethod.POST)
-	public @ResponseBody String uploadFile(MultipartHttpServletRequest  request){
+	public @ResponseBody String uploadFile(MultipartHttpServletRequest  request,HttpServletRequest requestSe){
 		System.out.println(name());
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile file = request.getFile(itr.next());
 		System.out.println(name()+"::uploadFile--"+file.getOriginalFilename() + " uploaded");
-		
+		String batchCode= requestSe.getParameter("selectBatch");
+		System.out.println(name()+ batchCode);
 		if(file != null){
-			readFilePickupDeliveryOrder(file);
+			readFilePickupDeliveryOrder(file,batchCode);
 		}
 		return "{}";
 	}
-	public void readFilePickupDeliveryOrder(MultipartFile file){
+	public void readFilePickupDeliveryOrder(MultipartFile file,String batchCode){
 		try {
 			InputStream readFile = file.getInputStream();
 			XSSFWorkbook wb = new XSSFWorkbook(readFile);
@@ -129,7 +129,7 @@ public class mPickupDeliveryController extends BaseWeb{
 				String oPD_LateDeliveryDateTime = row.getCell(9).getStringCellValue();
 				int oPD_Volumn=(int) row.getCell(10).getNumericCellValue();
 				System.out.println(name()+" "+oPD_ClientCode+" "+oPD_PickupAddress+" "+oPD_PickupLat+" "+oPD_PickupLng+" "+oPD_EarlyPickupDateTime+" "+oPD_LatePickupDateTime+" "+oPD_DeliveryAddress+" "+oPD_DeliveryLat+" "+oPD_DeliveryLng+" "+oPD_EarlyDeliveryDateTime+" "+oPD_LateDeliveryDateTime+" "+oPD_Volumn);
-				pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, GenerationDateTimeFormat.genDateTimeFormatStandardCurrently(), oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn);
+				pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, GenerationDateTimeFormat.genDateTimeFormatStandardCurrently(), oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn, batchCode);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -157,7 +157,7 @@ public class mPickupDeliveryController extends BaseWeb{
 			String oPD_LateDeliveryDateTime=orderForm.getOrderDelieveryDateTimeLate();
 			int oPD_Volumn=orderForm.getOrderVolumn();
 			String oPD_RequestDateTime = GenerationDateTimeFormat.genDateTimeFormatStandardCurrently();
-			pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, oPD_RequestDateTime, oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn);
+			pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, oPD_RequestDateTime, oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn,null);
 			log.info(u.getUsername()+" DONE");
 			return "redirect:list-pickupdelivery-order";
 		}

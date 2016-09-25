@@ -32,14 +32,12 @@ public class BaseWeb {
                 break;
         }       
        
-        System.out.println(name()+"::addGlobalAttr");
+        
         
         assetsUrl = baseUrl + "/assets";
         map.put("baseUrl", baseUrl);
         map.put("assetsUrl", assetsUrl);
     }
     
-    public String name(){
-    	return "BaseWeb";
-    }
+   
 }

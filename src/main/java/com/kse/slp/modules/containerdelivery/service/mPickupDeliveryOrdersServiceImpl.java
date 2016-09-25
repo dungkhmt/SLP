@@ -29,7 +29,7 @@ public class mPickupDeliveryOrdersServiceImpl implements mPickupDeliveryOrdersSe
 			String oPD_EarlyPickupDateTime, String oPD_LatePickupDateTime,
 			String oPD_DeliveryAddress, double oPD_DeliveryLat,
 			double oPD_DeliveryLng, String oPD_EarlyDeliveryDateTime,
-			String oPD_LateDeliveryDateTime, int oPD_Volumn) {
+			String oPD_LateDeliveryDateTime, int oPD_Volumn, String oPD_BatchCode) {
 		mPickupDeliveryOrders oPD= new mPickupDeliveryOrders();
 		oPD.setOPD_Code(oPD_ClientCode);
 		oPD.setOPD_ClientCode(oPD_ClientCode);
@@ -46,6 +46,7 @@ public class mPickupDeliveryOrdersServiceImpl implements mPickupDeliveryOrdersSe
 		oPD.setOPD_LateDeliveryDateTime(oPD_LateDeliveryDateTime);
 		oPD.setOPD_Volumn(oPD_Volumn);
 		oPD.setOPD_StatusCode(Constants.ORDER_STATUS_NOT_IN_ROUTE);
+		oPD.setOPD_BatchCode(oPD_BatchCode);
 		int id= pickupDeliveryOrdersDAO.saveAnOrder(oPD);
 		oPD.setOPD_Code("ORPD"+CodeGenerationUtility.genOrderCode(id));
 		pickupDeliveryOrdersDAO.updateAnOrder(oPD);

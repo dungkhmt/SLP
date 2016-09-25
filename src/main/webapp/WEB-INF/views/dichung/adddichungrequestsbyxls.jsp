@@ -55,12 +55,12 @@
 <script>
 $(document).ready(function(){
 	 $("#input-file").fileinput({
-	 	uploadUrl:  "${baseUrl}/containerdelivery/upload-file-pickupdelivery-orders", // server upload action
+	 	uploadUrl:  "${baseUrl}/dichung/upload-file-request-dichung", // server upload action
 		uploadAsync: true,
 		allowedFileExtensions:['xlsx'],
 		maxFileCount: 1
 	  }).on('fileuploaded', function() {
-		  window.location=baseUrl+"/containerdelivery/list-pickupdelivery-order";
+		  window.location=baseUrl+"/dichung";
 	 });
 });
 </script>
