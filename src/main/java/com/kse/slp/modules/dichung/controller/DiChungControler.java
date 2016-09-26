@@ -15,6 +15,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +27,7 @@ import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
+import com.kse.slp.modules.dichung.model.mFormAddFileExcel;
 import com.kse.slp.modules.dichung.service.RequestDiChungService;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
@@ -51,15 +54,16 @@ public class DiChungControler extends BaseWeb {
 		log.info(u.getUsername());
 		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
+		model.put("formAdd", new mFormAddFileExcel());
 		return "dichung.adddichungrequestsbyxls";
 	}
 	@RequestMapping(value="/upload-file-request-dichung", method=RequestMethod.POST)
-	public @ResponseBody String uploadFile(MultipartHttpServletRequest  request){
+	public @ResponseBody String uploadFile(@ModelAttribute("formAdd") mFormAddFileExcel request){
 		System.out.println(name());
-		Iterator<String> itr = request.getFileNames();
-		MultipartFile file = request.getFile(itr.next());
+		//Iterator<String> itr = request.getFileNames();
+		MultipartFile file = request.getOrdersFile();
 		System.out.println(name()+"::uploadFile--"+file.getOriginalFilename() + " uploaded");
-		String batchCode= request.getParameter("selectBatch");
+		String batchCode= request.getBatchCode();
 		System.out.println(name()+ batchCode);
 		if(file != null){
 			readFileRequestDiChung(file,batchCode);
@@ -74,8 +78,8 @@ public class DiChungControler extends BaseWeb {
 			XSSFSheet sheet2 = wb.getSheetAt(2);
 			XSSFRow row;
 			//get batch code
-			row = sheet2.getRow(0);
-			batchCode=row.getCell(0).getStringCellValue();
+			//row = sheet2.getRow(0);
+			//batchCode=row.getCell(0).getStringCellValue();
 			int rows = sheet.getPhysicalNumberOfRows();
 			for(int i=1;i<rows;i++){
 				System.out.println(name()+"::readFile"+"--row "+i);
@@ -95,6 +99,22 @@ public class DiChungControler extends BaseWeb {
 			e.printStackTrace();
 		}
 		
+	}
+	@RequestMapping(value="/create-route-auto", method=RequestMethod.GET)
+	public String createRouteAuto(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList();
+		model.put("listBatch", listBatch);
+		return "dichung.createroute";
+	}
+	@ResponseBody @RequestMapping(value="/get-route-auto", method=RequestMethod.POST)
+	public boolean getRouteAuto(HttpSession session,@RequestBody String batchCode){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		System.out.print(name()+batchCode);
+		
+		return true;
 	}
 	String name(){
 		return "DiChungControler:: ";
