@@ -8,6 +8,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -113,7 +120,23 @@ public class DiChungControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		System.out.print(name()+batchCode);
-		
+		String json="{\"username\": \"tuandatshipper\",\"password\":\"12345678\"}";
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		try {
+		    HttpPost request = new HttpPost("http://localhost:8080/slp/ship//login-android");
+		    StringEntity params = new StringEntity(json.toString());
+		    request.addHeader("content-type", "application/json");
+		    request.setEntity(params);
+		    HttpResponse response = httpClient.execute(request);
+		    HttpEntity  res= response.getEntity();
+		    String responseString = EntityUtils.toString(res, "UTF-8");
+		    System.out.print(responseString);
+		// handle response here...
+		} catch (Exception ex) {
+		    // handle exception here
+		} finally {
+			httpClient.getConnectionManager().shutdown();
+		}
 		return true;
 	}
 	String name(){
