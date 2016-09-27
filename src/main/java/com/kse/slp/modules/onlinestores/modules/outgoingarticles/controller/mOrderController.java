@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kse.slp.controller.BaseWeb;
@@ -45,12 +46,17 @@ import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteJSONResponse;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.infoAutoRouteElement;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.InfoAutoRouteElementService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
@@ -80,6 +86,8 @@ public class mOrderController extends BaseWeb{
 	private mRoutesService mRoutesService;
 	@Autowired
 	private mRouteDetailService mRouteDetailService;
+	@Autowired
+	InfoAutoRouteElementService InfoAutoRouteElementService;
 	
 	/*
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
@@ -318,9 +326,21 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping("/viewAssignedBatchRoute")
-	public String viewBatchRoute(@RequestBody String batch){
+	public @ResponseBody List<mAutoRouteResponseInfo> viewBatchRoute(@RequestBody String batch){
 		System.out.println(name()+"viewBatchRoute--batch"+batch);
-		return "{}";
+		List<mRoutes> lstRoute = mRoutesService.getListByBatchCode(batch);
+		List<mAutoRouteResponseInfo> response = new ArrayList<mAutoRouteResponseInfo>();
+		for(int i=0; i<lstRoute.size(); i++){
+			String routeCode = lstRoute.get(i).getRoute_Code();
+			String shipperCode = lstRoute.get(i).getRoute_Shipper_Code();
+			List<infoAutoRouteElement> routeElement = InfoAutoRouteElementService.getList(routeCode);
+			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(shipperCode, routeElement);
+			System.out.println(name()+"viewBatchRoute--response:"+tmp.toString());
+			response.add(tmp);
+		}
+		//mAutoRouteJSONResponse data = new mAutoRouteJSONResponse(response);
+		
+		return response;
 	}
 	
 	public String name(){

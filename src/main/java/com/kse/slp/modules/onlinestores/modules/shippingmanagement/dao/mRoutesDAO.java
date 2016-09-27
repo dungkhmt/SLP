@@ -14,4 +14,5 @@ public interface mRoutesDAO {
 	public List<mRoutes> loadRoutebyRouteCode(String routeCode);
 	public void removeRouteByRouteCode(String route_Code);
 	public mRoutes loadRoutesUnderCreationByShipperCode(String shipperCode); 
+	public List<mRoutes> getListByBatchCode(String batchCode);
 }

@@ -53,4 +53,10 @@ public class mRoutesServiceImpl implements mRoutesService {
 		// TODO Auto-generated method stub
 		return routeDAO.loadRoutesUnderCreationByShipperCode(shipperCode);
 	}
+
+	@Override
+	public List<mRoutes> getListByBatchCode(String batchCode) {
+		// TODO Auto-generated method stub
+		return routeDAO.getListByBatchCode(batchCode);
+	}
 }

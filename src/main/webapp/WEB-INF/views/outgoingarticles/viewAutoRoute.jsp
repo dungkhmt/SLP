@@ -15,7 +15,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col-sm-4">
 			<div class="form-group">
 				<select class="form-control" id="select-listBatch">
 					<option>Chọn batch</option>
@@ -37,7 +37,6 @@
 						<thead>
 							<tr>
 								<th>Mã KH</th>
-								<th>Tên KH</th>
 								<th>Địa chỉ KH</th>
 								<th>Thời gian giao hàng dự kiến</th>
 								<th>Thời gian giao hàng yêu cầu</th>
@@ -58,8 +57,11 @@
 <script src="<c:url value="/assets/libs/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js"/>"></script>
 
 <script>
+var table;
 $(document).ready(function(){
-	var table = $("#tbl-infoOfRoutes").DataTable();
+	table = $("#tbl-infoOfRoutes").DataTable({
+		"bSort" : false
+	});
 	$('#select-listBatch').change(function(){
 		var batchSelected = $(this).val();
 		$.ajax({
@@ -83,7 +85,45 @@ function initialize() {
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 }
 
-function displayInfo(){
-	alert("the da");
+function displayInfo(response){
+	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	for(var i=0;i<response.length; i++){
+		//console.log(JSON.stringify(response[i]));		
+		var route = new google.maps.Polyline({
+			strokeColor: getRandomColor(),
+		    strokeOpacity: 1.0,
+		    strokeWeight: 3,
+		});
+		var labelIndex=0;
+		for(var j=0; j<response[i].routeElement.length; j++){
+			var lat = response[i].routeElement[j].addLat;
+			var lng = response[i].routeElement[j].addLng;
+			var point = new google.maps.LatLng(lat,lng);
+			var marker = new google.maps.Marker({
+				position:point,
+				label:labels[labelIndex++ % labels.length],
+				map: map
+			});
+			route.getPath().push(point);
+			table.row.add([
+				response[i].routeElement[j].clientCode,
+				response[i].routeElement[j].clientAddress,
+				"",
+				response[i].routeElement[j].expectedTime,
+				labels[response[i].routeElement[j].routeSequence-1],
+				response[i].shipperCode
+			]).draw( false );
+		}
+		route.setMap(map);
+	}
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#F0';
+    for (var i = 0; i < 4; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 </script>
