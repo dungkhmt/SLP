@@ -2,6 +2,7 @@ package com.kse.slp.modules.dichung.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,10 +31,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.api.dichung.model.SharedTaxiInput;
+import com.kse.slp.modules.api.dichung.model.SharedTaxiRequest;
 import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
+import com.kse.slp.modules.dichung.model.RequestDiChung;
 import com.kse.slp.modules.dichung.model.mFormAddFileExcel;
 import com.kse.slp.modules.dichung.service.RequestDiChungService;
 import com.kse.slp.modules.usermanagement.model.User;
@@ -72,6 +77,7 @@ public class DiChungControler extends BaseWeb {
 		System.out.println(name()+"::uploadFile--"+file.getOriginalFilename() + " uploaded");
 		String batchCode= request.getBatchCode();
 		System.out.println(name()+ batchCode);
+		requestDiChungService.deleteRequestDiChungInBatch(batchCode);
 		if(file != null){
 			readFileRequestDiChung(file,batchCode);
 		}
@@ -119,18 +125,40 @@ public class DiChungControler extends BaseWeb {
 	public boolean getRouteAuto(HttpSession session,@RequestBody String batchCode){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		System.out.print(name()+batchCode);
-		String json="{\"username\": \"tuandatshipper\",\"password\":\"12345678\"}";
+		SharedTaxiInput stinpu= new SharedTaxiInput();
+		int tmp[]= {4,6};
+		stinpu.setVehicleCapacities(tmp);
+		stinpu.setMaxWaitTime(1800);
+		stinpu.setForbidenStraightDistance(6000);
+		stinpu.setForbidenTimeDistance(3600);
+		stinpu.setMaxTime(5);
+		List<RequestDiChung> list = requestDiChungService.getListInBatch(batchCode); 
+		SharedTaxiRequest lstr[]= new SharedTaxiRequest[list.size()];
+		for(int i=0;i<list.size();i++){
+			RequestDiChung r= list.get(i);
+			SharedTaxiRequest str=new SharedTaxiRequest();
+			str.setChungName(r.getREQDC_ChunkName());
+			str.setDeliveryAddress(r.getREQDC_DeliveryAddress());
+			str.setDepartTime(r.getREQDC_DepartTime());
+			str.setNumberPassengers(r.getREQDC_NumberPassengers());
+			str.setPickupAddress(r.getREQDC_PickupAddress());
+			str.setTicketCode(r.getREQDC_TicketCode());
+			lstr[i]=str;
+		}
+		stinpu.setRequests(lstr);
+		Gson gson = new Gson();
+		String json=gson.toJson(stinpu);
+		System.out.println(name()+json);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
-		    HttpPost request = new HttpPost("http://localhost:8080/slp/ship//login-android");
-		    StringEntity params = new StringEntity(json.toString());
+		    HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+		    StringEntity params = new StringEntity(json);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
 		    HttpResponse response = httpClient.execute(request);
 		    HttpEntity  res= response.getEntity();
 		    String responseString = EntityUtils.toString(res, "UTF-8");
-		    System.out.print(responseString);
+		    System.out.println(responseString);
 		// handle response here...
 		} catch (Exception ex) {
 		    // handle exception here

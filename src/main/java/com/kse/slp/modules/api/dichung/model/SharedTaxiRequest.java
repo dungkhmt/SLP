@@ -3,7 +3,7 @@ package com.kse.slp.modules.api.dichung.model;
 public class SharedTaxiRequest {
 	private String ticketCode;
 	private String departTime;
-	private String chungName;
+	private String chungName;// tên sai
 	private String pickupAddress;
 	private String deliveryAddress;
 	private int numberPassengers;

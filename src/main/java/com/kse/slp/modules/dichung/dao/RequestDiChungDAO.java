@@ -8,4 +8,6 @@ public interface RequestDiChungDAO {
 	public int saveARequest(RequestDiChung request);
 	public void updateARequest(RequestDiChung request);
 	public List<RequestDiChung> getList();
+	public List<RequestDiChung> getListInBatch(String batchCode);
+	public void deleteRequestDiChungInBatch(String batchCode);
 }

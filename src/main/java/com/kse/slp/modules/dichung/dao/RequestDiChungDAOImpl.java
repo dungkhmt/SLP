@@ -13,6 +13,7 @@ import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.dichung.controller.DiChungControler;
 import com.kse.slp.modules.dichung.model.RequestDiChung;
 import com.kse.slp.modules.onlinestores.common.Constants;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
 @Repository("RequestDiChungDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class RequestDiChungDAOImpl extends BaseDao implements RequestDiChungDAO {
@@ -76,6 +77,48 @@ public class RequestDiChungDAOImpl extends BaseDao implements RequestDiChungDAO 
 	            flush();
 	            close();
 	        }
+		
+	}
+	@Override
+	public List<RequestDiChung> getListInBatch(String batchCode) {
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(RequestDiChung.class);
+			criteria.add(Restrictions.eq("REQDC_BatchCode",batchCode));
+			List<RequestDiChung> listRequest = criteria.list();
+			commit();
+			return listRequest;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+	@Override
+	public void deleteRequestDiChungInBatch(String batchCode) {
+		try{
+			begin();
+			
+			List<RequestDiChung> lrdc = getSession().createCriteria(RequestDiChung.class).add(Restrictions.eq("REQDC_BatchCode", batchCode)).list();
+			if(lrdc != null){
+				for(RequestDiChung r: lrdc){
+					getSession().delete(r);
+				}
+			}
+			commit();
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			
+		}finally{
+			flush();
+			close();
+		}
 		
 	}
 

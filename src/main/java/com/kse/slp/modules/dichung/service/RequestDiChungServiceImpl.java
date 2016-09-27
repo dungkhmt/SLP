@@ -1,5 +1,7 @@
 package com.kse.slp.modules.dichung.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,16 @@ public class RequestDiChungServiceImpl implements RequestDiChungService{
 		r.setREQDC_NumberPassengers(rEQDC_NumberPassengers);
 		r.setREQDC_BatchCode(rEQDC_BatchCode);
 		return requestDiChungDAO.saveARequest(r);
+	}
+	@Override
+	public List<RequestDiChung> getListInBatch(String batchCode) {
+		// TODO Auto-generated method stub
+		return requestDiChungDAO.getListInBatch(batchCode);
+	}
+	@Override
+	public void deleteRequestDiChungInBatch(String batchCode) {
+		// TODO Auto-generated method stub
+		requestDiChungDAO.deleteRequestDiChungInBatch(batchCode);
 	}
 	
 }

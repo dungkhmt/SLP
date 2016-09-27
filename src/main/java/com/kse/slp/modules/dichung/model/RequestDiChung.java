@@ -69,5 +69,15 @@ public class RequestDiChung implements Serializable {
 	public void setREQDC_NumberPassengers(int rEQDC_NumberPassengers) {
 		REQDC_NumberPassengers = rEQDC_NumberPassengers;
 	}
+	@Override
+	public String toString() {
+		return "RequestDiChung [REQDC_ID=" + REQDC_ID + ", REQDC_TicketCode="
+				+ REQDC_TicketCode + ", REQDC_DepartTime=" + REQDC_DepartTime
+				+ ", REQDC_ChunkName=" + REQDC_ChunkName
+				+ ", REQDC_PickupAddress=" + REQDC_PickupAddress
+				+ ", REQDC_DeliveryAddress=" + REQDC_DeliveryAddress
+				+ ", REQDC_NumberPassengers=" + REQDC_NumberPassengers
+				+ ", REQDC_BatchCode=" + REQDC_BatchCode + "]";
+	}
 	
 }
