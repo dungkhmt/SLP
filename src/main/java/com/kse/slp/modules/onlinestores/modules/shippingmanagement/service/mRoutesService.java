@@ -10,7 +10,8 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes
 public interface mRoutesService {
 	public List<mRoutes> loadRoutebyShipperCode(String shipperCode);
 	public List<mRouteUnderCreation> getLstRTUnderCreation();
-	public int saveARoute(String route_Code,String route_Shipper_Code,String route_Start_Time,String route_StatusCode);
+	public int saveARoute(String route_Code,String route_Shipper_Code,String route_Start_Time,String route_StatusCode,String rout_BatchCode);
 	public void removeRoutesByRouteCode(String route_Code);
 	public mRoutes loadRoutesUnderCreationByShipperCode(String shipperCode);
+	public List<mRoutes> getListByBatchCode(String batchCode);
 }

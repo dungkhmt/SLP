@@ -17,5 +17,10 @@ public class mRequestBatchServiceImpl implements mRequestBatchService {
 		// TODO Auto-generated method stub
 		return requestBatchDAO.getList();
 	}
+	@Override
+	public RequestBatch getByCode(String code) {
+		// TODO Auto-generated method stub
+		return requestBatchDAO.getByCode(code);
+	}
 
 }

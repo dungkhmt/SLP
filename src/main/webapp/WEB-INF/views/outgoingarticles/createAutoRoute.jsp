@@ -3,14 +3,13 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <div id="page-wrapper">
-    <form action="${baseUrl}/outgoingarticles/callServiceCreateRoute" method="POST" role="form">
-    <div class="row">
+   	<div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">Lập tuyến giao hàng tự động</h1>
 		</div>
 		<div class="col-sm-4">
 			<div class="form-group">
-				<select class="form-control">
+				<select class="form-control" id="lstBatch">
 					<option>Chọn Batch</option>
 					<c:forEach items="${lstreBatch}" var="reBatch">
 						<option value="${reBatch.REQBAT_Code}"><c:out value="${reBatch.REQBAT_Code}"/></option>
@@ -18,7 +17,24 @@
 				</select>
 			</div>
 		</div>
-		<button type="submit" class="btn btn-primary">Lập tuyến</button>
-  	</form>
+		<button type="submit" class="btn btn-primary" id="create">Lập tuyến</button>
  </div>
+ 
+ <script>
+ $(document).ready(function(){
+	$("#create").click(function(){
+		var batch = $("#lstBatch").val();
+		
+		$.ajax({
+			type : "POST",
+			url : baseUrl+"/outgoingarticles/callServiceCreateRoute",
+			data : batch,
+			contentType: "application/text",
+			success: function(){
+				window.location = baseUrl+"/onlinestore";
+			}
+		})
+	});
+ });
+ </script>
  

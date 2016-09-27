@@ -80,6 +80,27 @@ public class mShippersDAOImpl extends BaseDao implements mShippersDAO {
 		
 	}
 
+	@Override
+	public List<mShippers> getByCustomerCode(String cus_code) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mShippers.class);
+			criteria.add(Restrictions.eq("SHP_Customer_Code", cus_code));
+			List<mShippers> listShippers= criteria.list();
+			commit();
+			return listShippers;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
 
 
 }

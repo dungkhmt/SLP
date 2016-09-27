@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 
 
+
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -252,6 +253,30 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			rollback();
 			close();
 		}finally{
+			flush();
+			close();
+		}
+	}
+	@Override
+	public List<mOrders> getListOrderByBatchCode(String batchCode) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mOrders.class);
+			criteria.add(Restrictions.eq("O_BatchCode", batchCode));
+	
+			List<mOrders> o= criteria.list();
+			commit();
+//			for(int i=0; i<o.size(); i++){
+//				System.out.println(name()+"::getListOrderByDueDate--"+o.get(i).toString());
+//			}
+			return o;
+		} catch (HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally {
 			flush();
 			close();
 		}

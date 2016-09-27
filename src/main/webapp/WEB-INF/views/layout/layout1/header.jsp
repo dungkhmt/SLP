@@ -30,7 +30,8 @@
 				<li><a href="<c:url value="${baseUrl}/ship/createRoute"/>">Lập tuyến giao hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/ship/getRoutes"/>">Xem Route</a></li>
 				 -->
-				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/createAutoRoute"/>">Lập tuyến giao hàng</a></li>
+				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/createAutoRoute"/>">Lập kế hoạch vận chuyển</a></li>
+				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/viewAutoRoute"/>">Xem kế hoạch vận chuyển</a></li>
 			</ul>
 		</div>
 	</div>

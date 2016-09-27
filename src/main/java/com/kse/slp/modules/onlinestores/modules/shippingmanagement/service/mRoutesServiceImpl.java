@@ -30,12 +30,14 @@ public class mRoutesServiceImpl implements mRoutesService {
 	}
 
 	public int saveARoute(String routeCode, String route_Shipper_Code,
-			String route_Start_Time, String route_StatusCode) {
+			String route_Start_Time, String route_StatusCode, String route_BatchCode) {
 		mRoutes route=new mRoutes();
 		route.setRoute_Code(routeCode);
 		route.setRoute_Shipper_Code(route_Shipper_Code);
 		route.setRoute_Start_DateTime(route_Start_Time);
 		route.setRoute_Status_Code(route_StatusCode);
+		route.setRoute_BatchCode(route_BatchCode);
+		
 		int id = routeDAO.saveARoute(route);
 		return id;
 	}
@@ -50,5 +52,11 @@ public class mRoutesServiceImpl implements mRoutesService {
 	public mRoutes loadRoutesUnderCreationByShipperCode(String shipperCode) {
 		// TODO Auto-generated method stub
 		return routeDAO.loadRoutesUnderCreationByShipperCode(shipperCode);
+	}
+
+	@Override
+	public List<mRoutes> getListByBatchCode(String batchCode) {
+		// TODO Auto-generated method stub
+		return routeDAO.getListByBatchCode(batchCode);
 	}
 }

@@ -134,9 +134,9 @@ public class ShippingController extends BaseWeb{
 			String route_Start_Time = lstResRoute.get(i).getRoute_Start_Time();
 				
 			if(method.equals("save")){
-				checkSaveRoute = mRoutesService.saveARoute(route_Code, route_Shipper_Code, route_Start_Time, Constants.ROUTE_STATUS_UNDER_CREATION);
+				checkSaveRoute = mRoutesService.saveARoute(route_Code, route_Shipper_Code, route_Start_Time, Constants.ROUTE_STATUS_UNDER_CREATION,"");
 			}else if(method.equals("confirm")){
-				checkSaveRoute = mRoutesService.saveARoute(route_Code, route_Shipper_Code, route_Start_Time, Constants.ROUTE_STATUS_CONFIRMED);
+				checkSaveRoute = mRoutesService.saveARoute(route_Code, route_Shipper_Code, route_Start_Time, Constants.ROUTE_STATUS_CONFIRMED,"");
 			}
 			
 			String[] orders_in_route = lstResRoute.get(i).getOrders_In_Route();
@@ -172,7 +172,7 @@ public class ShippingController extends BaseWeb{
 			String shipperCode=(String)json.get("shipperCode");
 			String routeCode=shipperCode+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
 			String startDateTime=(String)json.get("dateTimeStart");
-			mRoutesService.saveARoute(routeCode, shipperCode, startDateTime, Constants.ROUTE_STATUS_CONFIRMED);
+			mRoutesService.saveARoute(routeCode, shipperCode, startDateTime, Constants.ROUTE_STATUS_CONFIRMED,"");
 			JSONArray listOrder=(JSONArray) json.get("orderList");
 			for(int j=0;j<listOrder.size();j++){
 				JSONObject orderRoute=(JSONObject) listOrder.get(j);
@@ -212,7 +212,7 @@ public class ShippingController extends BaseWeb{
 				String shipperCode=(String)o.get("shipperCode");
 				String routeCode=shipperCode+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
 				String startDateTime=(String)o.get("dateTimeStart");
-				mRoutesService.saveARoute(routeCode, shipperCode, startDateTime, Constants.ROUTE_STATUS_UNDER_CREATION);
+				mRoutesService.saveARoute(routeCode, shipperCode, startDateTime, Constants.ROUTE_STATUS_UNDER_CREATION,"");
 				JSONArray listOrder=(JSONArray) o.get("orderList");
 				for(int j=0;j<listOrder.size();j++){
 					JSONObject orderRoute=(JSONObject) listOrder.get(j);

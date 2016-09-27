@@ -35,6 +35,12 @@ public class mShippersServiceImpl implements mShippersService{
 		mShippersDAO.updateAShipper(shipper);
 	}
 
+	@Override
+	public List<mShippers> getByCustomerCode(String cus_code) {
+		// TODO Auto-generated method stub
+		return mShippersDAO.getByCustomerCode(cus_code);
+	}
+
 	
 
 	

@@ -169,11 +169,33 @@ public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mRoutes.class);
-			 criteria.add(Restrictions.and(Restrictions.eq("Route_Shipper_Code", shipperCode),Restrictions.eq("Route_Status_Code", Constants.ROUTE_STATUS_UNDER_CREATION)));
+			criteria.add(Restrictions.and(Restrictions.eq("Route_Shipper_Code", shipperCode),Restrictions.eq("Route_Status_Code", Constants.ROUTE_STATUS_UNDER_CREATION)));
 			List<mRoutes> r= criteria.list();
 			commit();
 			if(r.size()<1) return null;
 			return r.get(0);
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
+	@Override
+	public List<mRoutes> getListByBatchCode(String batchCode) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mRoutes.class);
+			criteria.add(Restrictions.eq("Route_BatchCode", batchCode));
+			List<mRoutes> r= criteria.list();
+			commit();
+			
+			return r;
 		}catch(HibernateException e){
 			e.printStackTrace();
 			rollback();

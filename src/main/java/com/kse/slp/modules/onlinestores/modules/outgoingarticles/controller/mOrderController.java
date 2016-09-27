@@ -1,12 +1,19 @@
 package com.kse.slp.modules.onlinestores.modules.outgoingarticles.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -19,23 +26,45 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodInput;
+import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodRoute;
+import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodSolution;
+import com.kse.slp.modules.api.deliverygoods.model.DeliveryRequest;
+import com.kse.slp.modules.api.deliverygoods.model.Shipper;
+import com.kse.slp.modules.api.deliverygoods.model.Store;
 import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteJSONResponse;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.infoAutoRouteElement;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.InfoAutoRouteElementService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
+import com.kse.slp.modules.usermanagement.model.Customer;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.usermanagement.service.CustomerService;
+import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
 
 @Controller("mOrderController")
@@ -49,7 +78,17 @@ public class mOrderController extends BaseWeb{
 	mOrdersService orderService;
 	@Autowired
 	mRequestBatchService mRequestBatchService;
-
+	@Autowired
+	CustomerService CustomerService;
+	@Autowired
+	mShippersService mShippersService;
+	@Autowired
+	private mRoutesService mRoutesService;
+	@Autowired
+	private mRouteDetailService mRouteDetailService;
+	@Autowired
+	InfoAutoRouteElementService InfoAutoRouteElementService;
+	
 	/*
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
 	public String addAOrder(ModelMap model, HttpSession session){
@@ -126,7 +165,7 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/uploadOrdersFile", method=RequestMethod.POST)
-	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest,BindingResult result){
+	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest){
 		//System.out.println("Upload file");
 		String batchCode = dataRequest.getBatchCode();
 		//System.out.println("batch Code: "+ batchCode);
@@ -202,8 +241,109 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/callServiceCreateRoute", method=RequestMethod.POST)
-	public String callServiceCreateRoute(){
-		System.out.println("batch");
+	public String callServiceCreateRoute(@RequestBody String batch, HttpSession session){
+		System.out.println(name()+"callServiceCreateRoute--callbatch" +batch);
+		URL url;
+		try {
+			url = new URL("http://103.18.4.32:8080/ezRoutingAPI/delivery-goods-plan");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-type", "application/json");
+			
+			List<mOrders> lstOrder = orderService.getListOrderByBatchCode(batch);
+			DeliveryRequest[] deliveryRequest = new DeliveryRequest[lstOrder.size()];
+			for(int i=0; i<lstOrder.size(); i++){
+				String requestCode = lstOrder.get(i).getO_Code();
+				String deliveryAddress = lstOrder.get(i).getO_DeliveryAddress();
+				String deliveryLatLng = lstOrder.get(i).getO_DeliveryLat()+", "+lstOrder.get(i).getO_DeliveryLng();
+				String earlyDeliveryTime = lstOrder.get(i).getO_OrderDate()+" " +lstOrder.get(i).getO_TimeEarly();
+				String lateDeliveryTime = lstOrder.get(i).getO_DueDate()+" "+lstOrder.get(i).getO_TimeLate();
+				double weight = 10.0;
+				double volumn = 0.0;
+				deliveryRequest[i] = new DeliveryRequest(requestCode, deliveryAddress, deliveryLatLng, earlyDeliveryTime, lateDeliveryTime, weight, volumn);
+			}
+			
+			//User user = (User) session.getAttribute("currentUser");
+			String customerCode = mRequestBatchService.getByCode(batch).getREQBAT_CustomerCode();
+			Customer cus = CustomerService.getByCode(customerCode);
+			System.out.println(name()+"callServiceCreateRoute--cus: "+cus.toString());
+			Store store = new Store(cus.getCus_Code(), cus.getCus_Name(), cus.getCus_Address(), (cus.getCus_Lat()+", "+cus.getCus_Lng())); 
+			
+			List<mShippers> lstShipper = mShippersService.getByCustomerCode(customerCode);
+			Shipper shippers[] = new Shipper[lstShipper.size()];
+			for(int i=0; i<lstShipper.size();i++){
+				String shipperCode = lstShipper.get(i).getSHP_Code();
+				String name = lstShipper.get(i).getSHP_User_Name();
+				String currentLatLng = lstShipper.get(i).getSHP_CurrentLocation();
+				double weight = 50.0;
+				double volumn = 100.0;
+				shippers[i] = new Shipper(shipperCode, name, currentLatLng, weight, volumn);
+			}
+			DeliveryGoodInput data = new DeliveryGoodInput(deliveryRequest, store, shippers);
+			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+			String datajson = ow.writeValueAsString(data);
+			System.out.println(name()+"callServiceCreateRoute---data send:");
+			System.out.println(datajson);
+			OutputStream os = conn.getOutputStream();
+			os.write(datajson.getBytes());
+			os.flush();
+			
+			BufferedReader br =  new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String reciveData = br.readLine();
+			System.out.println(name()+"callServiceCreateRoute--recived Data: \n "+reciveData);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			DeliveryGoodSolution solution = mapper.readValue(reciveData, DeliveryGoodSolution.class);
+			System.out.println(name()+"callServiceCreateRoute--length of route"+solution.getRoutes().length);
+			for(int i=0; i<solution.getRoutes().length; i++){
+				DeliveryGoodRoute route = solution.getRoutes()[i];
+				String route_Shipper_Code = route.getRouteElements()[0].getRequestCode();
+				String route_Code = route_Shipper_Code + GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+				mRoutesService.saveARoute(route_Code, route_Shipper_Code, "", "",batch);
+				for(int j=1; j<route.getRouteElements().length; j++){
+					String rTD_OrderCode = route.getRouteElements()[j].getRequestCode();
+					String rTD_RouteCode = route_Code;
+					mRouteDetailService.saveARouteDetail(rTD_OrderCode, rTD_RouteCode, j);
+				}
+			}
+			System.out.println(name()+"callServiceCreateRoute--done");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return "redirect:/onlinestore";
+	}
+	@RequestMapping("/viewAutoRoute")
+	public String viewAutoRoute(ModelMap model){
+		List<RequestBatch> lstBatch = mRequestBatchService.getList();
+		model.put("lstBatch", lstBatch);
+		return "outgoingarticles.viewAutoRoute";
+	}
+	
+	@RequestMapping("/viewAssignedBatchRoute")
+	public @ResponseBody List<mAutoRouteResponseInfo> viewBatchRoute(@RequestBody String batch){
+		System.out.println(name()+"viewBatchRoute--batch"+batch);
+		List<mRoutes> lstRoute = mRoutesService.getListByBatchCode(batch);
+		List<mAutoRouteResponseInfo> response = new ArrayList<mAutoRouteResponseInfo>();
+		for(int i=0; i<lstRoute.size(); i++){
+			String routeCode = lstRoute.get(i).getRoute_Code();
+			String shipperCode = lstRoute.get(i).getRoute_Shipper_Code();
+			List<infoAutoRouteElement> routeElement = InfoAutoRouteElementService.getList(routeCode);
+			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(shipperCode, routeElement);
+			System.out.println(name()+"viewBatchRoute--response:"+tmp.toString());
+			response.add(tmp);
+		}
+		//mAutoRouteJSONResponse data = new mAutoRouteJSONResponse(response);
+		
+		return response;
+	}
+	
+	public String name(){
+		return "mOrderController::";
 	}
 }
