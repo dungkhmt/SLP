@@ -108,4 +108,9 @@ public class mOrdersServiceImpl implements mOrdersService{
 	String name(){
 		return "mOrdersServiceImpl";
 	}
+	@Override
+	public List<mOrders> getListOrderByBatchCode(String batchCode) {
+		// TODO Auto-generated method stub
+		return orderDAO.getListOrderByBatchCode(batchCode);
+	}
 }

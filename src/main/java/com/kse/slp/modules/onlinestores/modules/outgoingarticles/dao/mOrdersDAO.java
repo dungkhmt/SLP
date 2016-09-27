@@ -14,5 +14,6 @@ public interface mOrdersDAO {
 	public List<mOrderDetail> getListOrderDetail();	
 	public List<String> getListDueDate();
 	public List<mOrders> getListOrderByDueDate(String DueDate);
+	public List<mOrders> getListOrderByBatchCode(String batchCode);
 	public void updateStatus(String order_Code,String status);
 }

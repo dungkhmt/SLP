@@ -2,11 +2,15 @@ package com.kse.slp.modules.onlinestores.modules.outgoingarticles.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -19,12 +23,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.api.deliverygoods.model.DeliveryRequest;
+import com.kse.slp.modules.api.deliverygoods.model.Store;
 import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
@@ -126,7 +133,7 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/uploadOrdersFile", method=RequestMethod.POST)
-	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest,BindingResult result){
+	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest){
 		//System.out.println("Upload file");
 		String batchCode = dataRequest.getBatchCode();
 		//System.out.println("batch Code: "+ batchCode);
@@ -202,8 +209,38 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/callServiceCreateRoute", method=RequestMethod.POST)
-	public String callServiceCreateRoute(){
-		System.out.println("batch");
-		return "redirect:/onlinestore";
+	public String callServiceCreateRoute(@RequestBody String batch, HttpSession session){
+		System.out.println("batch" +batch);
+		URL url;
+		try {
+			url = new URL("http://103.18.4.32:8080/ezRoutingAPI/delivery-goods-plan");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-type", "application/json");
+			
+			List<mOrders> lstOrder = orderService.getListOrderByBatchCode(batch);
+			DeliveryRequest[] deliveryRequest = new DeliveryRequest[lstOrder.size()];
+			for(int i=0; i<lstOrder.size(); i++){
+				String requestCode = lstOrder.get(i).getO_ClientCode();
+				String deliveryAddress = lstOrder.get(i).getO_DeliveryAddress();
+				String deliveryLatLng = lstOrder.get(i).getO_DeliveryLat()+", "+lstOrder.get(i).getO_DeliveryLng();
+				String earlyDeliveryTime = lstOrder.get(i).getO_OrderDate()+" " +lstOrder.get(i).getO_TimeEarly();
+				String lateDeliveryTime = lstOrder.get(i).getO_DueDate()+" "+lstOrder.get(i).getO_TimeLate();
+				double weight = 10.0;
+				double volumn = 0.0;
+				deliveryRequest[i] = new DeliveryRequest(requestCode, deliveryAddress, deliveryLatLng, earlyDeliveryTime, lateDeliveryTime, weight, volumn);
+			}
+			
+			Store store = new 
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "200";
 	}
 }
