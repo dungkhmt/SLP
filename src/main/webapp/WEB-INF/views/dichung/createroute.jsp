@@ -6,32 +6,46 @@
 <link href="<c:url value="/assets/libs/fileinput/css/fileinput.min.css" />" media="all" rel="stylesheet" type="text/css">
 	
 <div id="page-wrapper">
-    <form:form action="${baseUrl}/dichung/upload-file-request-dichung" method="POST" commandName="formAdd" enctype="multipart/form-data" role="form">
+    
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Upload danh sách hóa đơn</h1>
+            <h1 class="page-header">Chọn lô hàng lập tuyến</h1>
 		</div>
 		<div class="col-sm-4">
 			<div class="form-group">
-				<form:select path="batchCode" name="batchCode" class="form-control">
-					<option>Chọn Batch</option>
+				<select id="batchcode" name="batchCode" class="form-control">
+					<option>Chọn lô</option>
 					<c:forEach items="${listBatch}" var="reBatch">
 						<option value="${reBatch.REQBAT_Code}"><c:out value="${reBatch.REQBAT_Code}"/></option>
 					</c:forEach>
-				</form:select>
+				<select>
 			</div>
-		</div>
-		<div class="col-lg-12">
-				<form:input id="input-file" path="ordersFile" name="ordersFile" type="file" class="file file-loading" data-allowed-file-extensions='["xlsx"]'></form:input>
+			<button type="button" class="btn btn-primary active" title="Tạo route cho lô này" onclick="onclick2()">Tạo tuyến</button>
 		</div>
 		<!-- /.col-lg-12 -->
     </div>
-   	</form:form>
+   	
  </div>
  
-<script src="<c:url value="/assets/libs/fileinput/js/fileinput.min.js"/>"></script>
 <script>
-$(document).ready(function(){
-	 $("#input-file").fileinput();
- });
+function onclick2(){
+	
+	var select=$("#batchcode option:selected").val();
+	console.log(select);
+	alert("x");
+	if(select !=null) 
+	$.ajax({ 
+   		type:"POST", 
+    	url:"${baseUrl}/dichung/get-route-auto",
+    	data: select,
+    	contentType: "application/json; charset=utf-8",
+    	dataType: "json",
+    	//Stringified Json Object
+    	success: function(response){
+    		if(response==true){
+    			window.location = '${baseUrl}/dichung'
+    		}
+    	}	
+	});
+}
 </script>
