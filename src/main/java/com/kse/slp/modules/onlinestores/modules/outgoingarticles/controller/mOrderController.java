@@ -42,7 +42,9 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrders
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
+import com.kse.slp.modules.usermanagement.model.Customer;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.usermanagement.service.CustomerService;
 
 
 @Controller("mOrderController")
@@ -56,7 +58,9 @@ public class mOrderController extends BaseWeb{
 	mOrdersService orderService;
 	@Autowired
 	mRequestBatchService mRequestBatchService;
-
+	@Autowired
+	CustomerService CustomerService;
+	
 	/*
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
 	public String addAOrder(ModelMap model, HttpSession session){
@@ -232,7 +236,11 @@ public class mOrderController extends BaseWeb{
 				deliveryRequest[i] = new DeliveryRequest(requestCode, deliveryAddress, deliveryLatLng, earlyDeliveryTime, lateDeliveryTime, weight, volumn);
 			}
 			
-			Store store = new 
+			//User user = (User) session.getAttribute("currentUser");
+			String customerCode = mRequestBatchService.getByCode(batch).getREQBAT_CustomerCode();
+			Customer cus = CustomerService.getByCode(customerCode);
+			System.out.println(name()+"callServiceCreateRoute--cus: "+cus.toString());
+			//Store store = new 
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,6 +249,10 @@ public class mOrderController extends BaseWeb{
 			e.printStackTrace();
 		}
 		
-		return "200";
+		return "redirect:/onlinestore";
+	}
+	
+	public String name(){
+		return "mOrderController::";
 	}
 }
