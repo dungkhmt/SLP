@@ -39,6 +39,10 @@
     	<put-attribute name="title" value="Lập tuyến giao hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/createAutoRoute.jsp" />                
     </definition>
+    <definition name="outgoingarticles.viewAutoRoute" extends="layout1">
+    	<put-attribute name="title" value="Lập tuyến giao hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/viewAutoRoute.jsp" />                
+    </definition>
     
     <!-- home -->
     <definition name="home" template="/WEB-INF/views/home/home.jsp">

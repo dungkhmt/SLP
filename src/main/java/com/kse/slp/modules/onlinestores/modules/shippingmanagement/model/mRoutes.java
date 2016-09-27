@@ -16,7 +16,14 @@ public class mRoutes {
 	private String Route_Shipper_Code;
 	private String Route_Status_Code;
 	private String Route_Start_DateTime;
+	private String Route_BatchCode;
 	
+	public String getRoute_BatchCode() {
+		return Route_BatchCode;
+	}
+	public void setRoute_BatchCode(String route_BatchCode) {
+		Route_BatchCode = route_BatchCode;
+	}
 	public String getRoute_Status_Code() {
 		return Route_Status_Code;
 	}
@@ -50,7 +57,10 @@ public class mRoutes {
 	@Override
 	public String toString() {
 		return "mRoutes [Route_ID=" + Route_ID + ", Route_Code=" + Route_Code
-				+ ", Route_Shipper_Code=" + Route_Shipper_Code + "]";
+				+ ", Route_Shipper_Code=" + Route_Shipper_Code
+				+ ", Route_Status_Code=" + Route_Status_Code
+				+ ", Route_Start_DateTime=" + Route_Start_DateTime
+				+ ", Route_BatchCode=" + Route_BatchCode + "]";
 	}
 	
 }

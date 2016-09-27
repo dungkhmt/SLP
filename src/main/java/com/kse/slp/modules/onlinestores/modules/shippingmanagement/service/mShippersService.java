@@ -8,5 +8,5 @@ public interface mShippersService {
 	public List<mShippers> getList();
 	public mShippers loadShiperByUserName(String userName);
 	public void updateShipperCurrentLocation(double lat,double lng,String user,String lastDateTime);
-	
+	public List<mShippers> getByCustomerCode(String cus_code);
 }
