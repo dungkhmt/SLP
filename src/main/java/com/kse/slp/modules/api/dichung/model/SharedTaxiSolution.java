@@ -1,5 +1,7 @@
 package com.kse.slp.modules.api.dichung.model;
 
+import java.util.Arrays;
+
 public class SharedTaxiSolution {
 	private SharedTaxiRoute[] routes;
 
@@ -19,6 +21,11 @@ public class SharedTaxiSolution {
 
 	public void setRoutes(SharedTaxiRoute[] routes) {
 		this.routes = routes;
+	}
+
+	@Override
+	public String toString() {
+		return "SharedTaxiSolution [routes=" + Arrays.toString(routes) + "]";
 	}
 	
 }

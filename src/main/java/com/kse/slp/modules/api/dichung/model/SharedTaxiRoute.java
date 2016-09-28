@@ -1,5 +1,7 @@
 package com.kse.slp.modules.api.dichung.model;
 
+import java.util.Arrays;
+
 public class SharedTaxiRoute {
 	private SharedTaxiRouteElement[] ticketCodes;
 	private int nbPeople;
@@ -52,6 +54,15 @@ public class SharedTaxiRoute {
 
 	public void setTicketCodes(SharedTaxiRouteElement[] ticketCodes) {
 		this.ticketCodes = ticketCodes;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "SharedTaxiRoute [ticketCodes=" + Arrays.toString(ticketCodes)
+				+ ", nbPeople=" + nbPeople + ", arrTimeDestination="
+				+ arrTimeDestination + "]";
 	}
 
 	

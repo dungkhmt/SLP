@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -35,12 +36,20 @@ import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.api.dichung.model.SharedTaxiInput;
 import com.kse.slp.modules.api.dichung.model.SharedTaxiRequest;
+import com.kse.slp.modules.api.dichung.model.SharedTaxiRoute;
+import com.kse.slp.modules.api.dichung.model.SharedTaxiRouteElement;
+import com.kse.slp.modules.api.dichung.model.SharedTaxiSolution;
 import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
+import com.kse.slp.modules.dichung.dao.RouteDetailDiChungDAO;
 import com.kse.slp.modules.dichung.model.RequestDiChung;
+import com.kse.slp.modules.dichung.model.RouteDetailDiChung;
 import com.kse.slp.modules.dichung.model.mFormAddFileExcel;
 import com.kse.slp.modules.dichung.service.RequestDiChungService;
+import com.kse.slp.modules.dichung.service.RouteDetailDiChungService;
+import com.kse.slp.modules.onlinestores.common.Constants;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
@@ -53,6 +62,10 @@ public class DiChungControler extends BaseWeb {
 	mRequestBatchService requestBatchService;
 	@Autowired
 	RequestDiChungService requestDiChungService;
+	@Autowired
+	mRoutesService routeService;
+	@Autowired
+	RouteDetailDiChungService routeDetailDiChungService;
 	private static final Logger log = Logger.getLogger(DiChungControler.class);
 	@RequestMapping(value="",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
@@ -98,7 +111,9 @@ public class DiChungControler extends BaseWeb {
 				System.out.println(name()+"::readFile"+"--row "+i);
 				row = sheet.getRow(i);
 				String 	rEQDC_TicketCode=""+row.getCell(0).getRawValue();
-				String  rEQDC_DepartTime=row.getCell(1).getStringCellValue();
+				String tmp=row.getCell(1).getStringCellValue();
+				tmp=GenerationDateTimeFormat.convertDateTimeFormat(tmp, "HH:mm dd/mm/yy", "yyyy-MM-dd HH:mm:ss");
+				String  rEQDC_DepartTime=tmp;
 				String  rEQDC_ChunkName=row.getCell(2).getStringCellValue();
 				String  rEQDC_PickupAddress=row.getCell(3).getStringCellValue();
 				String  rEQDC_DeliveryAddress=row.getCell(4).getStringCellValue();
@@ -128,8 +143,8 @@ public class DiChungControler extends BaseWeb {
 		SharedTaxiInput stinpu= new SharedTaxiInput();
 		int tmp[]= {4,6};
 		stinpu.setVehicleCapacities(tmp);
-		stinpu.setMaxWaitTime(1800);
-		stinpu.setForbidenStraightDistance(6000);
+		stinpu.setMaxWaitTime(900);
+		stinpu.setForbidenStraightDistance(10000);
 		stinpu.setForbidenTimeDistance(3600);
 		stinpu.setMaxTime(5);
 		List<RequestDiChung> list = requestDiChungService.getListInBatch(batchCode); 
@@ -152,13 +167,27 @@ public class DiChungControler extends BaseWeb {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
 		    HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-		    StringEntity params = new StringEntity(json);
+		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
+		    System.out.println(request.getEntity());
 		    HttpResponse response = httpClient.execute(request);
 		    HttpEntity  res= response.getEntity();
 		    String responseString = EntityUtils.toString(res, "UTF-8");
 		    System.out.println(responseString);
+		    SharedTaxiSolution sts= gson.fromJson(responseString, SharedTaxiSolution.class);
+		    System.out.println(sts);
+		    SharedTaxiRoute str[]= sts.getRoutes();
+		    String route_Code = "dichung" + GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+		    routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
+		    
+		    for(int i=0;i<str.length;i++){
+			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
+			    for(int j=0;j<stre.length;j++){
+			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i);
+			    }
+			  
+		    }
 		// handle response here...
 		} catch (Exception ex) {
 		    // handle exception here

@@ -98,6 +98,19 @@ public class SharedTaxiRouteElement {
 			String maxTravelTimeToDestinationAllowed) {
 		this.maxTravelTimeToDestinationAllowed = maxTravelTimeToDestinationAllowed;
 	}
+
+
+	@Override
+	public String toString() {
+		return "SharedTaxiRouteElement [ticketCode=" + ticketCode
+				+ ", address=" + address + ", pickupDateTime=" + pickupDateTime
+				+ ", expectedPickupDateTime=" + expectedPickupDateTime
+				+ ", travelTimeToDestination=" + travelTimeToDestination
+				+ ", travelTimeToNext=" + travelTimeToNext
+				+ ", distanceToNext=" + distanceToNext
+				+ ", maxTravelTimeToDestinationAllowed="
+				+ maxTravelTimeToDestinationAllowed + "]";
+	}
 	
 	
 
