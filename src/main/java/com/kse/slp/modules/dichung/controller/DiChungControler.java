@@ -180,8 +180,13 @@ public class DiChungControler extends BaseWeb {
 		    System.out.println(sts);
 		    SharedTaxiRoute str[]= sts.getRoutes();
 		    String route_Code = "dichung" + GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
-		    routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
 		    
+		    List <mRoutes> lr=routeService.getListByBatchCode(batchCode);
+		    for(int i=0;i<lr.size();i++){
+		    	routeDetailDiChungService.deleteRoutesbyRouteCode(lr.get(i).getRoute_Code());
+		    	routeService.removeRoutesByRouteCode(lr.get(i).getRoute_Code());
+		    }
+		    routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
 		    for(int i=0;i<str.length;i++){
 			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
 			    for(int j=0;j<stre.length;j++){
