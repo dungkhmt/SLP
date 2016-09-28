@@ -39,6 +39,8 @@ public class mAjaxShippingController {
 	
 	@ResponseBody @RequestMapping(value="/loadRouteDetail", method = RequestMethod.POST)
 	public  mPoiInRoute[] getTags(@RequestBody String jsonRouteCode,HttpSession session) {
+		User u=(User) session.getAttribute("currentUser");
+		if(u==null) return null;
 		System.out.println(name()+" "+jsonRouteCode);
 		JSONParser parser = new JSONParser();
 		JSONObject json;
@@ -62,13 +64,15 @@ public class mAjaxShippingController {
 				System.out.println(name()+" "+o+" "+rd.getRTD_Sequence());
 				mPIR[rd.getRTD_Sequence()]= r;
 			}
-			User u=(User) session.getAttribute("currentUser");
+			
+			
 			log.info(u.getUsername()+" DONE");
 			return mPIR;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			User u=(User) session.getAttribute("currentUser");
+			
+			//System.out.println(u);
 			log.info(u.getUsername()+" FAIL");
 			return null;
 		}
@@ -76,6 +80,8 @@ public class mAjaxShippingController {
 	
 	@ResponseBody @RequestMapping(value="/set-order-delivered", method = RequestMethod.POST)
 	public boolean setOrderDelivered(HttpSession session ,@RequestBody String jsonOrderCode) {
+		User u=(User) session.getAttribute("currentUser");
+		if(u==null) return false;
 		System.out.print(name()+" setOrderDelivered");
 		JSONParser parser = new JSONParser();
 		JSONObject json;
@@ -85,13 +91,12 @@ public class mAjaxShippingController {
 			String orderStatus=(String) json.get("status");
 			
 			mOrdersService.setStatusbyOrderCode(orderCode, orderStatus);
-			User u=(User) session.getAttribute("currentUser");
+			
 			log.info(u.getUsername()+" DONE");
 			return true;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			User u=(User) session.getAttribute("currentUser");
 			log.info(u.getUsername()+" FAIL");
 			return false;
 		}

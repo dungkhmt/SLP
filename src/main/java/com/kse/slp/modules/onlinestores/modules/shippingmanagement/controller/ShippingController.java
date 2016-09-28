@@ -236,6 +236,7 @@ public class ShippingController extends BaseWeb{
 	@RequestMapping(value="/getRoutes")
 	public String loadRouteShiper(ModelMap map,HttpSession session){
 		User user  =(User) session.getAttribute("currentUser");
+		if(user==null) return null;
 		mShippers shipper= mShippersService.loadShiperByUserName(user.getUsername());
 		if(shipper==null) return null; 
 		System.out.println(name()+"loadRouteShiper "+user.getUsername()+" "+shipper.getSHP_Code());
@@ -324,6 +325,7 @@ public class ShippingController extends BaseWeb{
 	@ResponseBody @RequestMapping(value="/get-route-android", method=RequestMethod.POST)
 	public mJSONAndroidRouteList getRouteAndroi(HttpSession session){
 		User u  =(User) session.getAttribute("currentUser");
+		if(u==null) return null;
 		session.setAttribute("currentUser", u);
 		List<mRoutes> listRoutes= mRoutesService.loadRoutebyShipperCode(u.getUsername());
 		log.info(u.getUsername());
@@ -371,6 +373,8 @@ public class ShippingController extends BaseWeb{
 	@ResponseBody @RequestMapping(value="/update-shipper-location",method=RequestMethod.POST)
 	public mJSONResponseBoolean updateShipperLocation(@RequestBody String location,HttpSession session){
 		User u  =(User) session.getAttribute("currentUser");
+		if(u==null) return null;
+		System.out.println(u);
 		JSONParser parser = new JSONParser();
 		JSONObject json;
 		try {
