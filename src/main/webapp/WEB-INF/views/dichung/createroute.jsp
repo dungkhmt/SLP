@@ -32,7 +32,7 @@ function onclick2(){
 	
 	var select=$("#batchcode option:selected").val();
 	console.log(select);
-	alert("x");
+	//alert("x");
 	if(select !=null) 
 	$.ajax({ 
    		type:"POST", 

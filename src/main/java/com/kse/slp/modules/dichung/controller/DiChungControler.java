@@ -167,7 +167,8 @@ public class DiChungControler extends BaseWeb {
 		System.out.println(name()+json);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
-		    HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+		    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
@@ -175,19 +176,21 @@ public class DiChungControler extends BaseWeb {
 		    HttpResponse response = httpClient.execute(request);
 		    HttpEntity  res= response.getEntity();
 		    String responseString = EntityUtils.toString(res, "UTF-8");
-		    System.out.println(responseString);
+		    System.out.println(name() + "::getRouteAuto, responseString = " + responseString);
 		    SharedTaxiSolution sts= gson.fromJson(responseString, SharedTaxiSolution.class);
 		    System.out.println(sts);
 		    SharedTaxiRoute str[]= sts.getRoutes();
+		    System.out.println(name() + "::getRouteAuto, number of routes = " + str.length);
 		    String route_Code = "dichung" + GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
 		    routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
-		    
+		    System.out.println(name() + "::getRouteAuto, number of routes = " + str.length);
 		    for(int i=0;i<str.length;i++){
 			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
+			    System.out.println(name() + "::getRouteAuto, route[" + i + "].length = " + stre.length);
 			    for(int j=0;j<stre.length;j++){
 			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[i].getTravelTimeToNext());
 			    }
-			  
+			    System.out.println(name() + "::getRouteAuto, route[" + i + "].length = " + stre.length + ", i = " + i + ", str.length = " + str.length);
 		    }
 		// handle response here...
 		} catch (Exception ex) {
