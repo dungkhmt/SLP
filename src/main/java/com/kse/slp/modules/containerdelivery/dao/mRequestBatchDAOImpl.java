@@ -60,4 +60,23 @@ public class mRequestBatchDAOImpl extends BaseDao implements mRequestBatchDAO {
 			close();
 		}
 	}
+	@Override
+	public List<RequestBatch> getList(String CustomerCode) {
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(RequestBatch.class);
+			criteria.add(Restrictions.eq("REQBAT_CustomerCode", CustomerCode));
+			List<RequestBatch > list = criteria.list();
+			commit();
+			return list;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
 }

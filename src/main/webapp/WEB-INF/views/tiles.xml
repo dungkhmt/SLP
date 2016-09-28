@@ -129,5 +129,9 @@
     	<put-attribute name="title" value="Upload xls dichung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/adddichungrequestsbyxls.jsp" /> 
     </definition>
+    <definition name="dichung.viewroute" extends="layout3">
+    	<put-attribute name="title" value="View Route"/>
+    	<put-attribute name="content" value="/WEB-INF/views/dichung/viewRouteDiChung.jsp" /> 
+    </definition>
     
 </tiles-definitions>

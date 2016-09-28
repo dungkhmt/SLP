@@ -22,7 +22,8 @@
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
 				<li><a href="<c:url value="${baseUrl}/dichung/add-dichungrequests-by-xls"/>">Upload request</a></li>
-				
+				<li><a href="<c:url value="${baseUrl}/dichung/create-route-auto"/>">Lập kế hoạch tự động</a></li>
+				<li><a href="<c:url value="${baseUrl}/dichung/view-route"/>">Hiển thị tuyến theo lô</a></li>
 			</ul>
 		</div>
 	</div>

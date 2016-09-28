@@ -49,6 +49,7 @@ import com.kse.slp.modules.dichung.model.mFormAddFileExcel;
 import com.kse.slp.modules.dichung.service.RequestDiChungService;
 import com.kse.slp.modules.dichung.service.RouteDetailDiChungService;
 import com.kse.slp.modules.onlinestores.common.Constants;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
@@ -132,7 +133,7 @@ public class DiChungControler extends BaseWeb {
 	public String createRouteAuto(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		List<RequestBatch> listBatch= requestBatchService.getList(u.getCustomerCode());
 		model.put("listBatch", listBatch);
 		return "dichung.createroute";
 	}
@@ -184,7 +185,7 @@ public class DiChungControler extends BaseWeb {
 		    for(int i=0;i<str.length;i++){
 			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
 			    for(int j=0;j<stre.length;j++){
-			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i);
+			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[i].getTravelTimeToNext());
 			    }
 			  
 		    }
@@ -195,6 +196,28 @@ public class DiChungControler extends BaseWeb {
 			httpClient.getConnectionManager().shutdown();
 		}
 		return true;
+	}
+	@RequestMapping(value="/view-route", method=RequestMethod.GET)
+	public String viewRoute(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(u.getCustomerCode());
+		model.put("listBatch", listBatch);
+		return "dichung.viewroute";
+	}
+	@ResponseBody @RequestMapping(value="/load-route-in-batch", method=RequestMethod.POST)
+	public List<RouteDetailDiChung> loadRouteInBatch(HttpSession session,@RequestBody String batchCode){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		System.out.println(batchCode);
+		List<RouteDetailDiChung> res= new ArrayList<RouteDetailDiChung>();
+		List<mRoutes> lr= routeService.getListByBatchCode(batchCode);
+		System.out.println(name()+lr);
+		for(int i=0;i< lr.size();i++){
+			res.addAll(routeDetailDiChungService.loadRouteContainerDetailByRouteCode(lr.get(i).getRoute_Code()));
+		}
+		
+		return res;
 	}
 	String name(){
 		return "DiChungControler:: ";

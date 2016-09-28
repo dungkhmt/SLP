@@ -15,6 +15,28 @@ public class RouteDetailDiChung {
 	String RDDC_TicketCode;
 	int RDDC_Sequence;
 	int RDDC_Group;
+	String RDDC_Address;
+	String RDDC_DistanceToNext;
+	String RDDC_TravelTimeToNext;
+	
+	public String getRDDC_Address() {
+		return RDDC_Address;
+	}
+	public void setRDDC_Address(String rDDC_Address) {
+		RDDC_Address = rDDC_Address;
+	}
+	public String getRDDC_DistanceToNext() {
+		return RDDC_DistanceToNext;
+	}
+	public void setRDDC_DistanceToNext(String rDDC_DistanceToNext) {
+		RDDC_DistanceToNext = rDDC_DistanceToNext;
+	}
+	public String getRDDC_TravelTimeToNext() {
+		return RDDC_TravelTimeToNext;
+	}
+	public void setRDDC_TravelTimeToNext(String rDDC_TravelTimeToNext) {
+		RDDC_TravelTimeToNext = rDDC_TravelTimeToNext;
+	}
 	public int getRDDC_ID() {
 		return RDDC_ID;
 	}

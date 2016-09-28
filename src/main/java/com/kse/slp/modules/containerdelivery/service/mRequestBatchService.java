@@ -7,4 +7,5 @@ import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 public interface mRequestBatchService {
 	public List<RequestBatch> getList();
 	public RequestBatch getByCode(String code);
+	public List<RequestBatch> getList(String CustomerCode);
 }

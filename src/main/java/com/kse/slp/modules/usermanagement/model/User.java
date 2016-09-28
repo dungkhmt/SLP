@@ -23,7 +23,7 @@ public class User implements Serializable{
 	private int id;
 	private String username;
 	private String password;
-	
+	private String CustomerCode;
 	@ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)  
     @JoinTable(name="tbluserrole", 
     		   joinColumns=@JoinColumn(name="user_id", referencedColumnName = "id"), 
@@ -39,6 +39,14 @@ public class User implements Serializable{
 		this.setAuthorities(roles);
 	}	
 		
+	public String getCustomerCode() {
+		return CustomerCode;
+	}
+
+	public void setCustomerCode(String customerCode) {
+		CustomerCode = customerCode;
+	}
+
 	public String getUsername() {
 		return username;
 	}
