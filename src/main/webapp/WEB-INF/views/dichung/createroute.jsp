@@ -11,7 +11,7 @@
         <div class="col-lg-12">
             <h1 class="page-header">Chọn lô hàng lập tuyến</h1>
 		</div>
-		<div class="col-sm-4">
+		<div class="main col-sm-4">
 			<div class="form-group">
 				<select id="batchcode" name="batchCode" class="form-control">
 					<option>Chọn lô</option>
@@ -29,6 +29,8 @@
  
 <script>
 function onclick2(){
+	$(".main").append("<h4>Creating....<img src=\"<c:url value='/assets/icon/loading.gif' />\" style=\"width:50px;height:50px;\"><h4>");
+	$( ".main" ).append( "" );
 	
 	var select=$("#batchcode option:selected").val();
 	console.log(select);
