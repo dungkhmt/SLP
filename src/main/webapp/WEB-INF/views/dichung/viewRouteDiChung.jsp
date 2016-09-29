@@ -24,7 +24,8 @@
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
-	
+	<div id="map" style="height:100%">
+    </div>
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
@@ -59,7 +60,16 @@
 </div>
 <!-- /#page-wrapper -->
 <script>
-
+function initMap() {
+	directionsService = new google.maps.DirectionsService;
+	serviceDistance = new google.maps.DistanceMatrixService;
+    var mapDiv = document.getElementById('map');
+    map = new google.maps.Map(mapDiv, {
+        center: {lat: 21.03, lng: 105.8},
+        zoom: 8
+    });
+	console.log("start");
+}
 $(document).ready(function(){
 	$("#tableRoute").DataTable({
 		
@@ -78,19 +88,58 @@ function loadRoute(){
 	        // Success Message Handler
 	        //console.log(response);
 	        loadTable(response);
+	        viewMap(response);
 	    }
     });
 	
 }
-
-function loadTable(data){
-	console.log("loaddata");
-	$("table#tableRoute tbody").html("");
+function randomColor(){
+	p1=Math.floor((Math.random() * 85));
+	p2=Math.floor((Math.random() * 255));
+	p3=Math.floor((Math.random() * 255));
+	return "rgb("+p1+","+p2+","+p3+ ")";;
+}
+function viewMap(data){
+	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	var route;
 	for(var i=0;i<data.length;i++){
-		str="<tr>";
+		console.log(i);
+		//console.log(JSON.stringify(response[i]));
+		if(data[i].rddc_Sequence==0){
+		console.log(i+" "+data[i].rddc_Sequence);
+		var point = new google.maps.LatLng(21.2187149,105.80417090000003);
+		if(route!=undefined)
+		route.getPath().push(point);
+		route = new google.maps.Polyline({
+			strokeColor: randomColor(),
+		    strokeOpacity: 1.0,
+		    strokeWeight: 3,
+		});
+		}
+		var labelIndex=0;
+		var latlng=data[i].rddc_LatLng;
+		var lat = latlng.substring(0,latlng.indexOf(',')) ;
+		var lng = latlng.substring(latlng.indexOf(',')+1,latlng.length) ;
+		var point = new google.maps.LatLng(lat,lng);
+		var marker = new google.maps.Marker({
+				position:point,
+				label:labels[labelIndex++ % labels.length],
+				map: map
+		});
+		console.log(route);
+		route.getPath().push(point);
+		route.setMap(map);
+	}
+}
+function loadTable(data){
+	console.log(data);
+	$("table#tableRoute tbody").html("");
+	str=null;
+	for(var i=0;i<data.length;i++){
+		str+="<tr>";
 		str+="<td>"+data[i].rddc_TicketCode+"</td>"
 		str+="<td>"+data[i].rddc_Address+"</td>"
-		str+="<td>"+"-"+"</td>"
+		str+="<td>"+data[i].rddc_PickupDateTime+"</td>"
 		str+="<td>"+data[i].rddc_DistanceToNext+"</td>"
 		str+="<td>"+data[i].rddc_TravelTimeToNext+"</td>"
 		str+="<td>"+data[i].rddc_Sequence+"</td>"
@@ -99,4 +148,7 @@ function loadTable(data){
 	$("table#tableRoute tbody").append(str);
 
 }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&callback=initMap">
 </script>

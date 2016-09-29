@@ -18,7 +18,21 @@ public class RouteDetailDiChung {
 	String RDDC_Address;
 	String RDDC_DistanceToNext;
 	String RDDC_TravelTimeToNext;
+	String 	RDDC_PickupDateTime;
+	String RDDC_LatLng;
 	
+	public String getRDDC_PickupDateTime() {
+		return RDDC_PickupDateTime;
+	}
+	public void setRDDC_PickupDateTime(String rDDC_PickupDateTime) {
+		RDDC_PickupDateTime = rDDC_PickupDateTime;
+	}
+	public String getRDDC_LatLng() {
+		return RDDC_LatLng;
+	}
+	public void setRDDC_LatLng(String rDDC_LatLng) {
+		RDDC_LatLng = rDDC_LatLng;
+	}
 	public String getRDDC_Address() {
 		return RDDC_Address;
 	}

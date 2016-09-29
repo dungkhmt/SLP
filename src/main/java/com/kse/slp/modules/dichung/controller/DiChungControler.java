@@ -196,7 +196,7 @@ public class DiChungControler extends BaseWeb {
 			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
 			    System.out.println(name() + i+ "::getRouteAuto, route[" + i + "].length = " + stre.length);
 			    for(int j=0;j<stre.length;j++){
-			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext());
+			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext(),stre[j].getPickupDateTime(),stre[j].getLatlng());
 			    }
 			    System.out.println(name() + "::getRouteAuto, route[" + i + "].length = " + stre.length + ", i = " + i + ", str.length = " + str.length);
 		    }
@@ -225,9 +225,9 @@ public class DiChungControler extends BaseWeb {
 		List<mRoutes> lr= routeService.getListByBatchCode(batchCode);
 		System.out.println(name()+lr);
 		for(int i=0;i< lr.size();i++){
-			res.addAll(routeDetailDiChungService.loadRouteContainerDetailByRouteCode(lr.get(i).getRoute_Code()));
+			res.addAll(routeDetailDiChungService.loadRouteDetailByRouteCode(lr.get(i).getRoute_Code()));
 		}
-		
+		System.out.println(name()+" ::loadRouteInBatch"+res);
 		return res;
 	}
 	String name(){
