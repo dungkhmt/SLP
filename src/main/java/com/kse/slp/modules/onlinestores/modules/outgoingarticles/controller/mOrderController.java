@@ -53,17 +53,24 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.StoreBatch;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.Stores;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.infoAutoRouteElement;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.InfoAutoRouteElementService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.ShipperBatchService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.StoreBatchService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.StoresService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
 import com.kse.slp.modules.usermanagement.model.Customer;
+import com.kse.slp.modules.usermanagement.model.StaffCustomer;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.usermanagement.service.CustomerService;
+import com.kse.slp.modules.usermanagement.service.StaffCustomerService;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
 
@@ -88,7 +95,14 @@ public class mOrderController extends BaseWeb{
 	private mRouteDetailService mRouteDetailService;
 	@Autowired
 	InfoAutoRouteElementService InfoAutoRouteElementService;
-	
+	@Autowired
+	StaffCustomerService StaffCustomerService;
+	@Autowired
+	ShipperBatchService ShipperBatchService;
+	@Autowired 
+	StoreBatchService StoreBatchService;
+	@Autowired
+	StoresService StoresService;
 	/*
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
 	public String addAOrder(ModelMap model, HttpSession session){
@@ -155,9 +169,16 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/uploadFile",method=RequestMethod.GET)
-	public String upLoadFile(ModelMap model){
-		List<RequestBatch> lstreBatch = mRequestBatchService.getList();
+	public String upLoadFile(ModelMap model,HttpSession session){
+		//List<RequestBatch> lstreBatch = mRequestBatchService.getList();
+		User u=(User) session.getAttribute("currentUser");
+		String username = u.getUsername();
+		//System.out.println(name()+"upLoadFile--username: "+username);
+		StaffCustomer sc = StaffCustomerService.getCusCodeByUserName(username);
+		String CustomerCode = sc.getSTFCUS_CustomerCode();
+		//System.out.println(name()+"upLoadFile--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
+		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
 		model.put("lstreBatch", lstreBatch);
 		model.put("formAdd",new mFormAddFileExcel());
 		
@@ -169,7 +190,9 @@ public class mOrderController extends BaseWeb{
 		//System.out.println("Upload file");
 		String batchCode = dataRequest.getBatchCode();
 		//System.out.println("batch Code: "+ batchCode);
-		
+		orderService.deleteOrder(batchCode);
+		ShipperBatchService.deleteShipperBatch(batchCode);
+		StoreBatchService.deleteStoreBatch(batchCode);
 		//String itr = dataRequest.getOrdersFile().g();
 		//String fileName = dataRequest.getOrdersFile().g
 		MultipartFile ordersFile = dataRequest.getOrdersFile();
@@ -220,6 +243,28 @@ public class mOrderController extends BaseWeb{
 					orderService.saveAnOrder(clientCode, orderDate, dueDate, deliveryAddress, lat, lng, timeEarly, timeLate, 0 , null,batchCode);
 					//System.out.println("=========");
 				}
+				
+				XSSFSheet sheet1 = wb.getSheetAt(1);
+				XSSFRow rowsheet1;
+				
+				int rows1 = sheet1.getPhysicalNumberOfRows();
+				for(int i=1; i<rows1; i++){
+					rowsheet1 = sheet1.getRow(i);
+					String storeCode = rowsheet1.getCell(1).getStringCellValue();
+					System.out.println(name()+"readFile--storeCode["+i+"]: "+storeCode);
+					StoreBatchService.saveAStoreBatch(storeCode, batchCode);
+				}
+				
+				XSSFSheet sheet2 = wb.getSheetAt(2);
+				XSSFRow rowsheet2;
+				
+				int rows2 = sheet2.getPhysicalNumberOfRows();
+				for(int i=1; i<rows2; i++){
+					rowsheet2 = sheet2.getRow(i);
+					String shipperCode = rowsheet2.getCell(1).getStringCellValue();
+					System.out.println(name()+"readFile--shipperCode["+i+"]: "+shipperCode);
+					ShipperBatchService.saveAShipperBatch(shipperCode, batchCode);
+				}
 			
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -232,8 +277,15 @@ public class mOrderController extends BaseWeb{
 	}
 
 	@RequestMapping(value="/createAutoRoute",method = RequestMethod.GET)
-	public String createAutoRoute(ModelMap model){
-		List<RequestBatch> lstreBatch = mRequestBatchService.getList();
+	public String createAutoRoute(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		String username = u.getUsername();
+		//System.out.println(name()+"createAutoRoute--username: "+username);
+		StaffCustomer sc = StaffCustomerService.getCusCodeByUserName(username);
+		String CustomerCode = sc.getSTFCUS_CustomerCode();
+		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
+		
+		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
 		
 		model.put("lstreBatch", lstreBatch);
 		
@@ -241,7 +293,7 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/callServiceCreateRoute", method=RequestMethod.POST)
-	public String callServiceCreateRoute(@RequestBody String batch, HttpSession session){
+	public String callServiceCreateRoute(@RequestBody String batch){
 		System.out.println(name()+"callServiceCreateRoute--callbatch" +batch);
 		URL url;
 		try {
@@ -265,12 +317,14 @@ public class mOrderController extends BaseWeb{
 			}
 			
 			//User user = (User) session.getAttribute("currentUser");
-			String customerCode = mRequestBatchService.getByCode(batch).getREQBAT_CustomerCode();
-			Customer cus = CustomerService.getByCode(customerCode);
-			System.out.println(name()+"callServiceCreateRoute--cus: "+cus.toString());
-			Store store = new Store(cus.getCus_Code(), cus.getCus_Name(), cus.getCus_Address(), (cus.getCus_Lat()+", "+cus.getCus_Lng())); 
+			//String customerCode = mRequestBatchService.getByCode(batch).getREQBAT_CustomerCode();
+			//Customer cus = CustomerService.getByCode(customerCode);
+			//System.out.println(name()+"callServiceCreateRoute--cus: "+cus.toString());
+			List<Stores> lstStore = StoresService.getListStoreInBatch(batch);
+			Store store = new Store(lstStore.get(0).getSTR_Code(), lstStore.get(0).getSTR_Name(), lstStore.get(0).getSTR_Address(), lstStore.get(0).getSTR_LatLng()); 
 			
-			List<mShippers> lstShipper = mShippersService.getByCustomerCode(customerCode);
+			//List<mShippers> lstShipper = mShippersService.getByCustomerCode(customerCode);
+			List<mShippers> lstShipper = mShippersService.getListInBatch(batch);
 			Shipper shippers[] = new Shipper[lstShipper.size()];
 			for(int i=0; i<lstShipper.size();i++){
 				String shipperCode = lstShipper.get(i).getSHP_Code();
@@ -296,6 +350,15 @@ public class mOrderController extends BaseWeb{
 			ObjectMapper mapper = new ObjectMapper();
 			DeliveryGoodSolution solution = mapper.readValue(reciveData, DeliveryGoodSolution.class);
 			System.out.println(name()+"callServiceCreateRoute--length of route"+solution.getRoutes().length);
+			
+			List<mRoutes> lstr = mRoutesService.getListByBatchCode(batch);
+			if(lstr != null){
+				for(int i=0; i>lstr.size(); i++){
+					mRoutesService.removeRoutesByRouteCode(lstr.get(i).getRoute_Code());
+					mRouteDetailService.removeRoutesByRouteCode(lstr.get(i).getRoute_Code());
+				}
+			}
+			
 			for(int i=0; i<solution.getRoutes().length; i++){
 				DeliveryGoodRoute route = solution.getRoutes()[i];
 				String route_Shipper_Code = route.getRouteElements()[0].getRequestCode();
@@ -319,9 +382,16 @@ public class mOrderController extends BaseWeb{
 		return "redirect:/onlinestore";
 	}
 	@RequestMapping("/viewAutoRoute")
-	public String viewAutoRoute(ModelMap model){
-		List<RequestBatch> lstBatch = mRequestBatchService.getList();
-		model.put("lstBatch", lstBatch);
+	public String viewAutoRoute(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		String username = u.getUsername();
+		//System.out.println(name()+"createAutoRoute--username: "+username);
+		StaffCustomer sc = StaffCustomerService.getCusCodeByUserName(username);
+		String CustomerCode = sc.getSTFCUS_CustomerCode();
+		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
+		
+		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
+		model.put("lstBatch", lstreBatch);
 		return "outgoingarticles.viewAutoRoute";
 	}
 	
@@ -333,8 +403,10 @@ public class mOrderController extends BaseWeb{
 		for(int i=0; i<lstRoute.size(); i++){
 			String routeCode = lstRoute.get(i).getRoute_Code();
 			String shipperCode = lstRoute.get(i).getRoute_Shipper_Code();
+			List<Stores> lstStr = StoresService.getListStoreInBatch(batch);
+			String storeLatLng = lstStr.get(0).getSTR_LatLng();
 			List<infoAutoRouteElement> routeElement = InfoAutoRouteElementService.getList(routeCode);
-			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(shipperCode, routeElement);
+			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(storeLatLng,shipperCode, routeElement);
 			System.out.println(name()+"viewBatchRoute--response:"+tmp.toString());
 			response.add(tmp);
 		}

@@ -41,6 +41,12 @@ public class mShippersServiceImpl implements mShippersService{
 		return mShippersDAO.getByCustomerCode(cus_code);
 	}
 
+	@Override
+	public List<mShippers> getListInBatch(String batchCode) {
+		// TODO Auto-generated method stub
+		return mShippersDAO.getListInBatch(batchCode);
+	}
+
 	
 
 	

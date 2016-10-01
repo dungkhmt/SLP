@@ -9,4 +9,5 @@ public interface mShippersService {
 	public mShippers loadShiperByUserName(String userName);
 	public void updateShipperCurrentLocation(double lat,double lng,String user,String lastDateTime);
 	public List<mShippers> getByCustomerCode(String cus_code);
+	public List<mShippers> getListInBatch(String batchCode);
 }

@@ -113,4 +113,9 @@ public class mOrdersServiceImpl implements mOrdersService{
 		// TODO Auto-generated method stub
 		return orderDAO.getListOrderByBatchCode(batchCode);
 	}
+	@Override
+	public void deleteOrder(String batchCode) {
+		// TODO Auto-generated method stub
+		orderDAO.deleteOrder(batchCode);
+	}
 }
