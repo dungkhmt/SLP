@@ -95,7 +95,7 @@ public class DiChungControler extends BaseWeb {
 		if(file != null){
 			readFileRequestDiChung(file,batchCode);
 		}
-		return "dichung.home";
+		return "redirect:/dichung";
 	}
 	public void readFileRequestDiChung(MultipartFile file,String batchCode){
 		try {
@@ -148,6 +148,17 @@ public class DiChungControler extends BaseWeb {
 		stinpu.setForbidenStraightDistance(10000);
 		stinpu.setForbidenTimeDistance(3600);
 		stinpu.setMaxTime(5);
+		stinpu.setMaxStandardSharingDistance(5000);
+		stinpu.setMaxHighTrafficSharingDistance(3000);
+		stinpu.setMaxWaitTimeAirport(1800);
+		stinpu.setMinWaitTimeAirport(900);
+		stinpu.setApproximationDistanceFactor(1.5);
+		stinpu.setEps(10);// meter
+		stinpu.setStdSpeed(5);// 5m/s
+		stinpu.setHighTrafficSpeed(2); // 2m/s
+		stinpu.setSpeedToAirport(19); // 19m/s ~ 70 km/h
+		stinpu.setDeltaRequestTime(900);// earlier or later pickup datetime within 15 minute
+
 		List<RequestDiChung> list = requestDiChungService.getListInBatch(batchCode); 
 		SharedTaxiRequest lstr[]= new SharedTaxiRequest[list.size()];
 		for(int i=0;i<list.size();i++){
@@ -167,8 +178,8 @@ public class DiChungControler extends BaseWeb {
 		System.out.println(name()+json);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
-		    HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-			//HttpPost request = new HttpPost("http:///ezRoutingAPI/shared-taxi-plan-dichung");
+		    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
@@ -185,11 +196,12 @@ public class DiChungControler extends BaseWeb {
 		   // routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
 		    System.out.println(name() + "::getRouteAuto, number of routes = " + str.length);
 		    
-		    //List <mRoutes> lr=routeService.getListByBatchCode(batchCode);
-		    /*for(int i=0;i<lr.size();i++){
+		    List <mRoutes> lr=routeService.getListByBatchCode(batchCode);
+		    System.out.println(name()+lr);
+		    for(int i=0;i<lr.size();i++){
 		    	routeDetailDiChungService.deleteRoutesbyRouteCode(lr.get(i).getRoute_Code());
 		    	routeService.removeRoutesByRouteCode(lr.get(i).getRoute_Code());
-		    }*/
+		    }
 		    
 		    routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
 		    for(int i=0;i<str.length;i++){
