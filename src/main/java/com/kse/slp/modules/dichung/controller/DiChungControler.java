@@ -208,7 +208,7 @@ public class DiChungControler extends BaseWeb {
 			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
 			    System.out.println(name() + i+ "::getRouteAuto, route[" + i + "].length = " + stre.length);
 			    for(int j=0;j<stre.length;j++){
-			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext(),stre[j].getPickupDateTime(),stre[j].getLatlng());
+			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext(),stre[j].getPickupDateTime(),stre[j].getLatlng(),stre[j].getDeliveryAddress());
 			    }
 			    System.out.println(name() + "::getRouteAuto, route[" + i + "].length = " + stre.length + ", i = " + i + ", str.length = " + str.length);
 		    }

@@ -62,6 +62,15 @@ public class mPickupDeliveryController extends BaseWeb{
 	mShippersService shipperService;
 	@Autowired
 	mRequestBatchService requestBatchService;
+	/*future fix
+	 * reset route ->save vào csdl (null có lưu không) -> tăng increment id rất nhanh
+	 * 
+	 * xử lý volumn công volumn reset route sẽ không quay về được trạng thái ban đầu
+	 * 
+	 * kiểm tra lại ord 36 -> remain order block
+	 * 
+	 * 
+	 */
 	@RequestMapping(value="/list-pickupdelivery-order",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");

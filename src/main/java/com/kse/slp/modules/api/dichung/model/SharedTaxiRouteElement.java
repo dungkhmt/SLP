@@ -3,6 +3,7 @@ package com.kse.slp.modules.api.dichung.model;
 public class SharedTaxiRouteElement {
 	private String ticketCode;
 	private String address;
+	private String deliveryAddress;
 	private String latlng;
 	private String pickupDateTime;
 	private String expectedPickupDateTime;
@@ -11,19 +12,24 @@ public class SharedTaxiRouteElement {
 	private String distanceToNext;
 	private String maxTravelTimeToDestinationAllowed; 
 	
+	
 	public SharedTaxiRouteElement() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+
+
+
 	public SharedTaxiRouteElement(String ticketCode, String address,
-			String latlng, String pickupDateTime,
+			String deliveryAddress, String latlng, String pickupDateTime,
 			String expectedPickupDateTime, String travelTimeToDestination,
 			String travelTimeToNext, String distanceToNext,
 			String maxTravelTimeToDestinationAllowed) {
 		super();
 		this.ticketCode = ticketCode;
 		this.address = address;
+		this.deliveryAddress = deliveryAddress;
 		this.latlng = latlng;
 		this.pickupDateTime = pickupDateTime;
 		this.expectedPickupDateTime = expectedPickupDateTime;
@@ -33,6 +39,13 @@ public class SharedTaxiRouteElement {
 		this.maxTravelTimeToDestinationAllowed = maxTravelTimeToDestinationAllowed;
 	}
 
+	public String getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
 
 	public String getLatlng() {
 		return latlng;

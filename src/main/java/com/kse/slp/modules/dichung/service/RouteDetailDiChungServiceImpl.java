@@ -15,7 +15,7 @@ public class RouteDetailDiChungServiceImpl implements RouteDetailDiChungService{
 	RouteDetailDiChungDAO routeDetailDiChungDAO;
 	@Override
 	public int saveARouteDetailDiChung(String rDDC_RouteCode,
-			String rDDC_TicketCode, int rDDC_Sequence, int rDDC_Group,String rDDC_Address,String rDDC_DistanceToNext,String rDDC_TravelTimeToNext,String rDDC_PickupDateTime,String rDDC_LatLng) {
+			String rDDC_TicketCode, int rDDC_Sequence, int rDDC_Group,String rDDC_Address,String rDDC_DistanceToNext,String rDDC_TravelTimeToNext,String rDDC_PickupDateTime,String rDDC_LatLng,String rDDC_DeliveryAddress) {
 		// TODO Auto-generated method stub
 		RouteDetailDiChung route= new RouteDetailDiChung();
 		route.setRDDC_RouteCode(rDDC_RouteCode);
@@ -27,6 +27,7 @@ public class RouteDetailDiChungServiceImpl implements RouteDetailDiChungService{
 		route.setRDDC_TravelTimeToNext(rDDC_TravelTimeToNext);
 		route.setRDDC_PickupDateTime(rDDC_PickupDateTime);
 		route.setRDDC_LatLng(rDDC_LatLng);
+		route.setRDDC_DeliveryAddress(rDDC_DeliveryAddress);
 		return routeDetailDiChungDAO.saveARouteDetail(route);
 	}
 

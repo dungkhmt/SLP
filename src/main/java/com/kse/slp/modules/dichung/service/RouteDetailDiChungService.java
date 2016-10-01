@@ -7,7 +7,7 @@ import com.kse.slp.modules.dichung.model.RouteDetailDiChung;
 
 
 public interface RouteDetailDiChungService {
-	public int saveARouteDetailDiChung(String rDDC_RouteCode,String rDDC_TicketCode,int rDDC_Sequence,int rDDC_Group,String rDDC_Address,String rDDC_DistanceToNext,String rDDC_TravelTimeToNext,String rDDC_PickupDateTime,String rDDC_LatLng);
+	public int saveARouteDetailDiChung(String rDDC_RouteCode,String rDDC_TicketCode,int rDDC_Sequence,int rDDC_Group,String rDDC_Address,String rDDC_DistanceToNext,String rDDC_TravelTimeToNext,String rDDC_PickupDateTime,String rDDC_LatLng,String rDDC_DelievryAddress);
 	public void deleteRoutesbyRouteCode(String routeCode);
 	public List<RouteDetailDiChung> loadRouteDetailByRouteCode(String routeCode);
 }

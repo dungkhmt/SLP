@@ -20,7 +20,14 @@ public class RouteDetailDiChung {
 	String RDDC_TravelTimeToNext;
 	String 	RDDC_PickupDateTime;
 	String RDDC_LatLng;
+	String RDDC_DeliveryAddress;
 	
+	public String getRDDC_DeliveryAddress() {
+		return RDDC_DeliveryAddress;
+	}
+	public void setRDDC_DeliveryAddress(String rDDC_DeliveryAddress) {
+		RDDC_DeliveryAddress = rDDC_DeliveryAddress;
+	}
 	public String getRDDC_PickupDateTime() {
 		return RDDC_PickupDateTime;
 	}

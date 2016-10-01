@@ -37,6 +37,7 @@
 								<tr>
 									<th>TicketCode</th>
 									<th>Address</th>
+									<th>DeliveryAddress</th>
 									<th>PickupDateTime</th>
 									<th>DistanceToNext </th>
 									<th>TravelTimeToNext </th>
@@ -60,6 +61,7 @@
 </div>
 <!-- /#page-wrapper -->
 <script>
+var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
 var table;
 function initMap() {
 	directionsService = new google.maps.DirectionsService;
@@ -96,10 +98,11 @@ function loadRoute(){
 	
 }
 function randomColor(){
-	p1=Math.floor((Math.random() * 255));
+/*	p1=Math.floor((Math.random() * 85));
 	p2=Math.floor((Math.random() * 255));
 	p3=Math.floor((Math.random() * 255));
-	return "rgb("+p1+","+p2+","+p3+ ")";;
+	return "rgb("+p1+","+p2+","+p3+ ")";*/
+	return colorInit[Math.floor((Math.random() * colorInit.length))];
 }
 function viewMap(data){
 	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -117,8 +120,8 @@ function viewMap(data){
 		else xd=false
 		if(xd==true){
 		var point = new google.maps.LatLng(21.2187149,105.80417090000003);
-		if(route!=undefined)
-		route.getPath().push(point);
+		//if(route!=undefined)
+		//route.getPath().push(point);
 		route = new google.maps.Polyline({
 			strokeColor: randomColor(),
 		    strokeOpacity: 1.0,
@@ -164,6 +167,7 @@ function loadTable(data){
 		str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
 		str+="<td>"+data[i].rddc_TicketCode+"</td>"
 		str+="<td>"+data[i].rddc_Address+"</td>"
+		str+="<td>"+data[i].rddc_DeliveryAddress+"</td>"
 		str+="<td>"+data[i].rddc_PickupDateTime+"</td>"
 		str+="<td>"+data[i].rddc_DistanceToNext+"</td>"
 		str+="<td>"+data[i].rddc_TravelTimeToNext+"</td>"
