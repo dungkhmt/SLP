@@ -17,12 +17,14 @@
 				</select>
 			</div>
 		</div>
-		<button type="submit" class="btn btn-primary" id="create">Lập tuyến</button>
+		<button type="submit" class="btn btn-primary" id="create">Lập tuyến</button> <span id ="icon"></span>
  </div>
  
  <script>
  $(document).ready(function(){
 	$("#create").click(function(){
+		$("#icon").append("<h4>Creating....<img src=\"<c:url value='/assets/icon/loading.gif' />\" style=\"width:50px;height:50px;\"><h4>");
+		
 		var batch = $("#lstBatch").val();
 		
 		$.ajax({

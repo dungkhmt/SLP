@@ -58,6 +58,7 @@
 
 <script>
 var table;
+var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
 $(document).ready(function(){
 	table = $("#tbl-infoOfRoutes").DataTable({
 		"bSort" : false
@@ -87,21 +88,41 @@ function initialize() {
 
 function displayInfo(response){
 	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	console.log("response: "+JSON.stringify(response));
+	var storePosition = response[0].storeLatLng;
+	console.log("storePostion: "+storePosition);
+	var indexPo = storePosition.indexOf(",");
+	var storePositionLat = storePosition.substring(0,indexPo);
+	console.log("storePositionLat: "+storePositionLat);
+	var storePositionLng = storePosition.substring(indexPo+1,storePosition.length);
+	console.log("storePositionLng: "+storePositionLng);
+	var storePos = new google.maps.LatLng(storePositionLat,storePositionLng);
+	var markerStorePostion = new google.maps.Marker({
+		position: storePos,
+		icon : baseUrl+"/assets/icon/store.svg",
+		map: map
+	});
+	
 	for(var i=0;i<response.length; i++){
 		//console.log(JSON.stringify(response[i]));		
-		var route = new google.maps.Polyline({
-			strokeColor: getRandomColor(),
-		    strokeOpacity: 1.0,
-		    strokeWeight: 3,
-		});
+		var route;
+		if(i>=colorInit.length){
+			route = new google.maps.Polyline({
+				strokeColor: getRandomColor(),
+			    strokeOpacity: 1.0,
+			    strokeWeight: 3,
+			});	
+		}else{
+			var color = colorInit[(i+2)%colorInit.length];
+			route = new google.maps.Polyline({
+				strokeColor: color,
+			    strokeOpacity: 1.0,
+			    strokeWeight: 3,
+			});	
+		}
+		 
 		var labelIndex=0;
-		var storePosition = new google.maps.LatLng(response[i].storeLatLng);
-		route.getPath().push(storePosition);
-		var markerStorePostion = new google.maps.Marker({
-			position:storePosition,
-			label : "store",
-			map: map
-		});
+		route.getPath().push(storePos);
 		
 		for(var j=0; j<response[i].routeElement.length; j++){
 			var lat = response[i].routeElement[j].addLat;
@@ -130,7 +151,7 @@ function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#FF';
     for (var i = 0; i < 4; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
+        color += letters[Math.floor(Math.random() * 10)];
     }
     return color;
 }

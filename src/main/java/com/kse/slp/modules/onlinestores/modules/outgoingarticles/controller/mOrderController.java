@@ -337,23 +337,25 @@ public class mOrderController extends BaseWeb{
 			DeliveryGoodInput data = new DeliveryGoodInput(deliveryRequest, store, shippers);
 			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 			String datajson = ow.writeValueAsString(data);
-			System.out.println(name()+"callServiceCreateRoute---data send:");
-			System.out.println(datajson);
+			//System.out.println(name()+"callServiceCreateRoute---data send:");
+			//System.out.println(datajson);
 			OutputStream os = conn.getOutputStream();
 			os.write(datajson.getBytes());
 			os.flush();
 			
 			BufferedReader br =  new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String reciveData = br.readLine();
-			System.out.println(name()+"callServiceCreateRoute--recived Data: \n "+reciveData);
+			//System.out.println(name()+"callServiceCreateRoute--recived Data: \n "+reciveData);
 			
 			ObjectMapper mapper = new ObjectMapper();
 			DeliveryGoodSolution solution = mapper.readValue(reciveData, DeliveryGoodSolution.class);
-			System.out.println(name()+"callServiceCreateRoute--length of route"+solution.getRoutes().length);
+			//System.out.println(name()+"callServiceCreateRoute--length of route"+solution.getRoutes().length);
 			
 			List<mRoutes> lstr = mRoutesService.getListByBatchCode(batch);
+			System.out.println(name()+"callServiceCreateRoute--length of route to remove"+lstr.size());
+			
 			if(lstr != null){
-				for(int i=0; i>lstr.size(); i++){
+				for(int i=0; i<lstr.size(); i++){
 					mRoutesService.removeRoutesByRouteCode(lstr.get(i).getRoute_Code());
 					mRouteDetailService.removeRoutesByRouteCode(lstr.get(i).getRoute_Code());
 				}
