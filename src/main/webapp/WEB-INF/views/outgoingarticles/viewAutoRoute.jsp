@@ -95,6 +95,14 @@ function displayInfo(response){
 		    strokeWeight: 3,
 		});
 		var labelIndex=0;
+		var storePosition = new google.maps.LatLng(response[i].storeLatLng);
+		route.getPath().push(storePosition);
+		var markerStorePostion = new google.maps.Marker({
+			position:storePosition,
+			label : "store",
+			map: map
+		});
+		
 		for(var j=0; j<response[i].routeElement.length; j++){
 			var lat = response[i].routeElement[j].addLat;
 			var lng = response[i].routeElement[j].addLng;
@@ -120,7 +128,7 @@ function displayInfo(response){
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
-    var color = '#F0';
+    var color = '#FF';
     for (var i = 0; i < 4; i++ ) {
         color += letters[Math.floor(Math.random() * 16)];
     }

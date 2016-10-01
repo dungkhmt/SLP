@@ -9,5 +9,6 @@ public interface mShippersDAO {
 	public mShippers loadShiperByUserName(String userName);
 	public void updateAShipper(mShippers shipper);
 	public List<mShippers> getByCustomerCode(String cus_code);
+	public List<mShippers> getListInBatch(String batchCode);
 	
 }

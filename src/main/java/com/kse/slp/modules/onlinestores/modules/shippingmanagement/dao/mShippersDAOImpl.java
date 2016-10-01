@@ -1,5 +1,6 @@
 package com.kse.slp.modules.onlinestores.modules.shippingmanagement.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -90,6 +91,38 @@ public class mShippersDAOImpl extends BaseDao implements mShippersDAO {
 			List<mShippers> listShippers= criteria.list();
 			commit();
 			return listShippers;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
+	@Override
+	public List<mShippers> getListInBatch(String batchCode) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			String sql = "SELECT s.SHP_Code, s.SHP_User_Name, s.SHP_CurrentLocation"
+					+ " FROM mShippers s, ShipperBatch sb"
+					+ " WHERE s.SHP_Code = sb.SHPBAT_ShipperCode and sb.SHPBAT_BatchCode = '"+batchCode+"'";
+			List<Object[]> queryResult = getSession().createQuery(sql).list();
+			List<mShippers> lsshp = new ArrayList<mShippers>();
+			for(int i=0; i<queryResult.size(); i++){
+				mShippers tmp = new mShippers();
+				tmp.setSHP_Code((String)queryResult.get(i)[0]);
+				tmp.setSHP_User_Name((String)queryResult.get(i)[1]);
+				tmp.setSHP_CurrentLocation((String)queryResult.get(i)[2]);
+				lsshp.add(tmp);
+			}
+			
+			commit();
+			return lsshp;
 		}catch(HibernateException e){
 			e.printStackTrace();
 			rollback();

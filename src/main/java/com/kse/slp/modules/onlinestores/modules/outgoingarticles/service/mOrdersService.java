@@ -15,4 +15,5 @@ public interface mOrdersService {
 	public List<mOrders> getListOrderByDueDate(String DueDate);
 	public List<mOrders> getListOrderByBatchCode(String batchCode);
 	public void updateStatus(String order_Code, String status);
+	public void deleteOrder(String batchCode);
 }

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 
 
+
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -277,6 +278,30 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 			return null;
 		}finally {
+			flush();
+			close();
+		}
+	}
+	@Override
+	public void deleteOrder(String batchCode) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			List<mOrders> lstor = getSession().createCriteria(mOrders.class).add(Restrictions.eq("O_BatchCode", batchCode)).list();
+			if(lstor != null){
+				for(mOrders or : lstor){
+					getSession().delete(or);
+				}
+			}
+			
+			commit();
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
 			flush();
 			close();
 		}

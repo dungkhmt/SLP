@@ -5,9 +5,16 @@ import java.util.List;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.infoAutoRouteElement;
 
 public class mAutoRouteResponseInfo {
+	private String storeLatLng;
 	private String shipperCode;
 	private List<infoAutoRouteElement> routeElement;
 	
+	public String getStoreLatLng() {
+		return storeLatLng;
+	}
+	public void setStoreLatLng(String storeLatLng) {
+		this.storeLatLng = storeLatLng;
+	}
 	public String getShipperCode() {
 		return shipperCode;
 	}
@@ -20,9 +27,10 @@ public class mAutoRouteResponseInfo {
 	public void setRouteElement(List<infoAutoRouteElement> routeElement) {
 		this.routeElement = routeElement;
 	}
-	public mAutoRouteResponseInfo(String shipperCode,
+	public mAutoRouteResponseInfo(String storeLatLng, String shipperCode,
 			List<infoAutoRouteElement> routeElement) {
 		super();
+		this.storeLatLng = storeLatLng;
 		this.shipperCode = shipperCode;
 		this.routeElement = routeElement;
 	}
@@ -32,7 +40,7 @@ public class mAutoRouteResponseInfo {
 	}
 	@Override
 	public String toString() {
-		return "mAutoRouteResponseInfo [shipperCode=" + shipperCode
+		return "mAutoRouteResponseInfo [storeLatLng= "+storeLatLng+", shipperCode=" + shipperCode
 				+ ", routeElement=" + routeElement + "]";
 	}
 }
