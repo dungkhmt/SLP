@@ -84,7 +84,7 @@ public class DiChungControler extends BaseWeb {
 		return "dichung.adddichungrequestsbyxls";
 	}
 	@RequestMapping(value="/upload-file-request-dichung", method=RequestMethod.POST)
-	public @ResponseBody String uploadFile(@ModelAttribute("formAdd") mFormAddFileExcel request){
+	public String uploadFile(@ModelAttribute("formAdd") mFormAddFileExcel request){
 		System.out.println(name());
 		//Iterator<String> itr = request.getFileNames();
 		MultipartFile file = request.getOrdersFile();
@@ -95,7 +95,7 @@ public class DiChungControler extends BaseWeb {
 		if(file != null){
 			readFileRequestDiChung(file,batchCode);
 		}
-		return "{}";
+		return "dichung.home";
 	}
 	public void readFileRequestDiChung(MultipartFile file,String batchCode){
 		try {
