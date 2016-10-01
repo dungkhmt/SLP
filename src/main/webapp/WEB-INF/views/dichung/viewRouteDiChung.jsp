@@ -60,6 +60,7 @@
 </div>
 <!-- /#page-wrapper -->
 <script>
+var table;
 function initMap() {
 	directionsService = new google.maps.DirectionsService;
 	serviceDistance = new google.maps.DistanceMatrixService;
@@ -71,9 +72,10 @@ function initMap() {
 	console.log("start");
 }
 $(document).ready(function(){
-	$("#tableRoute").DataTable({
+	table=$("#tableRoute").DataTable({
 		
 	});
+	console.log(table);
 });
 function loadRoute(){
 	var batchCode= $(".batchselect").val();
@@ -103,11 +105,17 @@ function viewMap(data){
 	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	var route;
 	var labelIndex=0;
+	var xd=false;
 	for(var i=0;i<data.length;i++){
-		console.log(i);
+		//console.log(i);
 		//console.log(JSON.stringify(response[i]));
+		
 		if(data[i].rddc_Sequence==0){
-		console.log(i+" "+data[i].rddc_Sequence);
+		if(i<data.length-1)
+		if(data[i+1].rddc_Sequence==1)
+			xd=true;
+		else xd=false
+		if(xd==true){
 		var point = new google.maps.LatLng(21.2187149,105.80417090000003);
 		if(route!=undefined)
 		route.getPath().push(point);
@@ -116,6 +124,7 @@ function viewMap(data){
 		    strokeOpacity: 1.0,
 		    strokeWeight: 3,
 		});
+		}
 		labelIndex=0;
 		}
 		
@@ -128,18 +137,31 @@ function viewMap(data){
 				label:labels[labelIndex % labels.length],
 				map: map
 		});
-		console.log(route);
+		if(xd==true){
 		route.getPath().push(point);
 		route.setMap(map);
 		labelIndex++;
+		}
 	}
 }
 function loadTable(data){
 	console.log(data);
 	$("table#tableRoute tbody").html("");
+	gray="#F0F0F0";
+	white="#FFFFFF";
+	var color=["#F0F0F0","#FFFFFF"];
+	var idcolor=0;
 	str=null;
 	for(var i=0;i<data.length;i++){
-		str+="<tr>";
+		console.log("i data[i].rddc_Group" +data[i].rddc_Group);
+		if(i>0)
+		if(data[i].rddc_Group!=data[i-1].rddc_Group){ 
+			idcolor=idcolor+1;
+			idcolor=idcolor % color.length;
+			console.log("id"+idcolor);
+			console.log("length "+ color.length+" "+idcolor % color.length);
+		}
+		str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
 		str+="<td>"+data[i].rddc_TicketCode+"</td>"
 		str+="<td>"+data[i].rddc_Address+"</td>"
 		str+="<td>"+data[i].rddc_PickupDateTime+"</td>"

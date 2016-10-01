@@ -40,9 +40,9 @@ public class RouteDetailDiChungDAOImpl extends BaseDao implements RouteDetailDiC
 	try{
 		begin();
 
-		List<mRouteDetail> lsr = getSession().createCriteria(RouteDetailDiChung.class).add(Restrictions.eq("RDDC_RouteCode", routeCode)).list();
+		List<RouteDetailDiChung> lsr = getSession().createCriteria(RouteDetailDiChung.class).add(Restrictions.eq("RDDC_RouteCode", routeCode)).list();
 		if(lsr != null){
-			for(mRouteDetail r: lsr){
+			for(RouteDetailDiChung r: lsr){
 				getSession().delete(r);
 			}
 		}
