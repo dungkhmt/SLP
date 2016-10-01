@@ -94,7 +94,7 @@ function loadRoute(){
 	
 }
 function randomColor(){
-	p1=Math.floor((Math.random() * 85));
+	p1=Math.floor((Math.random() * 255));
 	p2=Math.floor((Math.random() * 255));
 	p3=Math.floor((Math.random() * 255));
 	return "rgb("+p1+","+p2+","+p3+ ")";;
@@ -102,6 +102,7 @@ function randomColor(){
 function viewMap(data){
 	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	var route;
+	var labelIndex=0;
 	for(var i=0;i<data.length;i++){
 		console.log(i);
 		//console.log(JSON.stringify(response[i]));
@@ -115,20 +116,22 @@ function viewMap(data){
 		    strokeOpacity: 1.0,
 		    strokeWeight: 3,
 		});
+		labelIndex=0;
 		}
-		var labelIndex=0;
+		
 		var latlng=data[i].rddc_LatLng;
 		var lat = latlng.substring(0,latlng.indexOf(',')) ;
 		var lng = latlng.substring(latlng.indexOf(',')+1,latlng.length) ;
 		var point = new google.maps.LatLng(lat,lng);
 		var marker = new google.maps.Marker({
 				position:point,
-				label:labels[labelIndex++ % labels.length],
+				label:labels[labelIndex % labels.length],
 				map: map
 		});
 		console.log(route);
 		route.getPath().push(point);
 		route.setMap(map);
+		labelIndex++;
 	}
 }
 function loadTable(data){

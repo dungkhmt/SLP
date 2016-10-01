@@ -133,7 +133,7 @@ public class DiChungControler extends BaseWeb {
 	public String createRouteAuto(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(u.getCustomerCode());
+		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
 		return "dichung.createroute";
 	}
@@ -212,7 +212,7 @@ public class DiChungControler extends BaseWeb {
 	public String viewRoute(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(u.getCustomerCode());
+		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
 		return "dichung.viewroute";
 	}
