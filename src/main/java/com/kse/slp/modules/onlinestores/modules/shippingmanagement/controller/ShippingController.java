@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -323,7 +324,7 @@ public class ShippingController extends BaseWeb{
 	}
 	
 	@ResponseBody @RequestMapping(value="/get-route-android", method=RequestMethod.POST)
-	public mJSONAndroidRouteList getRouteAndroi(HttpSession session){
+    public mJSONAndroidRouteList getRouteAndroid(HttpSession session) {
 		User u  =(User) session.getAttribute("currentUser");
 		if(u==null) return null;
 		session.setAttribute("currentUser", u);
@@ -336,33 +337,18 @@ public class ShippingController extends BaseWeb{
 	
 	@ResponseBody @RequestMapping(value="/login-android",method=RequestMethod.POST)
 	public mJSONResponseBoolean loginAndroid(@RequestBody String jsonLoginCode,HttpSession session){
-		
-		JSONParser parser = new JSONParser();
-		JSONObject json;
-		try {
-			json = (JSONObject) parser.parse(jsonLoginCode);
-			String user= (String) json.get("username");
-			String pass= (String) json.get("password");
-			User u= mUserService.getByUsernameAndPassword(user, DigestUtils.md5Hex(pass));
-			
-			log.info(u.getUsername());
-			
-			if(u==null) {
 				mJSONResponseBoolean response = new mJSONResponseBoolean();
+        response.setResult(0);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!username.equals("anonymousUser")) {
+            User user = mUserService.getByUsername(username);
+            session.setAttribute("currentUser", user);
+        } else {
 				response.setResult(1);
+        }
+
 				return response;
 			}
-			session.setAttribute("currentUser", u);
-			mJSONResponseBoolean response = new mJSONResponseBoolean();
-			response.setResult(0);
-			return response;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		log.info("FAIL ");
-		return null;
-	}
 	
 	@RequestMapping(value="/test")
 	public void testModules(){
@@ -373,8 +359,6 @@ public class ShippingController extends BaseWeb{
 	@ResponseBody @RequestMapping(value="/update-shipper-location",method=RequestMethod.POST)
 	public mJSONResponseBoolean updateShipperLocation(@RequestBody String location,HttpSession session){
 		User u  =(User) session.getAttribute("currentUser");
-		if(u==null) return null;
-		System.out.println(u);
 		JSONParser parser = new JSONParser();
 		JSONObject json;
 		try {

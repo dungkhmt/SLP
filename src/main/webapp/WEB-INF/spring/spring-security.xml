@@ -15,7 +15,8 @@
         		logout-url="/j_spring_security_logout" />        
         <session-management invalid-session-url = "/" > 
             <concurrency-control max-sessions = "1" /> 
-        </session-management>             
+        </session-management>
+        <http-basic/>
     </http>    
    <authentication-manager alias="authenticationManager">
         <authentication-provider ref="customAuthenticationProvider" />       
