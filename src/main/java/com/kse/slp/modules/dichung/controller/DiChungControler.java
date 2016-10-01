@@ -112,9 +112,24 @@ public class DiChungControler extends BaseWeb {
 				System.out.println(name()+"::readFile"+"--row "+i);
 				row = sheet.getRow(i);
 				String 	rEQDC_TicketCode=""+row.getCell(0).getRawValue();
+				
+				// read and standardize the date-time
 				String tmp=row.getCell(1).getStringCellValue();
-				tmp=GenerationDateTimeFormat.convertDateTimeFormat(tmp, "HH:mm dd/mm/yy", "yyyy-MM-dd HH:mm:ss");
+				System.out.println(name() + "::readFile, raw datetime = " + tmp);
+				//tmp=GenerationDateTimeFormat.convertDateTimeFormat(tmp, "HH:mm dd/mm/yy", "yyyy-MM-dd HH:mm:ss");
+				String[] s = tmp.split(" ");
+				String[] s1 = s[0].split(":");
+				String hour = s1[0];
+				String minute = s1[1];
+				s1 = s[1].split("/");
+				String dd = s1[0];
+				String month = s1[1];
+				String year = s1[2];
+				tmp = year + "-" + month + "-" + dd + " " + hour + ":" + minute + ":" + "00";
+				System.out.println(name() + "::readFile, standard datetime = " + tmp);
+				
 				String  rEQDC_DepartTime=tmp;
+				
 				String  rEQDC_ChunkName=row.getCell(2).getStringCellValue();
 				String  rEQDC_PickupAddress=row.getCell(3).getStringCellValue();
 				String  rEQDC_DeliveryAddress=row.getCell(4).getStringCellValue();
@@ -179,7 +194,8 @@ public class DiChungControler extends BaseWeb {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
 		    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-			HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			//HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
@@ -208,7 +224,10 @@ public class DiChungControler extends BaseWeb {
 			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
 			    System.out.println(name() + i+ "::getRouteAuto, route[" + i + "].length = " + stre.length);
 			    for(int j=0;j<stre.length;j++){
-			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext(),stre[j].getPickupDateTime(),stre[j].getLatlng(),stre[j].getDeliveryAddress());
+			    	//routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext(),stre[j].getPickupDateTime(),stre[j].getLatlng(),stre[j].getDeliveryAddress());
+			    	routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,
+			    			stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext(),
+			    			stre[j].getExpectedPickupDateTime(),stre[j].getLatlng(),stre[j].getDeliveryAddress());
 			    }
 			    System.out.println(name() + "::getRouteAuto, route[" + i + "].length = " + stre.length + ", i = " + i + ", str.length = " + str.length);
 		    }
