@@ -256,7 +256,9 @@ function getColorTimeCheck(early,late,x){
 	if (mLate.isBefore(xDate) ) return "rgb(255, 102, 0)";
 	if (mEarly.isAfter(xDate)) return "rgb(0, 153, 51)";
 }
-
+function pushMomentObject(){
+	
+}
 function modelDataToSave(){
 	var routesData=[];
 	var nRoute=0;
