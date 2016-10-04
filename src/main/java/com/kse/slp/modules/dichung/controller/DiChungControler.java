@@ -194,9 +194,9 @@ public class DiChungControler extends BaseWeb {
 		System.out.println(name()+json);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
-		    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+		    HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 			//HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			//HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
