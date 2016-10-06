@@ -87,7 +87,7 @@ function initialize() {
 }
 
 function displayInfo(response){
-	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	//var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	console.log("response: "+JSON.stringify(response));
 	var storePosition = response[0].storeLatLng;
 	console.log("storePostion: "+storePosition);
@@ -162,7 +162,7 @@ function displayInfo(response){
 				response[i].routeElement[j].clientAddress,
 				"",
 				response[i].routeElement[j].expectedTime,
-				labels[response[i].routeElement[j].routeSequence-1],
+				response[i].routeElement[j].routeSequence,
 				response[i].shipperCode
 			]).draw( false );
 		}
