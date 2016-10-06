@@ -99,10 +99,10 @@ function displayInfo(response){
 	var storePos = new google.maps.LatLng(storePositionLat,storePositionLng);
 	var markerStorePostion = new google.maps.Marker({
 		position: storePos,
-		icon : baseUrl+"/assets/icon/store.svg",
+		icon : baseUrl+"/assets/icon/store.png",
 		map: map
 	});
-	
+	var lstinfowindow = [];
 	for(var i=0;i<response.length; i++){
 		//console.log(JSON.stringify(response[i]));		
 		var route;
@@ -114,10 +114,13 @@ function displayInfo(response){
 			});	
 		}else{
 			var color = colorInit[(i+2)%colorInit.length];
+			var lineSymbol = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
 			route = new google.maps.Polyline({
 				strokeColor: color,
 			    strokeOpacity: 1.0,
 			    strokeWeight: 3,
+			    icons: [{icon: lineSymbol,
+		            offset: '100%'}]
 			});	
 		}
 		 
@@ -128,10 +131,30 @@ function displayInfo(response){
 			var lat = response[i].routeElement[j].addLat;
 			var lng = response[i].routeElement[j].addLng;
 			var point = new google.maps.LatLng(lat,lng);
+			var time = response[i].routeElement[j].expectedTime;
+			var timeEarly = time.substring(0,16);
+			var timeLate = time.substring(17,time.length);
+			var infowindow = new google.maps.InfoWindow({
+			    content: "STT giao hàng: "+ response[i].routeElement[j].routeSequence +"</br>"+
+			    		"Mã khách hàng: " + response[i].routeElement[j].clientCode +"</br>"+
+			    		"Địa chỉ: " + response[i].routeElement[j].clientAddress +"</br>"+
+			    		"Thời gian giao hàng sớm nhất: " + timeEarly + "</br>"+
+			    		"Thời gian giao hàng muộn nhất: " + timeLate + "</br>"+
+			    		"Người giao hàng: "+ response[i].shipperCode
+			});
+			lstinfowindow.push(infowindow);
 			var marker = new google.maps.Marker({
 				position:point,
-				label:labels[labelIndex++ % labels.length],
-				map: map
+				icon: baseUrl+"/assets/img/marker20_20.png",
+				//label:labels[labelIndex++ % labels.length],
+				map: map,
+				infowindow: infowindow
+			});
+			marker.addListener('click', function() {
+				for(var t=0; t<lstinfowindow.length; t++){
+					lstinfowindow[t].close();
+				}
+			    this.infowindow.open(map, this);
 			});
 			route.getPath().push(point);
 			table.row.add([
