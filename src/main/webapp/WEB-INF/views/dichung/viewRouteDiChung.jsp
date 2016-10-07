@@ -7,9 +7,11 @@
 <script src="<c:url value="/assets/libs/jquery-ui-1.12.0/jquery-ui.js"/>"> </script>
 <script src="<c:url value="/assets/libs/bootstrap-slider/bootstrap-slider.js"/>"> </script>
 <link href="<c:url value="/assets/libs/bootstrap-slider/css/bootstrap-slider.css" />" rel="stylesheet" type="text/css" media="all" />
+<link href="<c:url value="/assets/libs/bootstrap-timepicker/css/bootstrap-timepicker.css" />" rel="stylesheet" type="text/css" media="all" />
 <link href="<c:url value="/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.css" />" rel="stylesheet" type="text/css" media="all" />
 <script src="<c:url value="/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/assets/libs/inputDate/dist/js/moment.js" />"></script>
+<script src="<c:url value="/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.js"/>"></script>
 	
 <div id="page-wrapper">
 	<div class="form-group ">
@@ -38,15 +40,19 @@
 			<div class="col-lg-2">
 				
 				<input  class="form-control datepicker " name="dateFilter" onchange="updateFilter()" placeholder="Date" ></input>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-lg-1">Ngày</label>
-			<div class="col-lg-5">
 				
-				<input id="time" type="text" class="form-control " onchange="updateFilter()" value="" data-slider-min="0" data-slider-max="86400" data-slider-step="1" data-slider-value="[0,86399]"/><b> Time Range </b> <i id ="timeearly"></i> to <i id ="timelate"></i>
+			</div>
+			
+			<label class="control-label col-lg-1">Từ:</label>
+			<div class="col-lg-2">
+			<input   class="form-control timepicker" id="timeearly" onchange="updateFilter()" placeholder="TimeEarly" ></input>
+			</div>
+			<label class="control-label col-sm-1">Đến:</label>
+			<div class="col-lg-2">
+			<input   class="form-control timepicker" id="timelate"  onchange="updateFilter()" placeholder="TimeLate" ></input>
 			</div>
 		</div>
+		
 		
     </div>
     <div id="map" style="height:100%">
@@ -85,21 +91,18 @@
 	<!-- /.row -->
 </div>
 <!-- /#page-wrapper -->
-<<style>
-<!--
-.slider.slider-horizontal {
-  width: 900px;
-  height: 20px;
-}
--->
-</style>
+
 <script>
+
 var pathList=[];// danh sach cac poliline
 var markerList=[]; // danh sach cac marker
 var sortListData=[]; //danh sach index data sorted
 var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"]; // mang init mau
 var table;
 var data;
+$('.timepicker').timepicker({
+	showMeridian: false 
+});
 $(function() {
     $( ".datepicker" ).datepicker({
     	format:"yyyy-mm-dd"
@@ -122,8 +125,8 @@ $(document).ready(function(){
 	});
 	console.log(table);
 });
-var slider = new Slider('#time', {});
-console.log(slider);
+
+
 function loadRoute(){
 	var batchCode= $(".batchselect").val();
 	console.log(batchCode);
@@ -197,7 +200,7 @@ function viewMap(data){
 				position:point,
 				label:labels[labelIndex % labels.length],
 				map: map,
-				icon: baseUrl+"/assets/img/marker20_20.png",
+				icon: baseUrl+"/assets/icon/location-pin.png",
 				path: pathList.indexOf(route),
 				infowindow: infowindow
 		});
@@ -232,18 +235,21 @@ function sortList(data){ // thua
 
 function updateFilter(){
 	var dateFilter=$(".datePicker").val();
-	var sliderVal=slider.getValue()+'';
-	var val=sliderVal.split(',');
-	console.log(val);
+	timeearly=$("#timeearly").val();
+	timelate=$("#timelate").val();
+	timeearly=moment(timeearly,"HH:mm");
+	timelate=moment(timelate,"HH:mm");
+	console.log(timeearly);
 	var dateTimeFilterEarly=moment(dateFilter,"YYYY-MM-DD");
 	var dateTimeFilterLate=moment(dateFilter,"YYYY-MM-DD");
-	dateTimeFilterEarly.add(val[0],'s');
-	dateTimeFilterLate.add(val[1],'s');
+	dateTimeFilterEarly=moment(dateTimeFilterEarly.format('YYYY-MM-DD ')+ timeearly.format("HH:mm"),"YYYY-MM-DD HH:mm:ss");
+	dateTimeFilterLate=moment(dateTimeFilterLate.format('YYYY-MM-DD ')+ timelate.format("HH:mm"),"YYYY-MM-DD HH:mm:ss");
 	console.log("dateTimeFilterEarly "+dateTimeFilterEarly.format("YYYY-MM-DD HH:mm:ss"));
 	console.log("dateTimeFilterLate "+dateTimeFilterLate.format("YYYY-MM-DD HH:mm:ss"));
-	pushNewFilterTime(dateTimeFilterEarly.format("HH:mm:ss"),dateTimeFilterLate.format("HH:mm:ss"))
+	if(pathList!=null)
 	for(var i=0;i<pathList.length;i++)
 		pathList[i].setMap(null);
+	if(sortListData!=null)
 	for(var i=0;i<sortListData.length;i++ ){
 		if(data[sortListData[i]].momentObject.isSameOrAfter(dateTimeFilterEarly) && data[sortListData[i]].momentObject.isSameOrBefore(dateTimeFilterLate)){
 			markerList[sortListData[i]].setMap(map);
