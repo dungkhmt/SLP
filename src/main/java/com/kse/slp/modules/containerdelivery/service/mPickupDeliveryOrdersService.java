@@ -11,6 +11,9 @@ public interface mPickupDeliveryOrdersService {
 			,String oPD_LatePickupDateTime,String oPD_DeliveryAddress,
 			double oPD_DeliveryLat,double oPD_DeliveryLng,String oPD_EarlyDeliveryDateTime,String oPD_LateDeliveryDateTime,int oPD_Volumn,String batchCode);
 	public List<mPickupDeliveryOrders> getListOrderPickupDelivery();
+	public List<mPickupDeliveryOrders> getListOrderPickupDelivery(String batchCode);
 	public void updateStatus(String orderCode,String status);
 	public mPickupDeliveryOrders loadAPickupDeliveryOrderbyCode(String pickupDeliveryOrderCode);
+	public void deleteOrdersInBatch(String batchCode);
+	
 }
