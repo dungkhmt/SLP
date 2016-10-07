@@ -58,7 +58,8 @@
 
 <script>
 var table;
-var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
+//var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
+var colorInit=["#B0171F","#FF1493","#8B5F65","#000080","#006400","#a52a2a","#ff0000","#ff1493","#9400d3"];
 $(document).ready(function(){
 	table = $("#tbl-infoOfRoutes").DataTable({
 		"bSort" : false
@@ -87,7 +88,7 @@ function initialize() {
 }
 
 function displayInfo(response){
-	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	//var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	console.log("response: "+JSON.stringify(response));
 	var storePosition = response[0].storeLatLng;
 	console.log("storePostion: "+storePosition);
@@ -99,10 +100,10 @@ function displayInfo(response){
 	var storePos = new google.maps.LatLng(storePositionLat,storePositionLng);
 	var markerStorePostion = new google.maps.Marker({
 		position: storePos,
-		icon : baseUrl+"/assets/icon/store.svg",
+		icon : baseUrl+"/assets/icon/store.png",
 		map: map
 	});
-	
+	var lstinfowindow = [];
 	for(var i=0;i<response.length; i++){
 		//console.log(JSON.stringify(response[i]));		
 		var route;
@@ -114,10 +115,18 @@ function displayInfo(response){
 			});	
 		}else{
 			var color = colorInit[(i+2)%colorInit.length];
+			var lineSymbol = {
+				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+				strokeOpacity: 2,
+			    scale:1.5		
+			};
 			route = new google.maps.Polyline({
 				strokeColor: color,
 			    strokeOpacity: 1.0,
 			    strokeWeight: 3,
+			    icons: [{icon: lineSymbol,
+		            offset: '100%',
+		            repeat:'100px'}]
 			});	
 		}
 		 
@@ -128,10 +137,30 @@ function displayInfo(response){
 			var lat = response[i].routeElement[j].addLat;
 			var lng = response[i].routeElement[j].addLng;
 			var point = new google.maps.LatLng(lat,lng);
+			var time = response[i].routeElement[j].expectedTime;
+			var timeEarly = time.substring(0,16);
+			var timeLate = time.substring(17,time.length);
+			var infowindow = new google.maps.InfoWindow({
+			    content: "STT giao hàng: "+ response[i].routeElement[j].routeSequence +"</br>"+
+			    		"Mã khách hàng: " + response[i].routeElement[j].clientCode +"</br>"+
+			    		"Địa chỉ: " + response[i].routeElement[j].clientAddress +"</br>"+
+			    		"Thời gian giao hàng sớm nhất: " + timeEarly + "</br>"+
+			    		"Thời gian giao hàng muộn nhất: " + timeLate + "</br>"+
+			    		"Người giao hàng: "+ response[i].shipperCode
+			});
+			lstinfowindow.push(infowindow);
 			var marker = new google.maps.Marker({
 				position:point,
-				label:labels[labelIndex++ % labels.length],
-				map: map
+				icon: baseUrl+"/assets/img/marker20_20.png",
+				//label:labels[labelIndex++ % labels.length],
+				map: map,
+				infowindow: infowindow
+			});
+			marker.addListener('click', function() {
+				for(var t=0; t<lstinfowindow.length; t++){
+					lstinfowindow[t].close();
+				}
+			    this.infowindow.open(map, this);
 			});
 			route.getPath().push(point);
 			table.row.add([
@@ -139,7 +168,7 @@ function displayInfo(response){
 				response[i].routeElement[j].clientAddress,
 				"",
 				response[i].routeElement[j].expectedTime,
-				labels[response[i].routeElement[j].routeSequence-1],
+				response[i].routeElement[j].routeSequence,
 				response[i].shipperCode
 			]).draw( false );
 		}
