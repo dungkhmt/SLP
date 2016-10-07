@@ -58,7 +58,8 @@
 
 <script>
 var table;
-var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
+//var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
+var colorInit=["#B0171F","#FF1493","#8B5F65","#000080","#006400","#a52a2a","#ff0000","#ff1493","#9400d3"];
 $(document).ready(function(){
 	table = $("#tbl-infoOfRoutes").DataTable({
 		"bSort" : false
@@ -114,13 +115,18 @@ function displayInfo(response){
 			});	
 		}else{
 			var color = colorInit[(i+2)%colorInit.length];
-			var lineSymbol = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
+			var lineSymbol = {
+				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+				strokeOpacity: 2,
+			    scale:1.5		
+			};
 			route = new google.maps.Polyline({
 				strokeColor: color,
 			    strokeOpacity: 1.0,
 			    strokeWeight: 3,
 			    icons: [{icon: lineSymbol,
-		            offset: '100%'}]
+		            offset: '100%',
+		            repeat:'100px'}]
 			});	
 		}
 		 
