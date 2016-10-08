@@ -20,6 +20,8 @@
     	<div class="panel panel-default">
     		
 			<div class="panel-body">
+			
+				
 				<div class="form-group">
 					<label class="control-label col-lg-2 phoneinput">Số điện thoại</label>
 					<div class="col-lg-6">
@@ -110,7 +112,17 @@
 		        	<form:input path="orderVolumn" type='text' class="form-control" id='orderVolumn'/>
 				</div>
 			</div>
-			
+			<div class="form-group">
+					<label class="control-label col-lg-2">Chọn Lô</label>
+					<div class="form-group col-lg-2">
+					<form:select path="orderBatchCode" id="batchcode" name="batchCode" class="form-control">
+						<option>Chọn lô</option>
+						<c:forEach items="${listBatch}" var="reBatch">
+							<option value="${reBatch.REQBAT_Code}"><c:out value="${reBatch.REQBAT_Code}"/></option>
+						</c:forEach>
+					</form:select>
+					</div>
+				</div>
     	</div>
     	
     </div>

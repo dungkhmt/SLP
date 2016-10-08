@@ -103,6 +103,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	@RequestMapping(value = "/add-a-pickupdelivery-order", method = RequestMethod.GET)
 	public String addAPickupDeliveryOrder(ModelMap model, HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
+		List<RequestBatch> listBatch= requestBatchService.getList();
+		model.put("listBatch", listBatch);
 		model.put("orderPickupDeliveryFormAdd", new mOrderPickupDeliveryFormAdd());
 		log.info(u.getUsername());
 		return "containerdelivery.addapickupdeliveryorder";
@@ -182,8 +184,9 @@ public class mPickupDeliveryController extends BaseWeb{
 			String oPD_EarlyDeliveryDateTime=orderForm.getOrderDelieveryDateTimeEarly();
 			String oPD_LateDeliveryDateTime=orderForm.getOrderDelieveryDateTimeLate();
 			int oPD_Volumn=orderForm.getOrderVolumn();
+			String oPD_BatchCode=orderForm.getOrderBatchCode();
 			String oPD_RequestDateTime = GenerationDateTimeFormat.genDateTimeFormatStandardCurrently();
-			pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, oPD_RequestDateTime, oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn,null);
+			pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, oPD_RequestDateTime, oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn,oPD_BatchCode);
 			log.info(u.getUsername()+" DONE");
 			return "redirect:list-pickupdelivery-order";
 		}
