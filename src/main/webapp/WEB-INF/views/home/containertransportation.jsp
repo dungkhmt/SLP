@@ -4,7 +4,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12 center">
-            <h1 class="page-header">Hệ thống quản lý chuyển hàng</h1>
+            <h1 class="page-header">Hệ thống quản lý vận chuyển container</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
