@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -103,7 +105,7 @@ public class mOrderController extends BaseWeb{
 	StoreBatchService StoreBatchService;
 	@Autowired
 	StoresService StoresService;
-	/*
+	
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
 	public String addAOrder(ModelMap model, HttpSession session){
 		model.put("orderFormAdd", new mOrderFormAdd());
@@ -118,7 +120,7 @@ public class mOrderController extends BaseWeb{
 		//return "trash.outgoingarticles.add";
 		
 	}
-	
+	/*
 	@RequestMapping(value = "/save-an-order", method = RequestMethod.POST)
 	public String saveAOrder(ModelMap model,HttpServletRequest request, HttpSession session,@ModelAttribute("orderFormAdd") mOrderFormAdd orderForm,BindingResult result){
 		//System.out.print("This is "+orderForm.getOrderAdress());
@@ -153,7 +155,7 @@ public class mOrderController extends BaseWeb{
 		return "redirect:add-an-order";
 		
 	}
-	*/
+	
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
 	public String listOutGoingArticles(ModelMap model,HttpSession session){
@@ -166,7 +168,7 @@ public class mOrderController extends BaseWeb{
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "outgoingarticles.list";
-	}
+	}*/
 	
 	@RequestMapping(value="/uploadFile",method=RequestMethod.GET)
 	public String upLoadFile(ModelMap model,HttpSession session){
@@ -175,6 +177,9 @@ public class mOrderController extends BaseWeb{
 		String username = u.getUsername();
 		//System.out.println(name()+"upLoadFile--username: "+username);
 		StaffCustomer sc = StaffCustomerService.getCusCodeByUserName(username);
+		if(sc == null){
+			return "error.500";
+		}
 		String CustomerCode = sc.getSTFCUS_CustomerCode();
 		//System.out.println(name()+"upLoadFile--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
@@ -224,8 +229,23 @@ public class mOrderController extends BaseWeb{
 					
 					float lng = Float.parseFloat(latlng.substring(index+1,latlng.length()));
 					//System.out.println(name()+"readFile--lng["+i+"]: "+lng);
-					
-					String timeEearly = row.getCell(4).getStringCellValue();
+					String timeEearly="";
+					switch(row.getCell(4).getCellType()){
+						case XSSFCell.CELL_TYPE_NUMERIC: 
+							if (DateUtil.isCellDateFormatted(row.getCell(4))) {
+								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+								timeEearly += dateFormat.format(row.getCell(4).getDateCellValue());
+			                    //System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEearly);
+			                } else {
+			                    //System.out.println(cell.getNumericCellValue());
+			                	timeEearly += String.valueOf(row.getCell(4).getNumericCellValue());
+			                }
+							break;
+						case XSSFCell.CELL_TYPE_STRING:
+							timeEearly += row.getCell(4).getStringCellValue();
+							break;
+					}
+					 
 					int index2 = timeEearly.indexOf(" ");
 					String orderDate = timeEearly.substring(0,index2);
 					//System.out.println(name()+"readFile--orderDate["+i+"]: "+orderDate);
@@ -233,10 +253,29 @@ public class mOrderController extends BaseWeb{
 					String timeEarly = timeEearly.substring(index2+1,timeEearly.length());
 					//System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEarly);
 					
-					String timeDueTo = row.getCell(5).getStringCellValue();
+					String timeDueTo="";
+					//String timeEearly="";
+					
+					switch(row.getCell(5).getCellType()){
+						case XSSFCell.CELL_TYPE_NUMERIC: 
+							if (DateUtil.isCellDateFormatted(row.getCell(5))) {
+								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+								timeDueTo += dateFormat.format(row.getCell(5).getDateCellValue());
+			                    //System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
+			                } else {
+			                    //System.out.println(cell.getNumericCellValue());
+			                	timeDueTo += String.valueOf(row.getCell(5).getNumericCellValue());
+			                }
+							break;
+						case XSSFCell.CELL_TYPE_STRING:
+							timeDueTo += row.getCell(5).getStringCellValue();
+							break;
+					}
+					//System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
 					int index3 = timeDueTo.indexOf(" ");
 					String dueDate = timeDueTo.substring(0,index3);
 					//System.out.println(name()+"readFile--dueDate["+i+"]: "+dueDate);
+					
 					
 					String timeLate = timeDueTo.substring(index3+1,timeDueTo.length());
 					//System.out.println(name()+"readFile--timeLate["+i+"]: "+timeLate);
@@ -282,6 +321,9 @@ public class mOrderController extends BaseWeb{
 		String username = u.getUsername();
 		//System.out.println(name()+"createAutoRoute--username: "+username);
 		StaffCustomer sc = StaffCustomerService.getCusCodeByUserName(username);
+		if(sc == null){
+			return "error.500";
+		}
 		String CustomerCode = sc.getSTFCUS_CustomerCode();
 		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
@@ -389,6 +431,9 @@ public class mOrderController extends BaseWeb{
 		String username = u.getUsername();
 		//System.out.println(name()+"createAutoRoute--username: "+username);
 		StaffCustomer sc = StaffCustomerService.getCusCodeByUserName(username);
+		if(sc == null){
+			return "error.500";
+		}
 		String CustomerCode = sc.getSTFCUS_CustomerCode();
 		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
