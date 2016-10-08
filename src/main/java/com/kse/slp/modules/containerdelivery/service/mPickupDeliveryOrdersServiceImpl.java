@@ -68,4 +68,17 @@ public class mPickupDeliveryOrdersServiceImpl implements mPickupDeliveryOrdersSe
 		// TODO Auto-generated method stub
 		return pickupDeliveryOrdersDAO.loadAPickupDeliveryOrderbyCode(pickupDeliveryOrderCode);
 	}
+
+	@Override
+	public void deleteOrdersInBatch(String batchCode) {
+		// TODO Auto-generated method stub
+		pickupDeliveryOrdersDAO.deleteOrdersInBatch(batchCode);
+	}
+
+	@Override
+	public List<mPickupDeliveryOrders> getListOrderPickupDelivery(
+			String batchCode) {
+		// TODO Auto-generated method stub
+		return pickupDeliveryOrdersDAO.getListInBatch(batchCode);
+	}
 }

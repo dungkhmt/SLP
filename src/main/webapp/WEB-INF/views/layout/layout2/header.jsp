@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
 	<div class="navbar-header">
-		<a href="<c:url value="/"/>"><span class="navbar-brand">Hệ thống quản lý bán hàng</span></a>
+		<a href="<c:url value="/"/>"><span class="navbar-brand">Hệ thống quản lý vận chuyển container</span></a>
 	</div>
 	
 	<ul class="nav navbar-top-links navbar-right">
@@ -24,6 +24,7 @@
 				
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/list-pickupdelivery-order"/>">Xem danh sách hóa đơn chuyển hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/add-pickupdelivery-orders-by-xls"/>">Nhập đơn hàng qua file excel</a></li>
+				<li><a href="<c:url value="${baseUrl}/containerdelivery/create-route-auto"/>">Lập tuyến tự động</a></li>
 				<li><a href="<c:url value="${baseUrl}/ship/create-pickupdelivery-route"/>">Lập tuyến giao hàng container</a></li>
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/view-route-detail-container"/>">Xem cac route</a></li>
 			</ul>

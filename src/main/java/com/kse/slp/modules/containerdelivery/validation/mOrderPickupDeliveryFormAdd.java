@@ -14,7 +14,15 @@ public class mOrderPickupDeliveryFormAdd {
 	String orderDelieveryDateTimeEarly;
 	String orderDelieveryDateTimeLate;
 	int orderVolumn;
+	String orderBatchCode;
 	
+	
+	public String getOrderBatchCode() {
+		return orderBatchCode;
+	}
+	public void setOrderBatchCode(String orderBatchCode) {
+		this.orderBatchCode = orderBatchCode;
+	}
 	public int getOrderVolumn() {
 		return orderVolumn;
 	}

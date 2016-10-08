@@ -125,6 +125,11 @@
     	<put-attribute name="title" value="View all route container"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/viewallroutecontainer.jsp"/>
     </definition>
+    
+    <definition name="containerdelivery.createAutoRoute" extends="layout2">
+    	<put-attribute name="title" value="Create Auto Route Container"/>
+    	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/createautoroutecontainer.jsp"/>
+    </definition>
     <!-- di chung modules -->
     <definition name="dichung.createroute" extends="layout3">
     	<put-attribute name="title" value="Create route dichung"/>
@@ -139,7 +144,7 @@
     	<put-attribute name="content" value="/WEB-INF/views/dichung/adddichungrequestsbyxls.jsp" /> 
     </definition>
     <definition name="dichung.viewroute" extends="layout3">
-    	<put-attribute name="title" value="View Route"/>
+    	<put-attribute name="title" value="View Route Di Chung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/viewRouteDiChung.jsp" /> 
     </definition>
     
