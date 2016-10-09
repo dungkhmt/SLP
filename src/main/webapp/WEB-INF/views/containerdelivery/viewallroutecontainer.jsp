@@ -18,6 +18,16 @@
 		<div class="col-lg-12">
 			<h1 class="page-header">Danh sách các tuyến chuyển hàng</h1>
 		</div>
+		<div class="col-sm-4">
+			<div class="form-group">
+				<select class="form-control" id="select-listBatch">
+					<option>Chọn batch</option>
+					<c:forEach items="${listBatch}" var="batch">
+						<option value="${batch.REQBAT_Code}"><c:out value="${batch.REQBAT_Code}"/></option>
+					</c:forEach>
+				</select>
+			</div>
+		</div>
 		<!-- /.col-lg-12 -->
 	</div>
 	<div id="map" style="height:100%">
@@ -42,26 +52,9 @@
 									<th>Số lượng</th>
 									<th>Số thứ tự</th>
 									<th>Tài xế</th>
-									
+									<th>Check</th>
 								</tr>
-							</thead>
-							<tbody>
-								<c:forEach items="${listR}" var="lR">
-									<tr>
-										<td><c:out value="${lR.clientCode}"/></td>
-										<td><c:out value="${lR.clientName}"/></td>
-										<td><c:out value="${lR.pickupAdress}"/></td>
-										<td><c:out value="${lR.arriveTimePickup}"/></td>
-										<td><c:out value="${lR.expectedTimePickup}"/></td>
-										<td><c:out value="${lR.deliveryAdress}"/></td>
-										<td><c:out value="${lR.arriveTimeDeleivery}"/></td>
-										<td><c:out value="${lR.expectedTimeDelivery}"/></td>
-										<td><c:out value="${lR.volumn}"/></td>
-										<td><c:out value="${lR.sequence}"/></td>
-										<td><c:out value="${lR.driver }"/></td>
-									</tr>
-								</c:forEach>
-							</tbody>
+							</thead>							
 						</table>
 					</div>
 					<!--/.dataTable_wrapper -->
@@ -84,14 +77,26 @@ var listSh=JSON.parse('${listShJson}');
 var listRM=JSON.parse('${listRMJson}');
 var serviceDistance;
 $(document).ready(function(){
-	var table = $('#dataTabels-pDL').DataTable();
-	
-	$('.addOutOrder').click(function(){
-		window.location = '${baseUrl}' + "/containerdelivery/add-a-pickupdelivery-order.html";
+	var table = $('#dataTabels-pDL').DataTable({
+		data:[["noifo"]],
+		columns: [
+					{ "title": "Mã KH" },
+		            { "title": "Tên KH" },
+		            { "title": "Thời gian đón hàng dự kiến" },
+		            { "title": "Thời gian đón hàng yêu cầu" },
+		            { "title": "Địa điểm trả hàng" },
+		            { "title": "Thời gian trả hàng dự kiến" },
+		            { "title": "Thời  gian trả hàng yêu cầu"},
+		            { "title": "Số lượng"},
+		            { "title": "Số thứ tự"},
+		            { "title": "Tài xế"},
+		            { "title": "Check"}
+		        ]
 	});
+	
+	
 	console.log(listRM);
-	
-	
+	// 10/9/2016 not view a table
 });
 function getDistanceGoogleMap(p1,p2,indexOld,index){
 	serviceDistance.getDistanceMatrix(

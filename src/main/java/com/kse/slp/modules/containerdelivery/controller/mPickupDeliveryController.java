@@ -57,8 +57,10 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrd
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteMinimizeforVRDC;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
 import com.kse.slp.modules.usermanagement.model.User;
@@ -73,6 +75,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	mPickupDeliveryOrdersService pickupDeliveryOrders;
 	@Autowired
 	mRouteDetailContainerService routeDetailContainerService;
+	@Autowired
+	mRoutesService routeService;
 	@Autowired
 	mShippersService shipperService;
 	@Autowired
@@ -219,7 +223,22 @@ public class mPickupDeliveryController extends BaseWeb{
 		}
 		
 		model.put("listRMJson",gson.toJson(listRouteM) );
+		List<RequestBatch> listBatch= requestBatchService.getList();
+		model.put("listBatch", listBatch);
 		return "containerdelivery.viewallroutecontainer";
+	}
+	@ResponseBody @RequestMapping(value="/load-route-in-batch", method=RequestMethod.POST)
+	public List<mRouteDetailContainer> loadContainerRoutesInBatch(HttpSession session,@RequestBody String batchCode){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		System.out.println(batchCode);
+		List<mRouteDetailContainer> res= new ArrayList<mRouteDetailContainer>();
+		List<mRoutes> lr=routeService.getListByBatchCode(batchCode);
+		for(int i=0;i< lr.size();i++){
+			res.addAll(routeDetailContainerService.loadRouteContainerDetailByRouteCode(lr.get(i).getRoute_Code()));
+		}
+		return res;
+		//here
 	}
 	@RequestMapping(value="/create-route-auto", method=RequestMethod.GET)
 	public String createRouteAuto(ModelMap model,HttpSession session){
@@ -253,7 +272,8 @@ public class mPickupDeliveryController extends BaseWeb{
 		System.out.println(name()+json);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
-		HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/pickup-delivery-containers-plan");
+		//HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/pickup-delivery-containers-plan");
+		HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/pickup-delivery-containers-plan");
 		StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 	    request.addHeader("content-type", "application/json");
 	    request.setEntity(params);
@@ -275,7 +295,7 @@ public class mPickupDeliveryController extends BaseWeb{
 	   
 		return true;
 	}
-	
+	// 10/9/2016
 	public String name(){
 		return "mPickupDeliveryController::";
 	}
