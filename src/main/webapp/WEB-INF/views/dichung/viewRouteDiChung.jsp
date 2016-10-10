@@ -115,7 +115,7 @@ function initMap() {
     var mapDiv = document.getElementById('map');
     map = new google.maps.Map(mapDiv, {
         center: {lat: 21.03, lng: 105.8},
-        zoom: 8
+        zoom: 13
     });
 	console.log("start");
 }
@@ -149,8 +149,9 @@ function loadRoute(){
 	
 }
 function pushMomentObject(){
-	for(var i=0;i<data.length;i++){
-		data[i].momentObject=	moment(data[i].rddc_PickupDateTime,"YYYY-MM-DD HH:mm:ss");
+	for(var i=0;i<data.length;i++)
+		for(var j=0;j<data[i].listPoint.length;j++){
+		data[i].listPoint[j].momentObject=	moment(data[i].listPoint[j].rddc_PickupDateTime,"YYYY-MM-DD HH:mm:ss");
 	}
 	console.log(data);
 }
@@ -162,60 +163,75 @@ function randomColor(){
 	return colorInit[Math.floor((Math.random() * colorInit.length))];
 }
 function viewMap(data){
-	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	
 	var route;
-	var labelIndex=0;
+	
 	var xd=false;
 	for(var i=0;i<data.length;i++){
 		//console.log(i);
 		//console.log(JSON.stringify(response[i]));
-		
-		if(data[i].rddc_Sequence==0){
-		if(i<data.length-1)
-		if(data[i+1].rddc_Sequence==1)
-			xd=true;
-		else xd=false
-		if(xd==true){
-		var point = new google.maps.LatLng(21.2187149,105.80417090000003);
-		//if(route!=undefined)
-		//route.getPath().push(point);
+		var list= data[i].listPoint;
+		if(list.length>=2){
 		route = new google.maps.Polyline({
 			strokeColor: randomColor(),
 		    strokeOpacity: 1.0,
 		    strokeWeight: 3,
 		});
 		pathList.push(route);
-		}
-		labelIndex=0;
-		}
 		
-		var latlng=data[i].rddc_LatLng;
-		var lat = latlng.substring(0,latlng.indexOf(',')) ;
-		var lng = latlng.substring(latlng.indexOf(',')+1,latlng.length) ;
-		var point = new google.maps.LatLng(lat,lng);
-		var infowindow = new google.maps.InfoWindow({
-		    content: "Pickup Address: "+ data[i].rddc_Address +"<br> Delivery Address: " + data[i].rddc_DeliveryAddress+"<br> Pickup Date Time:"+data[i].rddc_PickupDateTime
-		  });
-		var marker = new google.maps.Marker({
+		for(var j=0;j<list.length;j++){
+			var latlng=list[j].rddc_LatLng;
+			var lat = latlng.substring(0,latlng.indexOf(',')) ;
+			var lng = latlng.substring(latlng.indexOf(',')+1,latlng.length) ;
+			var point = new google.maps.LatLng(lat,lng);
+			var infowindow = new google.maps.InfoWindow({
+			    content: "Pickup Address: "+ list[j].rddc_Address +"<br> Delivery Address: " + list[j].rddc_DeliveryAddress+"<br> Pickup Date Time:"+list[j].rddc_PickupDateTime
+			  });
+				
+			var marker = new google.maps.Marker({
 				position:point,
-				label:labels[labelIndex % labels.length],
 				map: map,
-				icon: baseUrl+"/assets/icon/location-pin.png",
+				label:null,
+				icon: baseUrl+"/assets/icon/marker_black16.png",
 				path: pathList.indexOf(route),
 				infowindow: infowindow
-		});
+			});
+			marker.addListener('click', function() {
+			    this.infowindow.open(map, this);
+			});
+			list[j].marker=marker;
+			markerList.push(marker);
+			route.getPath().push(point);
+			route.setMap(map);
 		
-		marker.addListener('click', function() {
-		    this.infowindow.open(map, this);
-		  });
-		markerList.push(marker);
-		if(xd==true){
-		route.getPath().push(point);
-		route.setMap(map);
-		labelIndex++;
+		}		
+		} else{
+			var latlng=list[0].rddc_LatLng;
+			var lat = latlng.substring(0,latlng.indexOf(',')) ;
+			var lng = latlng.substring(latlng.indexOf(',')+1,latlng.length) ;
+			var point = new google.maps.LatLng(lat,lng);
+			var infowindow = new google.maps.InfoWindow({
+			    content: "Pickup Address: "+ list[0].rddc_Address +"<br> Delivery Address: " + list[0].rddc_DeliveryAddress+"<br> Pickup Date Time:"+list[0].rddc_PickupDateTime
+			  });
+				
+			var marker = new google.maps.Marker({
+				position:point,
+				map: map,
+				label:null,
+				icon: baseUrl+"/assets/icon/marker_black16.png",
+				path: -1,
+				infowindow: infowindow
+			});
+			marker.addListener('click', function() {
+			    this.infowindow.open(map, this);
+			});
+			data[i].listPoint[0].marker=marker;
+			markerList.push(marker);
+			
 		}
+		
 	}
-	console.log(sortListData);
+	
 }
 function sortList(data){ // thua
 	for(var i=0;i<data.length;i++)
@@ -244,18 +260,20 @@ function updateFilter(){
 	var dateTimeFilterLate=moment(dateFilter,"YYYY-MM-DD");
 	dateTimeFilterEarly=moment(dateTimeFilterEarly.format('YYYY-MM-DD ')+ timeearly.format("HH:mm"),"YYYY-MM-DD HH:mm:ss");
 	dateTimeFilterLate=moment(dateTimeFilterLate.format('YYYY-MM-DD ')+ timelate.format("HH:mm"),"YYYY-MM-DD HH:mm:ss");
-	console.log("dateTimeFilterEarly "+dateTimeFilterEarly.format("YYYY-MM-DD HH:mm:ss"));
-	console.log("dateTimeFilterLate "+dateTimeFilterLate.format("YYYY-MM-DD HH:mm:ss"));
 	if(pathList!=null)
 	for(var i=0;i<pathList.length;i++)
 		pathList[i].setMap(null);
-	if(sortListData!=null)
-	for(var i=0;i<sortListData.length;i++ ){
-		if(data[sortListData[i]].momentObject.isSameOrAfter(dateTimeFilterEarly) && data[sortListData[i]].momentObject.isSameOrBefore(dateTimeFilterLate)){
-			markerList[sortListData[i]].setMap(map);
-			pathList[markerList[sortListData[i]].path].setMap(map);
+	if(data!=null)
+	for(var i=0;i<data.length;i++ ){
+		var list=data[i].listPoint;
+		for(var j=0;j<list.length;j++){
+		if(list[j].momentObject.isSameOrAfter(dateTimeFilterEarly) && list[j].momentObject.isSameOrBefore(dateTimeFilterLate)){
+			list[j].marker.setMap(map);
+			if(list[j].marker.path!=-1)
+				pathList[list[j].marker.path].setMap(map);
 		} else{
-			markerList[sortListData[i]].setMap(null);
+			list[j].marker.setMap(null);
+		}
 		}
 	}
 }
@@ -268,23 +286,25 @@ function loadTable(data){
 	var idcolor=0;
 	str=null;
 	for(var i=0;i<data.length;i++){
-		//console.log("i data[i].rddc_Group" +data[i].rddc_Group);
-		if(i>0)
-		if(data[i].rddc_Group!=data[i-1].rddc_Group){ 
-			idcolor=idcolor+1;
-			idcolor=idcolor % color.length;
+		//console.log("i data[i].rddc_Group" +data[i].rddc_Group); 
+		
+		idcolor=(idcolor+1) % color.length;
 			//console.log("id"+idcolor);
 			//console.log("length "+ color.length+" "+idcolor % color.length);
+		
+		var list=data[i].listPoint;
+		console.log(list);
+		for(var j=0;j<list.length;j++){
+			str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
+			str+="<td>"+list[j].rddc_TicketCode+"</td>"
+			str+="<td>"+list[j].rddc_Address+"</td>"
+			str+="<td>"+list[j].rddc_DeliveryAddress+"</td>"
+			str+="<td>"+list[j].rddc_PickupDateTime+"</td>"
+			str+="<td>"+list[j].rddc_DistanceToNext+"</td>"
+			str+="<td>"+list[j].rddc_TravelTimeToNext+"</td>"
+			str+="<td>"+list[j].rddc_Sequence+"</td>"
+			str+="</tr>"
 		}
-		str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
-		str+="<td>"+data[i].rddc_TicketCode+"</td>"
-		str+="<td>"+data[i].rddc_Address+"</td>"
-		str+="<td>"+data[i].rddc_DeliveryAddress+"</td>"
-		str+="<td>"+data[i].rddc_PickupDateTime+"</td>"
-		str+="<td>"+data[i].rddc_DistanceToNext+"</td>"
-		str+="<td>"+data[i].rddc_TravelTimeToNext+"</td>"
-		str+="<td>"+data[i].rddc_Sequence+"</td>"
-		str+="</tr>"
 	}
 	$("table#tableRoute tbody").append(str);
 
@@ -294,7 +314,7 @@ function init(data){
 	markerList=[];
 	sortListData=[]; 
 	pushMomentObject();
-	sortList(data);
+	//sortList(data);
 	//console.log(data);
 	
 }

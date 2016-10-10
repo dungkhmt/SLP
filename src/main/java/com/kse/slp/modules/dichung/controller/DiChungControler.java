@@ -45,7 +45,8 @@ import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.dichung.dao.RouteDetailDiChungDAO;
 import com.kse.slp.modules.dichung.model.RequestDiChung;
 import com.kse.slp.modules.dichung.model.RouteDetailDiChung;
-import com.kse.slp.modules.dichung.model.mFormAddFileExcel;
+import com.kse.slp.modules.dichung.model.FormAddFileExcel;
+import com.kse.slp.modules.dichung.model.RouteDiChungJson;
 import com.kse.slp.modules.dichung.service.RequestDiChungService;
 import com.kse.slp.modules.dichung.service.RouteDetailDiChungService;
 import com.kse.slp.modules.onlinestores.common.Constants;
@@ -80,11 +81,11 @@ public class DiChungControler extends BaseWeb {
 		log.info(u.getUsername());
 		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
-		model.put("formAdd", new mFormAddFileExcel());
+		model.put("formAdd", new FormAddFileExcel());
 		return "dichung.adddichungrequestsbyxls";
 	}
 	@RequestMapping(value="/upload-file-request-dichung", method=RequestMethod.POST)
-	public String uploadFile(@ModelAttribute("formAdd") mFormAddFileExcel request){
+	public String uploadFile(@ModelAttribute("formAdd") FormAddFileExcel request){
 		System.out.println(name());
 		//Iterator<String> itr = request.getFileNames();
 		MultipartFile file = request.getOrdersFile();
@@ -193,9 +194,9 @@ public class DiChungControler extends BaseWeb {
 		System.out.println(name()+json);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
-		    HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+		    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 			//HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-			//HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
@@ -208,20 +209,22 @@ public class DiChungControler extends BaseWeb {
 		    System.out.println(sts);
 		    SharedTaxiRoute str[]= sts.getRoutes();
 		    System.out.println(name() + "::getRouteAuto, number of routes = " + str.length);
-		    String route_Code = "dichung" + GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+		    
 		   // routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
 		    System.out.println(name() + "::getRouteAuto, number of routes = " + str.length);
 		    
 		    List <mRoutes> lr=routeService.getListByBatchCode(batchCode);
-		    System.out.println(name()+lr);
+		    
 		    for(int i=0;i<lr.size();i++){
 		    	routeDetailDiChungService.deleteRoutesbyRouteCode(lr.get(i).getRoute_Code());
 		    	routeService.removeRoutesByRouteCode(lr.get(i).getRoute_Code());
 		    }
 		    
-		    routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
+		    
 		    for(int i=0;i<str.length;i++){
 			    SharedTaxiRouteElement stre[]= str[i].getTicketCodes();
+			    String route_Code = "dichung" + GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently()+"T"+i;// time format +stt in response
+			    routeService.saveARoute(route_Code, "dichung", "-",Constants.ROUTE_STATUS_CONFIRMED , batchCode);
 			    System.out.println(name() + i+ "::getRouteAuto, route[" + i + "].length = " + stre.length);
 			    for(int j=0;j<stre.length;j++){
 			    	//routeDetailDiChungService.saveARouteDetailDiChung(route_Code, stre[j].getTicketCode(), j, i,stre[j].getAddress(),stre[j].getDistanceToNext(),stre[j].getTravelTimeToNext(),stre[j].getPickupDateTime(),stre[j].getLatlng(),stre[j].getDeliveryAddress());
@@ -248,19 +251,28 @@ public class DiChungControler extends BaseWeb {
 		return "dichung.viewroute";
 	}
 	@ResponseBody @RequestMapping(value="/load-route-in-batch", method=RequestMethod.POST)
-	public List<RouteDetailDiChung> loadRouteInBatch(HttpSession session,@RequestBody String batchCode){
+	public List<RouteDiChungJson> loadRouteInBatch(HttpSession session,@RequestBody String batchCode){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		System.out.println(batchCode);
-		List<RouteDetailDiChung> res= new ArrayList<RouteDetailDiChung>();
+		
 		List<mRoutes> lr= routeService.getListByBatchCode(batchCode);
+		List<RouteDiChungJson> res= new ArrayList<RouteDiChungJson>();
 		System.out.println(name()+lr);
 		for(int i=0;i< lr.size();i++){
-			res.addAll(routeDetailDiChungService.loadRouteDetailByRouteCode(lr.get(i).getRoute_Code()));
+			mRoutes r= lr.get(i);
+			RouteDiChungJson rdJ= new RouteDiChungJson();
+			rdJ.setListPoint(routeDetailDiChungService.loadRouteDetailByRouteCode(r.getRoute_Code()));
+			rdJ.setRoute_BatchCode(r.getRoute_BatchCode());
+			rdJ.setRoute_Code(r.getRoute_Code());
+			rdJ.setRoute_Shipper_Code(r.getRoute_Shipper_Code());
+			rdJ.setRoute_Start_DateTime(r.getRoute_Start_DateTime());
+			res.add(rdJ);
 		}
 		System.out.println(name()+" ::loadRouteInBatch"+res);
 		return res;
 	}
+	
 	String name(){
 		return "DiChungControler:: ";
 	}

@@ -47,7 +47,7 @@ import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.containerdelivery.validation.mOrderPickupDeliveryFormAdd;
-import com.kse.slp.modules.dichung.model.mFormAddFileExcel;
+import com.kse.slp.modules.dichung.model.FormAddFileExcel;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
@@ -119,12 +119,12 @@ public class mPickupDeliveryController extends BaseWeb{
 		log.info(u.getUsername());
 		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
-		model.put("formAdd", new mFormAddFileExcel());
+		model.put("formAdd", new FormAddFileExcel());
 		
 		return "containerdelivery.addpickupdeliveryordersbyxls";
 	}
 	@RequestMapping(value="/upload-file-pickupdelivery-orders", method=RequestMethod.POST)
-	public String uploadFile(@ModelAttribute("formAdd") mFormAddFileExcel request){
+	public String uploadFile(@ModelAttribute("formAdd") FormAddFileExcel request){
 		MultipartFile file = request.getOrdersFile();
 		System.out.println(name()+"::uploadFile--"+file.getOriginalFilename() + " uploaded");
 		String batchCode= request.getBatchCode();
