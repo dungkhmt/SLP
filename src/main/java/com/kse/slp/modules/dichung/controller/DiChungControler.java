@@ -21,6 +21,10 @@ import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -51,7 +55,9 @@ import com.kse.slp.modules.dichung.service.RequestDiChungService;
 import com.kse.slp.modules.dichung.service.RouteDetailDiChungService;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
@@ -68,6 +74,8 @@ public class DiChungControler extends BaseWeb {
 	mRoutesService routeService;
 	@Autowired
 	RouteDetailDiChungService routeDetailDiChungService;
+	@Autowired
+	mShippersService shipperService;
 	private static final Logger log = Logger.getLogger(DiChungControler.class);
 	@RequestMapping(value="",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
@@ -248,6 +256,8 @@ public class DiChungControler extends BaseWeb {
 		log.info(u.getUsername());
 		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
+		List<mShippers> lSH=shipperService.getList();
+		model.put("listShipper", lSH);
 		return "dichung.viewroute";
 	}
 	@ResponseBody @RequestMapping(value="/load-route-in-batch", method=RequestMethod.POST)
@@ -272,7 +282,34 @@ public class DiChungControler extends BaseWeb {
 		System.out.println(name()+" ::loadRouteInBatch"+res);
 		return res;
 	}
-	
+	@ResponseBody @RequestMapping(value="/update-route-assignshipper", method=RequestMethod.POST)
+	public boolean updateRouteAssignShipper(HttpSession session,@RequestBody String json){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		JSONParser parser = new JSONParser();
+		JSONObject req;
+		try {
+			req = (JSONObject) parser.parse(json);
+			String shipperCode=(String) req.get("shipper");
+			System.out.print(name()+shipperCode);
+			JSONArray listRoute=(JSONArray) req.get("listRoute");
+			for(int i=0;i<listRoute.size();i++){
+				String routeCode=(String) listRoute.get(i);
+				System.out.println(name()+routeCode);
+				mRoutes r=routeService.getRoutes(routeCode);
+			
+				r.setRoute_Shipper_Code(shipperCode);
+				routeService.updateARoutes(r);
+			}
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
 	String name(){
 		return "DiChungControler:: ";
 	}

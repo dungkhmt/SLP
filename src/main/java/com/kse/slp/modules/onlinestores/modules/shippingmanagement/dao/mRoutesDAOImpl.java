@@ -206,5 +206,41 @@ public class mRoutesDAOImpl extends BaseDao implements mRoutesDAO {
 			close();
 		}
 	}
+	@Override
+	public void updateARoutes(mRoutes r) {
+		try {
+	           begin();
+	           getSession().update(r);
+	           commit();
+	        } catch (HibernateException e) {
+	            e.printStackTrace();
+	            rollback();
+	            close();
+	        } finally {
+	            flush();
+	            close();
+	        }
+		
+	}
+	@Override
+	public mRoutes getRoute(String routeCode) {
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(mRoutes.class);
+			criteria.add(Restrictions.eq("Route_Code", routeCode));
+			List<mRoutes> r= criteria.list();
+			commit();
+			System.out.println(name()+r);
+			return r.get(0);
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
 		
 }

@@ -14,4 +14,6 @@ public interface mRoutesService {
 	public void removeRoutesByRouteCode(String route_Code);
 	public mRoutes loadRoutesUnderCreationByShipperCode(String shipperCode);
 	public List<mRoutes> getListByBatchCode(String batchCode);
+	public mRoutes getRoutes(String routeCode);
+	public void updateARoutes(mRoutes r);
 }
