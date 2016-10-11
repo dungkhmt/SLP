@@ -46,7 +46,7 @@ public class mAjaxShippingController {
 		JSONObject json;
 		try {
 			json = (JSONObject) parser.parse(jsonRouteCode);
-			String s= (String) json.get("routeCode");
+			String s= (String) json.get("route_Code");
 			List<mRouteDetail> l= mRouteDetailService.loadRouteDetailbyRouteCode(s);
 			System.out.println(name()+" "+l.size());
 			

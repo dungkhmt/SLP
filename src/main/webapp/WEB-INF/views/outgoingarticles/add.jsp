@@ -69,12 +69,12 @@
 						</div>
 						
 					</div>
-					<div class="form-group selectMap">
+					<div class=" selectMap">
 						<label class="selectMapLabel Ilabel"></label>
 						<input id="pac-input" class="controls" type="text" placeholder="Search Box">
-						
-    					<div id="map" style="width:100%;height:80%"></div>
+						<div id="map" style="width:100%;height:80%"></div>
     				</div>
+    				
 					<div class="form-group">
 						<label class="control-label col-lg-2">Ngày giao hàng</label>
 						<div class="col-lg-2">

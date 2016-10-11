@@ -47,7 +47,7 @@ import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.containerdelivery.validation.mOrderPickupDeliveryFormAdd;
-import com.kse.slp.modules.dichung.model.mFormAddFileExcel;
+import com.kse.slp.modules.dichung.model.FormAddFileExcel;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
@@ -57,8 +57,10 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrd
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteMinimizeforVRDC;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
 import com.kse.slp.modules.usermanagement.model.User;
@@ -73,6 +75,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	mPickupDeliveryOrdersService pickupDeliveryOrders;
 	@Autowired
 	mRouteDetailContainerService routeDetailContainerService;
+	@Autowired
+	mRoutesService routeService;
 	@Autowired
 	mShippersService shipperService;
 	@Autowired
@@ -103,6 +107,8 @@ public class mPickupDeliveryController extends BaseWeb{
 	@RequestMapping(value = "/add-a-pickupdelivery-order", method = RequestMethod.GET)
 	public String addAPickupDeliveryOrder(ModelMap model, HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
+		List<RequestBatch> listBatch= requestBatchService.getList();
+		model.put("listBatch", listBatch);
 		model.put("orderPickupDeliveryFormAdd", new mOrderPickupDeliveryFormAdd());
 		log.info(u.getUsername());
 		return "containerdelivery.addapickupdeliveryorder";
@@ -113,12 +119,12 @@ public class mPickupDeliveryController extends BaseWeb{
 		log.info(u.getUsername());
 		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
-		model.put("formAdd", new mFormAddFileExcel());
+		model.put("formAdd", new FormAddFileExcel());
 		
 		return "containerdelivery.addpickupdeliveryordersbyxls";
 	}
 	@RequestMapping(value="/upload-file-pickupdelivery-orders", method=RequestMethod.POST)
-	public String uploadFile(@ModelAttribute("formAdd") mFormAddFileExcel request){
+	public String uploadFile(@ModelAttribute("formAdd") FormAddFileExcel request){
 		MultipartFile file = request.getOrdersFile();
 		System.out.println(name()+"::uploadFile--"+file.getOriginalFilename() + " uploaded");
 		String batchCode= request.getBatchCode();
@@ -182,8 +188,9 @@ public class mPickupDeliveryController extends BaseWeb{
 			String oPD_EarlyDeliveryDateTime=orderForm.getOrderDelieveryDateTimeEarly();
 			String oPD_LateDeliveryDateTime=orderForm.getOrderDelieveryDateTimeLate();
 			int oPD_Volumn=orderForm.getOrderVolumn();
+			String oPD_BatchCode=orderForm.getOrderBatchCode();
 			String oPD_RequestDateTime = GenerationDateTimeFormat.genDateTimeFormatStandardCurrently();
-			pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, oPD_RequestDateTime, oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn,null);
+			pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, oPD_RequestDateTime, oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn,oPD_BatchCode);
 			log.info(u.getUsername()+" DONE");
 			return "redirect:list-pickupdelivery-order";
 		}
@@ -216,7 +223,22 @@ public class mPickupDeliveryController extends BaseWeb{
 		}
 		
 		model.put("listRMJson",gson.toJson(listRouteM) );
+		List<RequestBatch> listBatch= requestBatchService.getList();
+		model.put("listBatch", listBatch);
 		return "containerdelivery.viewallroutecontainer";
+	}
+	@ResponseBody @RequestMapping(value="/load-route-in-batch", method=RequestMethod.POST)
+	public List<mRouteDetailContainer> loadContainerRoutesInBatch(HttpSession session,@RequestBody String batchCode){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		System.out.println(batchCode);
+		List<mRouteDetailContainer> res= new ArrayList<mRouteDetailContainer>();
+		List<mRoutes> lr=routeService.getListByBatchCode(batchCode);
+		for(int i=0;i< lr.size();i++){
+			res.addAll(routeDetailContainerService.loadRouteContainerDetailByRouteCode(lr.get(i).getRoute_Code()));
+		}
+		return res;
+		//here
 	}
 	@RequestMapping(value="/create-route-auto", method=RequestMethod.GET)
 	public String createRouteAuto(ModelMap model,HttpSession session){
@@ -250,7 +272,8 @@ public class mPickupDeliveryController extends BaseWeb{
 		System.out.println(name()+json);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
-		HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/pickup-delivery-containers-plan");
+		//HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/pickup-delivery-containers-plan");
+		HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/pickup-delivery-containers-plan");
 		StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 	    request.addHeader("content-type", "application/json");
 	    request.setEntity(params);
@@ -272,7 +295,7 @@ public class mPickupDeliveryController extends BaseWeb{
 	   
 		return true;
 	}
-	
+	// 10/9/2016
 	public String name(){
 		return "mPickupDeliveryController::";
 	}
