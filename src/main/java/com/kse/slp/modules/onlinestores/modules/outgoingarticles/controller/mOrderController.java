@@ -336,10 +336,10 @@ public class mOrderController extends BaseWeb{
 	
 	@RequestMapping(value="/callServiceCreateRoute", method=RequestMethod.POST)
 	public String callServiceCreateRoute(@RequestBody String batch){
-		System.out.println(name()+"callServiceCreateRoute--callbatch" +batch);
+		System.out.println(name()+"callServiceCreateRoute--callbatch " +batch);
 		URL url;
 		try {
-			url = new URL("http://103.18.4.32:8080/ezRoutingAPI/delivery-goods-plan");
+			url = new URL("http://localhost:8080/ezRoutingAPI/delivery-goods-plan");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
