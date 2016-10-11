@@ -44,6 +44,8 @@
 								<th>Shipper</th>
 							</tr>
 						</thead>
+						<tbody>
+						</tbody>
 					</table>
 				</div>
 			</div>
@@ -104,6 +106,8 @@ function displayInfo(response){
 		map: map
 	});
 	var lstinfowindow = [];
+	var rows = "";
+	var colorOfRow = ["#F0F0F0","#FFFFFF"];
 	for(var i=0;i<response.length; i++){
 		//console.log(JSON.stringify(response[i]));		
 		var route;
@@ -126,7 +130,7 @@ function displayInfo(response){
 			    strokeWeight: 3,
 			    icons: [{icon: lineSymbol,
 		            offset: '100%',
-		            repeat:'100px'}]
+		            repeat:'200px'}]
 			});	
 		}
 		 
@@ -163,17 +167,31 @@ function displayInfo(response){
 			    this.infowindow.open(map, this);
 			});
 			route.getPath().push(point);
-			table.row.add([
+			var rowNode = table.row.add([
 				response[i].routeElement[j].clientCode,
 				response[i].routeElement[j].clientAddress,
 				"",
 				response[i].routeElement[j].expectedTime,
-				response[i].routeElement[j].routeSequence,
+				response[i].routeElement[j].routeSequence-1,
 				response[i].shipperCode
-			]).draw( false );
+			]).draw().node();
+			var rowColor = colorOfRow[i%2];
+			$(rowNode).css('background-color',rowColor);
+			/*
+			//table.row.add([
+			rows += "<tr style='background-color:"+colorOfRow[i%2]+"'>";
+			rows += "<td>" + response[i].routeElement[j].clientCode +"</td>"
+			rows += "<td>" + response[i].routeElement[j].clientAddress + "</td>";
+			rows += "<td></td>"; 
+			rows += "<td>"+response[i].routeElement[j].expectedTime+"</td>";
+			rows += "<td>"+response[i].routeElement[j].routeSequence+"</td>";
+			rows += "<td>"+response[i].shipperCode+"</td>";
+			rows += "</tr>";
+			//]).draw( false );*/
 		}
 		route.setMap(map);
 	}
+	$("table#tbl-infoOfRoutes tbody").append(rows);
 }
 
 function getRandomColor() {

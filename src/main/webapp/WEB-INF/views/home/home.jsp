@@ -36,7 +36,7 @@ body{
 <body>
 	<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
 		<div class="navbar-header">
-			<span class="navbar-brand">Hệ thống quản lý bán hàng</span>
+			<span class="navbar-brand">Hệ thống lập kế hoạch vận tải người và hàng hoá</span>
 		</div>
 		
 		<ul class="nav navbar-top-links navbar-right">
@@ -55,7 +55,7 @@ body{
 	<div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Hệ thống quản lý bán hàng</h1>
+            <h1 class="page-header">Hệ thống lập kế hoạch vận tải người và hàng hoá</h1>
         </div>
 	</div>
     <div class="row">

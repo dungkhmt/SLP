@@ -131,6 +131,7 @@ public class DiChungControler extends BaseWeb {
 				String hour = s1[0];
 				String minute = s1[1];
 				s1 = s[1].split("/");
+				
 				String dd = s1[0];
 				String month = s1[1];
 				String year = s1[2];
