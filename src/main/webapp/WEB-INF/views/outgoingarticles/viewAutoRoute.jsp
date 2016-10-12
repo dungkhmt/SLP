@@ -42,6 +42,7 @@
 								<th>Thời gian giao hàng yêu cầu</th>
 								<th>Số thứ tự</th>
 								<th>Shipper</th>
+								<th>Check</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -91,14 +92,14 @@ function initialize() {
 
 function displayInfo(response){
 	//var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	console.log("response: "+JSON.stringify(response));
+	//console.log("response: "+JSON.stringify(response));
 	var storePosition = response[0].storeLatLng;
-	console.log("storePostion: "+storePosition);
+	//console.log("storePostion: "+storePosition);
 	var indexPo = storePosition.indexOf(",");
 	var storePositionLat = storePosition.substring(0,indexPo);
-	console.log("storePositionLat: "+storePositionLat);
+	//console.log("storePositionLat: "+storePositionLat);
 	var storePositionLng = storePosition.substring(indexPo+1,storePosition.length);
-	console.log("storePositionLng: "+storePositionLng);
+	//console.log("storePositionLng: "+storePositionLng);
 	var storePos = new google.maps.LatLng(storePositionLat,storePositionLng);
 	var markerStorePostion = new google.maps.Marker({
 		position: storePos,
@@ -106,8 +107,8 @@ function displayInfo(response){
 		map: map
 	});
 	var lstinfowindow = [];
-	var rows = "";
-	var colorOfRow = ["#F0F0F0","#FFFFFF"];
+	//var rows = "";
+	var colorOfRow = ["#F9F9F9","#FFFFFF"];
 	for(var i=0;i<response.length; i++){
 		//console.log(JSON.stringify(response[i]));		
 		var route;
@@ -137,6 +138,17 @@ function displayInfo(response){
 		var labelIndex=0;
 		route.getPath().push(storePos);
 		
+		var firstRowNode = table.row.add([
+			"",
+		    "",
+		    "",
+		    "",
+		    "",
+		    "",
+		    "<input type='checkbox'>"
+		]).draw().node();
+		var rowColor = colorOfRow[i%2];
+		$(firstRowNode).css('background-color',rowColor);
 		for(var j=0; j<response[i].routeElement.length; j++){
 			var lat = response[i].routeElement[j].addLat;
 			var lng = response[i].routeElement[j].addLng;
@@ -172,10 +184,11 @@ function displayInfo(response){
 				response[i].routeElement[j].clientAddress,
 				"",
 				response[i].routeElement[j].expectedTime,
-				response[i].routeElement[j].routeSequence-1,
-				response[i].shipperCode
+				response[i].routeElement[j].routeSequence,
+				response[i].shipperCode,
+				"<input type='checkbox'>"
 			]).draw().node();
-			var rowColor = colorOfRow[i%2];
+			//var rowColor = colorOfRow[i%2];
 			$(rowNode).css('background-color',rowColor);
 			/*
 			//table.row.add([
@@ -191,7 +204,7 @@ function displayInfo(response){
 		}
 		route.setMap(map);
 	}
-	$("table#tbl-infoOfRoutes tbody").append(rows);
+	//$("table#tbl-infoOfRoutes tbody").append(rows);
 }
 
 function getRandomColor() {

@@ -233,9 +233,9 @@ public class mOrderController extends BaseWeb{
 					switch(row.getCell(4).getCellType()){
 						case XSSFCell.CELL_TYPE_NUMERIC: 
 							if (DateUtil.isCellDateFormatted(row.getCell(4))) {
-								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								timeEearly += dateFormat.format(row.getCell(4).getDateCellValue());
-			                    //System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEearly);
+			                    System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEearly);
 			                } else {
 			                    //System.out.println(cell.getNumericCellValue());
 			                	timeEearly += String.valueOf(row.getCell(4).getNumericCellValue());
@@ -259,9 +259,9 @@ public class mOrderController extends BaseWeb{
 					switch(row.getCell(5).getCellType()){
 						case XSSFCell.CELL_TYPE_NUMERIC: 
 							if (DateUtil.isCellDateFormatted(row.getCell(5))) {
-								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								timeDueTo += dateFormat.format(row.getCell(5).getDateCellValue());
-			                    //System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
+			                    System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
 			                } else {
 			                    //System.out.println(cell.getNumericCellValue());
 			                	timeDueTo += String.valueOf(row.getCell(5).getNumericCellValue());
@@ -380,8 +380,8 @@ public class mOrderController extends BaseWeb{
 			DeliveryGoodInput data = new DeliveryGoodInput(deliveryRequest, store, shippers);
 			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 			String datajson = ow.writeValueAsString(data);
-			//System.out.println(name()+"callServiceCreateRoute---data send:");
-			//System.out.println(datajson);
+			System.out.println(name()+"callServiceCreateRoute---data send:");
+			System.out.println(datajson);
 			OutputStream os = conn.getOutputStream();
 			os.write(datajson.getBytes());
 			os.flush();
@@ -445,7 +445,7 @@ public class mOrderController extends BaseWeb{
 	
 	@RequestMapping("/viewAssignedBatchRoute")
 	public @ResponseBody List<mAutoRouteResponseInfo> viewBatchRoute(@RequestBody String batch){
-		System.out.println(name()+"viewBatchRoute--batch"+batch);
+		//System.out.println(name()+"viewBatchRoute--batch"+batch);
 		List<mRoutes> lstRoute = mRoutesService.getListByBatchCode(batch);
 		List<mAutoRouteResponseInfo> response = new ArrayList<mAutoRouteResponseInfo>();
 		for(int i=0; i<lstRoute.size(); i++){
@@ -455,7 +455,7 @@ public class mOrderController extends BaseWeb{
 			String storeLatLng = lstStr.get(0).getSTR_LatLng();
 			List<infoAutoRouteElement> routeElement = InfoAutoRouteElementService.getList(routeCode);
 			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(storeLatLng,shipperCode, routeElement);
-			System.out.println(name()+"viewBatchRoute--response:"+tmp.toString());
+			//System.out.println(name()+"viewBatchRoute--response:"+tmp.toString());
 			response.add(tmp);
 		}
 		//mAutoRouteJSONResponse data = new mAutoRouteJSONResponse(response);
