@@ -18,6 +18,7 @@
 			</div>
 		</div>
 		<button type="submit" class="btn btn-primary" id="create">Lập tuyến</button> <span id ="icon"></span>
+ 	</div>
  </div>
  
  <script>
