@@ -7,15 +7,23 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="tblroutedetailcontainer")
-public class mRouteDetailContainer {
+public class RouteDetailContainer {
 	@Id
 	@GeneratedValue
 	int RTDC_Id;
 	String RTDC_RouteCode;
 	String RTDC_OrderCode;
 	String RTDC_Type;
+	String RTDC_ArrivalDateTime;
 	int RTDC_Sequence;
 	int RTDC_Quantity;
+	
+	public String getRTDC_ArrivalDateTime() {
+		return RTDC_ArrivalDateTime;
+	}
+	public void setRTDC_ArrivalDateTime(String rTDC_ArrivalDateTime) {
+		RTDC_ArrivalDateTime = rTDC_ArrivalDateTime;
+	}
 	public int getRTDC_Id() {
 		return RTDC_Id;
 	}
@@ -55,12 +63,14 @@ public class mRouteDetailContainer {
 	}
 	@Override
 	public String toString() {
-		return "mRouteDetailContainer [RTDC_Id=" + RTDC_Id
-				+ ", RTDC_RouteCode=" + RTDC_RouteCode + ", RTDC_OrderCode="
-				+ RTDC_OrderCode + ", RTDC_Type=" + RTDC_Type
-				+ ", RTDC_Sequence=" + RTDC_Sequence + ", RTDC_Quantity="
-				+ RTDC_Quantity + "]";
+		return "RouteDetailContainer [RTDC_Id=" + RTDC_Id + ", RTDC_RouteCode="
+				+ RTDC_RouteCode + ", RTDC_OrderCode=" + RTDC_OrderCode
+				+ ", RTDC_Type=" + RTDC_Type + ", RTDC_ArrivalDateTime="
+				+ RTDC_ArrivalDateTime + ", RTDC_Sequence=" + RTDC_Sequence
+				+ ", RTDC_Quantity=" + RTDC_Quantity + "]";
 	}
+	
+
 	
 	
 

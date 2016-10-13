@@ -328,7 +328,7 @@ function assignShipper(){
 	console.log(res);
 	$.ajax({ 
 	    type:"POST", 
-	    url:"${baseUrl}/dichung/update-route-assignshipper",
+	    url:"${baseUrl}/ship/update-route-assignshipper",
 	    data: JSON.stringify(res),
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",

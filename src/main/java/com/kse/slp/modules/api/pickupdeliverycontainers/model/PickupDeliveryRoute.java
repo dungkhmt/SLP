@@ -1,4 +1,7 @@
 package com.kse.slp.modules.api.pickupdeliverycontainers.model;
+
+import java.util.Arrays;
+
 public class PickupDeliveryRoute {
 	private PickupDeliveryRouteElement[] routeElements;
 
@@ -18,6 +21,12 @@ public class PickupDeliveryRoute {
 
 	public void setRouteElements(PickupDeliveryRouteElement[] routeElements) {
 		this.routeElements = routeElements;
+	}
+
+	@Override
+	public String toString() {
+		return "PickupDeliveryRoute [routeElements="
+				+ Arrays.toString(routeElements) + "]";
 	}
 	
 }

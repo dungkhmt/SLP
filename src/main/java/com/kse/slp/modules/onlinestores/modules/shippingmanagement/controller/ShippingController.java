@@ -38,7 +38,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONRe
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONResponseToCreateRoute;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
@@ -182,9 +182,9 @@ public class ShippingController extends BaseWeb{
 				
 				
 				if((Long)orderRoute.get("isPickup")==1)
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", null,j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
 				else
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, Integer.parseInt(String.valueOf(orderRoute.get("quantity"))));
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY",null, j, Integer.parseInt(String.valueOf(orderRoute.get("quantity"))));
 				int q= routeDetailContainerService.loadQuantityOfOrderInRouteByOrderCode((String)orderRoute.get("orderCode"));
 				if(q>= opd.getOPD_Volumn()) mPickupDeliveryService.updateStatus( (String)orderRoute.get("orderCode"), Constants.ORDER_STATUS_IN_ROUTE);
 			}
@@ -218,9 +218,9 @@ public class ShippingController extends BaseWeb{
 				for(int j=0;j<listOrder.size();j++){
 					JSONObject orderRoute=(JSONObject) listOrder.get(j);
 					if((Long)orderRoute.get("isPickup")==1)
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", j, Integer.parseInt( String.valueOf( orderRoute.get("quantity"))));
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP",null, j, Integer.parseInt( String.valueOf( orderRoute.get("quantity"))));
 					else
-						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY", j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
+						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY",null, j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
 				}
 			}
 			log.info(user.getUsername()+" DONE");
@@ -294,10 +294,10 @@ public class ShippingController extends BaseWeb{
 				routeOldDateTimeStart.add(null);
 				continue;
 			}
-			List<mRouteDetailContainer> listRouteDetail= routeDetailContainerService.loadRouteContainerDetailByRouteCode(routeShipper.getRoute_Code());
+			List<RouteDetailContainer> listRouteDetail= routeDetailContainerService.loadRouteContainerDetailByRouteCode(routeShipper.getRoute_Code());
 			routeOldDateTimeStart.add(routeShipper.getRoute_Start_DateTime());
 			for(int j=0;j<listRouteDetail.size();j++){
-				mRouteDetailContainer oDC=listRouteDetail.get(j);
+				RouteDetailContainer oDC=listRouteDetail.get(j);
 				JSONObject order= new JSONObject();
 				order.put("orderCode", oDC.getRTDC_OrderCode());
 				if(oDC.getRTDC_Type().equals("PICKUP"))
@@ -392,6 +392,33 @@ public class ShippingController extends BaseWeb{
 		response.setResult(1);
 		return response;
 	}
-
+	@ResponseBody @RequestMapping(value="/update-route-assignshipper", method=RequestMethod.POST)
+	public boolean updateRouteAssignShipper(HttpSession session,@RequestBody String json){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		JSONParser parser = new JSONParser();
+		JSONObject req;
+		try {
+			req = (JSONObject) parser.parse(json);
+			String shipperCode=(String) req.get("shipper");
+			System.out.print(name()+shipperCode);
+			JSONArray listRoute=(JSONArray) req.get("listRoute");
+			for(int i=0;i<listRoute.size();i++){
+				String routeCode=(String) listRoute.get(i);
+				System.out.println(name()+routeCode);
+				mRoutes r=mRoutesService.getRoutes(routeCode);
+			
+				r.setRoute_Shipper_Code(shipperCode);
+				mRoutesService.updateARoutes(r);
+			}
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
 	
 }

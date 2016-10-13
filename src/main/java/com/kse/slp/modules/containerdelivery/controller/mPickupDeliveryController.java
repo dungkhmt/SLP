@@ -40,23 +40,28 @@ import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliveryInput;
 import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliveryRequest;
+import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliveryRoute;
+import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliveryRouteElement;
 import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliverySolution;
 import com.kse.slp.modules.api.pickupdeliverycontainers.model.Truck;
 import com.kse.slp.modules.containerdelivery.model.RequestBatch;
+import com.kse.slp.modules.containerdelivery.model.RouteContainerDeliveryJson;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
 import com.kse.slp.modules.containerdelivery.validation.mOrderPickupDeliveryFormAdd;
 import com.kse.slp.modules.dichung.model.FormAddFileExcel;
+import com.kse.slp.modules.dichung.model.RouteDiChungJson;
+import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteMinimizeforVRDC;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteContainerDetailExtension;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
+
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
@@ -201,44 +206,37 @@ public class mPickupDeliveryController extends BaseWeb{
 	public String viewAllRoute(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername()+" DONE");
-		List<mRouteContainerDetailExtension> listR=routeDetailContainerService.loadRouteContainerDetailExtension(); 
-		model.put("listR",listR );
-		Gson gson= new Gson();
-		String listRJson = gson.toJson(listR);
-		System.out.println(name()+ listRJson);
-		model.put("listRJson", listRJson);
-		List<mShippers> listShipper= shipperService.getList();
-		String listShJson = gson.toJson(listShipper);
-		model.put("listShJson", listShJson);
-		List<mRouteMinimizeforVRDC> listRouteM= new ArrayList<mRouteMinimizeforVRDC>();
-		for(int i=0;i<listR.size();){
-			int nST= listR.get(i).getSequence()+1;
-			mRouteMinimizeforVRDC mr= new mRouteMinimizeforVRDC();
-			mr.setTimeStartRoute(listR.get(i).getTimeStartRoute());
-			mr.setShipperCode(listR.get(i).getDriver());
-			mr.setStartId(i);
-			mr.setnStep(nST);
-			listRouteM.add(mr);
-			i+=nST;
-		}
+		//List<mRouteContainerDetailExtension> listR=routeDetailContainerService.loadRouteContainerDetailExtension(); 
+		//model.put("listR",listR );
 		
-		model.put("listRMJson",gson.toJson(listRouteM) );
+		//String listRJson = gson.toJson(listR);
+		//System.out.println(name()+ listRJson);
+		//model.put("listRJson", listRJson);
+		List<mShippers> listShipper= shipperService.getList();
+		
+		model.put("listShipper", listShipper);
+		
+		
 		List<RequestBatch> listBatch= requestBatchService.getList();
 		model.put("listBatch", listBatch);
 		return "containerdelivery.viewallroutecontainer";
 	}
 	@ResponseBody @RequestMapping(value="/load-route-in-batch", method=RequestMethod.POST)
-	public List<mRouteDetailContainer> loadContainerRoutesInBatch(HttpSession session,@RequestBody String batchCode){
+	public List<RouteContainerDeliveryJson> loadContainerRoutesInBatch(HttpSession session,@RequestBody String batchCode){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		System.out.println(batchCode);
-		List<mRouteDetailContainer> res= new ArrayList<mRouteDetailContainer>();
+		
 		List<mRoutes> lr=routeService.getListByBatchCode(batchCode);
+		List<RouteContainerDeliveryJson> res= new ArrayList<>();
 		for(int i=0;i< lr.size();i++){
-			res.addAll(routeDetailContainerService.loadRouteContainerDetailByRouteCode(lr.get(i).getRoute_Code()));
+			List<RouteContainerDetailExtension> lRDC= routeDetailContainerService.loadRouteContainerDetailExtension(lr.get(i).getRoute_Code());
+			mRoutes mr= lr.get(i);
+			RouteContainerDeliveryJson r= new RouteContainerDeliveryJson(mr.getRoute_Code(), mr.getRoute_Shipper_Code(), mr.getRoute_Start_DateTime(), mr.getRoute_BatchCode(), lRDC);
+			res.add(r);
 		}
 		return res;
-		//here
+		
 	}
 	@RequestMapping(value="/create-route-auto", method=RequestMethod.GET)
 	public String createRouteAuto(ModelMap model,HttpSession session){
@@ -285,6 +283,21 @@ public class mPickupDeliveryController extends BaseWeb{
 			String responseString = EntityUtils.toString(res, "UTF-8");
 			System.out.println(name() + "::getRouteAuto, responseString = " + responseString);
 			PickupDeliverySolution sol= gson.fromJson(responseString,PickupDeliverySolution.class);
+			System.out.println(name()+sol);
+			List<mRoutes> lr=routeService.getListByBatchCode(batchCode);
+			for(int i=0;i<lr.size();i++){
+				routeDetailContainerService.deleteRoutesbyRouteCode(lr.get(i).getRoute_Code());
+				routeService.removeRoutesByRouteCode(lr.get(i).getRoute_Code());
+			}
+			PickupDeliveryRoute[] lPDR=sol.getRoutes();
+			for(int i=0;i<lPDR.length;i++){
+				PickupDeliveryRouteElement lPDRE[]= lPDR[i].getRouteElements();
+				String routeCode="conatainerdelivery"+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+				routeService.saveARoute(routeCode, "containerdelivery", "-", Constants.ROUTE_STATUS_CONFIRMED, batchCode);
+				for(int j=0;j<lPDRE.length;j++){
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, lPDRE[j].getRequestCode(), lPDRE[j].getAction(),lPDRE[j].getArrivalDateTime(), j, lPDRE[j].getQuantity());
+				}
+			}
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

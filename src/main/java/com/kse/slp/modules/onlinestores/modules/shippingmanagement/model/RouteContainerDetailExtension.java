@@ -1,13 +1,14 @@
 package com.kse.slp.modules.onlinestores.modules.shippingmanagement.model;
 
-public class mRouteContainerDetailExtension {
+public class RouteContainerDetailExtension {
 	private String clientCode;
 	private String clientName;
 	private String pickupAdress;
 	private String arriveTimePickup;
 	private String expectedTimePickup;
 	private String deliveryAdress;
-	private String arriveTimeDeleivery;
+	private String arriveTimeDelivery;
+	
 	private String expectedTimeDelivery;
 	private double pickupLat;
 	private double pickupLng;
@@ -15,10 +16,15 @@ public class mRouteContainerDetailExtension {
 	private double deliveryLng;
 	private int volumn;
 	private int sequence;
-	private String driver;
+
 	private String type;
-	private String timeStartRoute;
-	
+
+	public String getArriveTimeDelivery() {
+		return arriveTimeDelivery;
+	}
+	public void setArriveTimeDelivery(String arriveTimeDelivery) {
+		this.arriveTimeDelivery = arriveTimeDelivery;
+	}
 	public double getPickupLat() {
 		return pickupLat;
 	}
@@ -49,12 +55,7 @@ public class mRouteContainerDetailExtension {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getTimeStartRoute() {
-		return timeStartRoute;
-	}
-	public void setTimeStartRoute(String timeStartRoute) {
-		this.timeStartRoute = timeStartRoute;
-	}
+
 	public String getClientCode() {
 		return clientCode;
 	}
@@ -91,12 +92,7 @@ public class mRouteContainerDetailExtension {
 	public void setDeliveryAdress(String deliveryAdress) {
 		this.deliveryAdress = deliveryAdress;
 	}
-	public String getArriveTimeDeleivery() {
-		return arriveTimeDeleivery;
-	}
-	public void setArriveTimeDeleivery(String arriveTimeDeleivery) {
-		this.arriveTimeDeleivery = arriveTimeDeleivery;
-	}
+	
 	public String getExpectedTimeDelivery() {
 		return expectedTimeDelivery;
 	}
@@ -116,24 +112,23 @@ public class mRouteContainerDetailExtension {
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
-	public String getDriver() {
-		return driver;
-	}
-	public void setDriver(String driver) {
-		this.driver = driver;
-	}
 	@Override
 	public String toString() {
-		return "mRouteContainerDetailExtension [clientCode=" + clientCode
+		return "RouteContainerDetailExtension [clientCode=" + clientCode
 				+ ", clientName=" + clientName + ", pickupAdress="
 				+ pickupAdress + ", arriveTimePickup=" + arriveTimePickup
 				+ ", expectedTimePickup=" + expectedTimePickup
 				+ ", deliveryAdress=" + deliveryAdress
-				+ ", arriveTimeDeleivery=" + arriveTimeDeleivery
+				+ ", arriveTimeDelivery=" + arriveTimeDelivery
 				+ ", expectedTimeDelivery=" + expectedTimeDelivery
-				+ ", volumn=" + volumn + ", sequence=" + sequence + ", driver="
-				+ driver + ", timeStartRoute=" + timeStartRoute + "]";
+				+ ", pickupLat=" + pickupLat + ", pickupLng=" + pickupLng
+				+ ", deliveryLat=" + deliveryLat + ", deliveryLng="
+				+ deliveryLng + ", volumn=" + volumn + ", sequence=" + sequence
+				+ ", type=" + type + "]";
 	}
+	
+
+	
 	
 	
 }
