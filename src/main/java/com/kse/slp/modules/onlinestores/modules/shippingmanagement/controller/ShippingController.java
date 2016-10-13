@@ -38,7 +38,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONRe
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONResponseToCreateRoute;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
@@ -294,10 +294,10 @@ public class ShippingController extends BaseWeb{
 				routeOldDateTimeStart.add(null);
 				continue;
 			}
-			List<mRouteDetailContainer> listRouteDetail= routeDetailContainerService.loadRouteContainerDetailByRouteCode(routeShipper.getRoute_Code());
+			List<RouteDetailContainer> listRouteDetail= routeDetailContainerService.loadRouteContainerDetailByRouteCode(routeShipper.getRoute_Code());
 			routeOldDateTimeStart.add(routeShipper.getRoute_Start_DateTime());
 			for(int j=0;j<listRouteDetail.size();j++){
-				mRouteDetailContainer oDC=listRouteDetail.get(j);
+				RouteDetailContainer oDC=listRouteDetail.get(j);
 				JSONObject order= new JSONObject();
 				order.put("orderCode", oDC.getRTDC_OrderCode());
 				if(oDC.getRTDC_Type().equals("PICKUP"))

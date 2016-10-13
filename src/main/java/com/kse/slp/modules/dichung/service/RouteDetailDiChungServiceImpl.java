@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.kse.slp.modules.dichung.dao.RouteDetailDiChungDAO;
 import com.kse.slp.modules.dichung.model.RouteDetailDiChung;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
 
 @Service("RouteDetailDiChungService")
 public class RouteDetailDiChungServiceImpl implements RouteDetailDiChungService{

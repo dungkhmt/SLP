@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.dao.mRouteDetailContainerDAO;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteContainerDetailExtension;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteContainerDetailExtension;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
 
 @Service("mRouteDetailContainerService")
 public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerService {
@@ -17,7 +17,7 @@ public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerSe
 	@Override
 	public int saveARouteDetailContainer(String rTDC_RouteCode,String rTDC_OrderCode,String rTDC_Type,int rTDC_Sequence,int rTDC_Quantity) {
 		// TODO Auto-generated method stub
-		mRouteDetailContainer route= new mRouteDetailContainer();
+		RouteDetailContainer route= new RouteDetailContainer();
 		route.setRTDC_OrderCode(rTDC_OrderCode);
 		route.setRTDC_RouteCode(rTDC_RouteCode);
 		route.setRTDC_Sequence(rTDC_Sequence);
@@ -33,7 +33,7 @@ public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerSe
 	}
 
 	@Override
-	public List<mRouteDetailContainer> loadRouteContainerDetailByRouteCode(
+	public List<RouteDetailContainer> loadRouteContainerDetailByRouteCode(
 			String routeCode) {
 		// TODO Auto-generated method stub
 		return routeDetailContainerDAO.loadRouteContainerDetailByRouteCode(routeCode);
@@ -46,9 +46,9 @@ public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerSe
 	}
 
 	@Override
-	public List<mRouteContainerDetailExtension> loadRouteContainerDetailExtension() {
+	public List<RouteContainerDetailExtension> loadRouteContainerDetailExtension(String routeCode) {
 		// TODO Auto-generated method stub
-		return routeDetailContainerDAO.loadRouteContainerDetailExtension();
+		return routeDetailContainerDAO.loadRouteContainerDetailExtension(routeCode);
 	}
 	
 

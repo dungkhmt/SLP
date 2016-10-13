@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="tblroutedetailcontainer")
-public class mRouteDetailContainer {
+public class RouteDetailContainer {
 	@Id
 	@GeneratedValue
 	int RTDC_Id;

@@ -1,13 +1,13 @@
 package com.kse.slp.modules.onlinestores.modules.shippingmanagement.model;
 
-public class mRouteContainerDetailExtension {
+public class RouteContainerDetailExtension {
 	private String clientCode;
 	private String clientName;
 	private String pickupAdress;
 	private String arriveTimePickup;
 	private String expectedTimePickup;
 	private String deliveryAdress;
-	private String arriveTimeDeleivery;
+	private String arriveTimeDelivery;
 	private String expectedTimeDelivery;
 	private double pickupLat;
 	private double pickupLng;
@@ -15,9 +15,9 @@ public class mRouteContainerDetailExtension {
 	private double deliveryLng;
 	private int volumn;
 	private int sequence;
-	private String driver;
+
 	private String type;
-	private String timeStartRoute;
+
 	
 	public double getPickupLat() {
 		return pickupLat;
@@ -49,12 +49,7 @@ public class mRouteContainerDetailExtension {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getTimeStartRoute() {
-		return timeStartRoute;
-	}
-	public void setTimeStartRoute(String timeStartRoute) {
-		this.timeStartRoute = timeStartRoute;
-	}
+
 	public String getClientCode() {
 		return clientCode;
 	}
@@ -92,10 +87,10 @@ public class mRouteContainerDetailExtension {
 		this.deliveryAdress = deliveryAdress;
 	}
 	public String getArriveTimeDeleivery() {
-		return arriveTimeDeleivery;
+		return arriveTimeDelivery;
 	}
 	public void setArriveTimeDeleivery(String arriveTimeDeleivery) {
-		this.arriveTimeDeleivery = arriveTimeDeleivery;
+		this.arriveTimeDelivery = arriveTimeDeleivery;
 	}
 	public String getExpectedTimeDelivery() {
 		return expectedTimeDelivery;
@@ -116,12 +111,6 @@ public class mRouteContainerDetailExtension {
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
-	public String getDriver() {
-		return driver;
-	}
-	public void setDriver(String driver) {
-		this.driver = driver;
-	}
 	@Override
 	public String toString() {
 		return "mRouteContainerDetailExtension [clientCode=" + clientCode
@@ -129,11 +118,29 @@ public class mRouteContainerDetailExtension {
 				+ pickupAdress + ", arriveTimePickup=" + arriveTimePickup
 				+ ", expectedTimePickup=" + expectedTimePickup
 				+ ", deliveryAdress=" + deliveryAdress
-				+ ", arriveTimeDeleivery=" + arriveTimeDeleivery
+				+ ", arriveTimeDeleivery=" + arriveTimeDelivery
 				+ ", expectedTimeDelivery=" + expectedTimeDelivery
-				+ ", volumn=" + volumn + ", sequence=" + sequence + ", driver="
-				+ driver + ", timeStartRoute=" + timeStartRoute + "]";
+				+ ", pickupLat=" + pickupLat + ", pickupLng=" + pickupLng
+				+ ", deliveryLat=" + deliveryLat + ", deliveryLng="
+				+ deliveryLng + ", volumn=" + volumn + ", sequence=" + sequence
+				+ ", type=" + type + ", getPickupLat()=" + getPickupLat()
+				+ ", getPickupLng()=" + getPickupLng() + ", getDeliveryLat()="
+				+ getDeliveryLat() + ", getDeliveryLng()=" + getDeliveryLng()
+				+ ", getType()=" + getType() + ", getClientCode()="
+				+ getClientCode() + ", getClientName()=" + getClientName()
+				+ ", getPickupAdress()=" + getPickupAdress()
+				+ ", getArriveTimePickup()=" + getArriveTimePickup()
+				+ ", getExpectedTimePickup()=" + getExpectedTimePickup()
+				+ ", getDeliveryAdress()=" + getDeliveryAdress()
+				+ ", getArriveTimeDeleivery()=" + getArriveTimeDeleivery()
+				+ ", getExpectedTimeDelivery()=" + getExpectedTimeDelivery()
+				+ ", getVolumn()=" + getVolumn() + ", getSequence()="
+				+ getSequence() + ", getClass()=" + getClass()
+				+ ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
 	}
+
+	
 	
 	
 }

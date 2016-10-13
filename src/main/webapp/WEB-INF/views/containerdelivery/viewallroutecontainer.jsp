@@ -20,7 +20,7 @@
 		</div>
 		<div class="col-sm-4">
 			<div class="form-group">
-				<select class="form-control" id="select-listBatch">
+				<select class="form-control batchselect"  onchange="loadRoute()"  id="select-listBatch">
 					<option>Chọn batch</option>
 					<c:forEach items="${listBatch}" var="batch">
 						<option value="${batch.REQBAT_Code}"><c:out value="${batch.REQBAT_Code}"/></option>
@@ -54,7 +54,9 @@
 									<th>Tài xế</th>
 									<th>Check</th>
 								</tr>
-							</thead>							
+							</thead>	
+							<tbody>
+							</tbody>						
 						</table>
 					</div>
 					<!--/.dataTable_wrapper -->
@@ -72,30 +74,14 @@
 <script>
 var map;
 var directionsService;
-var listRD=JSON.parse('${listRJson}');
 var listSh=JSON.parse('${listShJson}');
-var listRM=JSON.parse('${listRMJson}');
+var data;
+var indexRowTable=[0];
 var serviceDistance;
 $(document).ready(function(){
 	var table = $('#dataTabels-pDL').DataTable({
-		data:[["noifo"]],
-		columns: [
-					{ "title": "Mã KH" },
-		            { "title": "Tên KH" },
-		            { "title": "Thời gian đón hàng dự kiến" },
-		            { "title": "Thời gian đón hàng yêu cầu" },
-		            { "title": "Địa điểm trả hàng" },
-		            { "title": "Thời gian trả hàng dự kiến" },
-		            { "title": "Thời  gian trả hàng yêu cầu"},
-		            { "title": "Số lượng"},
-		            { "title": "Số thứ tự"},
-		            { "title": "Tài xế"},
-		            { "title": "Check"}
-		        ]
+		
 	});
-	
-	
-	console.log(listRM);
 	// 10/9/2016 not view a table
 });
 function getDistanceGoogleMap(p1,p2,indexOld,index){
@@ -120,7 +106,24 @@ function getDistanceGoogleMap(p1,p2,indexOld,index){
 				  }
 			  });
 }
-
+function loadRoute(){
+	var batchCode= $(".batchselect").val();
+	
+	$.ajax({ 
+	    type:"POST", 
+	    url:"${baseUrl}/containerdelivery/load-route-in-batch",
+	    data: batchCode,
+	    contentType: "application/json; charset=utf-8",
+	    dataType: "json",
+	    success: function(response){
+	        // Success Message Handler
+	       console.log(response);
+	       data=response;
+	       loadTable(data); 
+	    }
+    });
+	
+}
 function pushArriveTime2Table(listDuration,listType,startId,startTime){
 	var dateTime= moment(startTime,"YYYY-MM-DD HH:mm:ss");
 	for(var i=0;i<listDuration.length;i++){
@@ -162,6 +165,48 @@ function makeArriveTimeRecursive(listPoint,listType,listDuration,startId,id,star
 				  }
 			  });
 }
+function loadTable(data){
+	console.log(data);
+	$("table#table-pDL tbody").html("");
+	gray="#F0F0F0";
+	white="#FFFFFF";
+	var color=["#F0F0F0","#FFFFFF"];
+	var idcolor=0;
+	str=null;
+	count=0;
+	indexRowTable[0]=count;
+	for(var i=0;i<data.length;i++){
+		//console.log("i data[i].rddc_Group" +data[i].rddc_Group); 
+		
+		idcolor=(idcolor+1) % color.length;
+		console.log("id"+idcolor);
+			//console.log("length "+ color.length+" "+idcolor % color.length);
+		
+		var list=data[i].listPoint;
+		indexRowTable[i]=count;
+		for(var j=0;j<list.length;j++){
+			str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
+			str+="<td>"+list[j].clientCode+"</td>"
+			str+="<td>"+list[j].clientName+"</td>"
+			str+="<td>"+list[j].pickupAdress+"</td>"
+			str+="<td>"+list[j].arriveTimePickup+"</td>"
+			str+="<td>"+list[j].expectedTimePickup+"</td>"
+			str+="<td>"+list[i].deliveryAdress+"</td>";
+			str+="<td>"+list[i].arriveTimeDelivery+"</td>";
+			str+="<td>"+list[i].expectedTimeDelivery+"</td>";
+			str+="<td>"+list[i].volumn+"</td>";
+			str+="<td>"+list[i].sequence+"</td>";
+			str+="<td>"+data[i].route_Shipper_Code+"</td>";
+			if(j==0)
+				str+="<td>"+"<div class='checkbox'> <label><input type='checkbox' onchange=updateCheckList("+i+") value=''></label></div>"+"</td>";
+				else str+="<td>"+"</td>";
+			str+="</tr>"
+			count++;
+		}
+	}
+	$("table#table-pDL tbody").append(str);
+
+}
 function initMap() {
 	directionsService = new google.maps.DirectionsService;
 	serviceDistance = new google.maps.DistanceMatrixService;
@@ -170,7 +215,7 @@ function initMap() {
         center: {lat: 21.03, lng: 105.8},
         zoom: 8
     });
-	console.log("start");
+	/*console.log("start");
     for(var  i=0;i< listRM.length;i++){
     	var listDuration=[];
     	var listPoint=[];
@@ -197,7 +242,7 @@ function initMap() {
     		}
     	}
     	makeArriveTimeRecursive(listPoint,listType,listDuration,listRM[i].startId,1,listRM[i].timeStartRoute);
-    }
+    }*/
   }
 </script>
 <script async defer

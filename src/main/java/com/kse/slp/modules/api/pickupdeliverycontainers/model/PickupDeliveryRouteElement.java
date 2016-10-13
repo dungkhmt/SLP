@@ -74,5 +74,13 @@ public class PickupDeliveryRouteElement {
 	public void setAction(String action) {
 		this.action = action;
 	}
+	@Override
+	public String toString() {
+		return "PickupDeliveryRouteElement [requestCode=" + requestCode
+				+ ", arrivalDateTime=" + arrivalDateTime + ", address="
+				+ address + ", latlng=" + latlng + ", action=" + action
+				+ ", quantity=" + quantity + ", timeToNext=" + timeToNext
+				+ ", distanceToNext=" + distanceToNext + "]";
+	}
 	
 }

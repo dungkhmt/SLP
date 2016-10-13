@@ -13,7 +13,7 @@ import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.dichung.controller.DiChungControler;
 import com.kse.slp.modules.dichung.model.RequestDiChung;
 import com.kse.slp.modules.onlinestores.common.Constants;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
 @Repository("RequestDiChungDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class RequestDiChungDAOImpl extends BaseDao implements RequestDiChungDAO {
