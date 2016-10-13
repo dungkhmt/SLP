@@ -1,6 +1,7 @@
 package com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation;
 
 public class mOrderFormAdd {
+	String batchCode;
 	String orderClientCode;
 	String orderClientName;
 	String orderAdress;
@@ -9,6 +10,14 @@ public class mOrderFormAdd {
 	float orderDeliveryLat;
 	float orderDeliveryLng;
 	float orderPrice;
+	public String getBatchCode() {
+		return batchCode;
+	}
+
+	public void setBatchCode(String batchCode) {
+		this.batchCode = batchCode;
+	}
+
 	public float getOrderPrice() {
 		return orderPrice;
 	}

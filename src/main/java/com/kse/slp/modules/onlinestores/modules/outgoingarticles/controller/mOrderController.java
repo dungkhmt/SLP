@@ -108,19 +108,31 @@ public class mOrderController extends BaseWeb{
 	
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
 	public String addAOrder(ModelMap model, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		String username = u.getUsername();
+		//System.out.println(name()+"upLoadFile--username: "+username);
+		StaffCustomer sc = StaffCustomerService.getCusCodeByUserName(username);
+		if(sc == null){
+			return "error.500";
+		}
+		String CustomerCode = sc.getSTFCUS_CustomerCode();
+		//System.out.println(name()+"upLoadFile--CustomerCode: "+sc.getSTFCUS_CustomerCode());
+		
+		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
+		model.put("lstreBatch", lstreBatch);
 		model.put("orderFormAdd", new mOrderFormAdd());
 		List<mArticlesCategory> list= articleService.getList();
 		//System.out.print("this is list"+list.size());
 		model.put("listArticleCategory", list);
 		for(int i=0;i<list.size();i++ )
 			System.out.print(list.get(i).toString());
-		User u=(User) session.getAttribute("currentUser");
+		//User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "outgoingarticles.addAOrder";
 		//return "trash.outgoingarticles.add";
 		
 	}
-	/*
+	
 	@RequestMapping(value = "/save-an-order", method = RequestMethod.POST)
 	public String saveAOrder(ModelMap model,HttpServletRequest request, HttpSession session,@ModelAttribute("orderFormAdd") mOrderFormAdd orderForm,BindingResult result){
 		//System.out.print("This is "+orderForm.getOrderAdress());
@@ -134,6 +146,7 @@ public class mOrderController extends BaseWeb{
 		if(result.hasErrors()){
 			log.info(u.getUsername()+" FAIL");
 		}else{
+			
 			String code=orderForm.getOrderClientCode();
 			String clientCode=orderForm.getOrderClientCode();
 			String dueDate=orderForm.getOrderDate();
@@ -143,14 +156,13 @@ public class mOrderController extends BaseWeb{
 			String timeLate=orderForm.getOrderTimeLate();
 			String address=orderForm.getOrderAdress();
 			float price=orderForm.getOrderPrice();
-			Date date= new Date();
-			Date currentDate = new Date();
-			SimpleDateFormat dateformatyyyyMMdd = new SimpleDateFormat("yyyy.MM.dd");
-			String sCurrentDate = dateformatyyyyMMdd.format(currentDate);
-			String orderDate=sCurrentDate;
-			orderService.saveAnOrder( clientCode, orderDate, dueDate,address,lat,lng,timeEarly,timeLate,price,orderArticles);
+			String batchCode = orderForm.getBatchCode();
+			
+			orderService.saveAnOrder(clientCode, dueDate, dueDate, address, lat, lng, timeEarly, timeLate, price , orderArticles,batchCode);
+			
+			//orderService.saveAnOrder( clientCode, orderDate, dueDate,address,lat,lng,timeEarly,timeLate,price,orderArticles);
 			log.info(u.getUsername()+" DONE");
-			return "redirect:list";
+			return "redirect:/onlinestore";
 		}
 		return "redirect:add-an-order";
 		
@@ -168,7 +180,7 @@ public class mOrderController extends BaseWeb{
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "outgoingarticles.list";
-	}*/
+	}
 	
 	@RequestMapping(value="/uploadFile",method=RequestMethod.GET)
 	public String upLoadFile(ModelMap model,HttpSession session){
