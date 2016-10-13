@@ -8,6 +8,7 @@ public class RouteContainerDetailExtension {
 	private String expectedTimePickup;
 	private String deliveryAdress;
 	private String arriveTimeDelivery;
+	
 	private String expectedTimeDelivery;
 	private double pickupLat;
 	private double pickupLng;
@@ -18,7 +19,12 @@ public class RouteContainerDetailExtension {
 
 	private String type;
 
-	
+	public String getArriveTimeDelivery() {
+		return arriveTimeDelivery;
+	}
+	public void setArriveTimeDelivery(String arriveTimeDelivery) {
+		this.arriveTimeDelivery = arriveTimeDelivery;
+	}
 	public double getPickupLat() {
 		return pickupLat;
 	}
@@ -86,12 +92,7 @@ public class RouteContainerDetailExtension {
 	public void setDeliveryAdress(String deliveryAdress) {
 		this.deliveryAdress = deliveryAdress;
 	}
-	public String getArriveTimeDeleivery() {
-		return arriveTimeDelivery;
-	}
-	public void setArriveTimeDeleivery(String arriveTimeDeleivery) {
-		this.arriveTimeDelivery = arriveTimeDeleivery;
-	}
+	
 	public String getExpectedTimeDelivery() {
 		return expectedTimeDelivery;
 	}
@@ -113,32 +114,19 @@ public class RouteContainerDetailExtension {
 	}
 	@Override
 	public String toString() {
-		return "mRouteContainerDetailExtension [clientCode=" + clientCode
+		return "RouteContainerDetailExtension [clientCode=" + clientCode
 				+ ", clientName=" + clientName + ", pickupAdress="
 				+ pickupAdress + ", arriveTimePickup=" + arriveTimePickup
 				+ ", expectedTimePickup=" + expectedTimePickup
 				+ ", deliveryAdress=" + deliveryAdress
-				+ ", arriveTimeDeleivery=" + arriveTimeDelivery
+				+ ", arriveTimeDelivery=" + arriveTimeDelivery
 				+ ", expectedTimeDelivery=" + expectedTimeDelivery
 				+ ", pickupLat=" + pickupLat + ", pickupLng=" + pickupLng
 				+ ", deliveryLat=" + deliveryLat + ", deliveryLng="
 				+ deliveryLng + ", volumn=" + volumn + ", sequence=" + sequence
-				+ ", type=" + type + ", getPickupLat()=" + getPickupLat()
-				+ ", getPickupLng()=" + getPickupLng() + ", getDeliveryLat()="
-				+ getDeliveryLat() + ", getDeliveryLng()=" + getDeliveryLng()
-				+ ", getType()=" + getType() + ", getClientCode()="
-				+ getClientCode() + ", getClientName()=" + getClientName()
-				+ ", getPickupAdress()=" + getPickupAdress()
-				+ ", getArriveTimePickup()=" + getArriveTimePickup()
-				+ ", getExpectedTimePickup()=" + getExpectedTimePickup()
-				+ ", getDeliveryAdress()=" + getDeliveryAdress()
-				+ ", getArriveTimeDeleivery()=" + getArriveTimeDeleivery()
-				+ ", getExpectedTimeDelivery()=" + getExpectedTimeDelivery()
-				+ ", getVolumn()=" + getVolumn() + ", getSequence()="
-				+ getSequence() + ", getClass()=" + getClass()
-				+ ", hashCode()=" + hashCode() + ", toString()="
-				+ super.toString() + "]";
+				+ ", type=" + type + "]";
 	}
+	
 
 	
 	

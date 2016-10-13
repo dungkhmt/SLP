@@ -208,13 +208,13 @@ public class mPickupDeliveryController extends BaseWeb{
 		log.info(u.getUsername()+" DONE");
 		//List<mRouteContainerDetailExtension> listR=routeDetailContainerService.loadRouteContainerDetailExtension(); 
 		//model.put("listR",listR );
-		Gson gson= new Gson();
+		
 		//String listRJson = gson.toJson(listR);
 		//System.out.println(name()+ listRJson);
 		//model.put("listRJson", listRJson);
 		List<mShippers> listShipper= shipperService.getList();
-		String listShJson = gson.toJson(listShipper);
-		model.put("listShJson", listShJson);
+		
+		model.put("listShipper", listShipper);
 		
 		
 		List<RequestBatch> listBatch= requestBatchService.getList();
@@ -295,7 +295,7 @@ public class mPickupDeliveryController extends BaseWeb{
 				String routeCode="conatainerdelivery"+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
 				routeService.saveARoute(routeCode, "containerdelivery", "-", Constants.ROUTE_STATUS_CONFIRMED, batchCode);
 				for(int j=0;j<lPDRE.length;j++){
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, lPDRE[j].getRequestCode(), lPDRE[j].getAction(), j, lPDRE[j].getQuantity());
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, lPDRE[j].getRequestCode(), lPDRE[j].getAction(),lPDRE[j].getArrivalDateTime(), j, lPDRE[j].getQuantity());
 				}
 			}
 		} catch (ClientProtocolException e) {

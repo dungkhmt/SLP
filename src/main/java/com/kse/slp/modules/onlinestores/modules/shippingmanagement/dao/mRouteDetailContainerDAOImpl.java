@@ -122,7 +122,7 @@ public class mRouteDetailContainerDAOImpl extends BaseDao implements mRouteDetai
 			List<RouteContainerDetailExtension> list = new ArrayList<RouteContainerDetailExtension>();
 			String sql = "SELECT mc.C_Code,  mc.C_Name, mo.OPD_PickupAddress ,mo.OPD_EarlyPickupDateTime ,"
 					+ "mo.OPD_DeliveryAddress, mo.OPD_EarlyDeliveryDateTime, mo.OPD_PickupLat , mo.OPD_PickupLng , mo.OPD_DeliveryLat , mo.OPD_DeliveryLng ,"
-					+ "mrdc.RTDC_Quantity, mrdc.RTDC_Sequence, mrdc.RTDC_Type "
+					+ "mrdc.RTDC_Quantity, mrdc.RTDC_Sequence, mrdc.RTDC_Type, mrdc.RTDC_ArrivalDateTime "
 					+ " FROM RouteDetailContainer mrdc, mRoutes mr, mPickupDeliveryOrders mo, mClients mc  "
 					+ " WHERE mr.Route_Code= '"+routeCode  +"' and mrdc.RTDC_RouteCode = mr.Route_Code and mr.Route_Status_Code = '"+Constants.ROUTE_STATUS_CONFIRMED+"' and mrdc.RTDC_OrderCode = mo.OPD_Code and mo.OPD_ClientCode = mc.C_Code" //and mo.OPD_ClientCode = mc.C_PhoneNumber 
 					+ "	ORDER BY mrdc.RTDC_RouteCode ASC , mrdc.RTDC_Sequence ASC";
@@ -143,18 +143,18 @@ public class mRouteDetailContainerDAOImpl extends BaseDao implements mRouteDetai
 				tmp.setDeliveryLng((double)sql_result.get(i)[9]);
 				tmp.setVolumn((int)sql_result.get(i)[10]);
 				tmp.setSequence((int)sql_result.get(i)[11]);
-				
+				tmp.setArriveTimePickup("-");
+				tmp.setArriveTimeDelivery("-");
 				tmp.setType((String)sql_result.get(i)[12]);
 				if(tmp.getType().equals("PICKUP")){
+					tmp.setArriveTimePickup((String)sql_result.get(i)[13]);
 					tmp.setDeliveryAdress("-");
 					tmp.setExpectedTimeDelivery("-");
-				} else {
+				} else if(tmp.getType().equals("DELIVERY")) {
+					tmp.setArriveTimeDelivery((String)sql_result.get(i)[13]);
 					tmp.setPickupAdress("-");
 					tmp.setExpectedTimePickup("-");
-				}
-			
-				tmp.setArriveTimePickup("-");
-				tmp.setArriveTimeDeleivery("-");
+				} 
 				
 				list.add(tmp);
 			}

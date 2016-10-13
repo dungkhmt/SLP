@@ -32,6 +32,32 @@
 	</div>
 	<div id="map" style="height:100%">
     </div>
+    <div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+				<div class="form-group">
+					<label class="control-label col-lg-1">Chọn Shipper</label>
+					<div class="col-lg-2">
+						<select id="shipperselect" name="shipperselect" class="form-control">
+							
+							<c:forEach items="${listShipper}" var="shippers">
+								<option value="${shippers.SHP_Code}"><c:out value="${shippers.SHP_Code}"/></option>
+							</c:forEach>
+						</select>	
+					</div>
+					<div class="col-lg-2">
+						<button type="button" class="form-group btn btn-primary active" title="" onclick="assignShipper()">Assign Shipper</button>
+					</div>
+					<div class="col-lg-2">
+						<button type="button"  class="form-group btn btn-primary active" title="" onclick="viewRoute()">View Routes</button>
+					</div>
+				</div>
+				
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
@@ -73,17 +99,80 @@
 
 <script>
 var map;
+var checkedList=[];
 var directionsService;
-var listSh=JSON.parse('${listShJson}');
+
 var data;
+var pathList=[];// danh sach cac poliline
+var markerList=[]; // danh sach cac marker
 var indexRowTable=[0];
+var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"]; // mang init mau
 var serviceDistance;
 $(document).ready(function(){
-	var table = $('#dataTabels-pDL').DataTable({
+	var table = $('#table-pDL').DataTable({
 		
 	});
 	// 10/9/2016 not view a table
 });
+function assignShipper(){
+	var shipper= $("#shipperselect").val();
+	
+	res={
+		"shipper":shipper	
+	};
+	
+	
+	res["listRoute"]=[];
+	
+	for(var i=0;i<checkedList.length;i++){
+		res.listRoute.push(data[checkedList[i]].route_Code);
+	}
+	console.log(res);
+	$.ajax({ 
+	    type:"POST", 
+	    url:"${baseUrl}/ship/update-route-assignshipper",
+	    data: JSON.stringify(res),
+	    contentType: "application/json; charset=utf-8",
+	    dataType: "json",
+	    success: function(response){
+	        // Success Message Handler
+	        //console.log(response);
+	      	if(response==true){
+	      		for(var i=0;i<checkedList.length;i++){
+	      			for(var j=0;j<data[checkedList[i]].listPoint.length;j++){
+	      				var cells=document.getElementById("table-pDL").rows[indexRowTable[checkedList[i]]+1+j].cells;
+	      				cells[10].innerHTML=shipper;
+	      				
+	      			}
+	      		}
+	      		
+	      	}
+	        
+	    }
+    });
+}
+function updateCheckList(i){
+	var tmp= checkedList.indexOf(i);
+	
+	if (tmp==-1) checkedList.push(i);
+	else checkedList.splice(tmp,1);
+	
+}
+function viewRoute(){
+	for(var i=0;i<pathList.length;i++)
+		pathList[i].setMap(null);
+	for(var i=0;i<markerList.length;i++ )
+		markerList[i].setMap(null);
+	for(var i=0;i<checkedList.length;i++){
+		list=data[i].listPoint;
+		for(var j=0;j<list.length;j++){
+			list[j].marker.setMap(map);
+			if(list[j].marker.path!=-1)
+				pathList[list[j].marker.path].setMap(map);
+		}
+	}
+		
+}
 function getDistanceGoogleMap(p1,p2,indexOld,index){
 	serviceDistance.getDistanceMatrix(
 			  {
@@ -120,6 +209,7 @@ function loadRoute(){
 	       console.log(response);
 	       data=response;
 	       loadTable(data); 
+	       viewMap(data);
 	    }
     });
 	
@@ -191,11 +281,11 @@ function loadTable(data){
 			str+="<td>"+list[j].pickupAdress+"</td>"
 			str+="<td>"+list[j].arriveTimePickup+"</td>"
 			str+="<td>"+list[j].expectedTimePickup+"</td>"
-			str+="<td>"+list[i].deliveryAdress+"</td>";
-			str+="<td>"+list[i].arriveTimeDelivery+"</td>";
-			str+="<td>"+list[i].expectedTimeDelivery+"</td>";
-			str+="<td>"+list[i].volumn+"</td>";
-			str+="<td>"+list[i].sequence+"</td>";
+			str+="<td>"+list[j].deliveryAdress+"</td>";
+			str+="<td>"+list[j].arriveTimeDelivery+"</td>";
+			str+="<td>"+list[j].expectedTimeDelivery+"</td>";
+			str+="<td>"+list[j].volumn+"</td>";
+			str+="<td>"+list[j].sequence+"</td>";
 			str+="<td>"+data[i].route_Shipper_Code+"</td>";
 			if(j==0)
 				str+="<td>"+"<div class='checkbox'> <label><input type='checkbox' onchange=updateCheckList("+i+") value=''></label></div>"+"</td>";
@@ -206,6 +296,70 @@ function loadTable(data){
 	}
 	$("table#table-pDL tbody").append(str);
 
+}
+function randomColor(){
+	/*	p1=Math.floor((Math.random() * 85));
+		p2=Math.floor((Math.random() * 255));
+		p3=Math.floor((Math.random() * 255));
+		return "rgb("+p1+","+p2+","+p3+ ")";*/
+		return colorInit[Math.floor((Math.random() * colorInit.length))];
+	}
+function viewMap(data){
+	console.log("viewMap");
+	var route;
+	
+	var xd=false;
+	for(var i=0;i<data.length;i++){
+		//console.log(i);
+		//console.log(JSON.stringify(response[i]));
+		var list= data[i].listPoint;
+		
+		route = new google.maps.Polyline({
+			strokeColor: randomColor(),
+		    strokeOpacity: 1.0,
+		    strokeWeight: 3,
+		});
+		var listicon=["pickupmarker.png","deliverymarker.png"];
+		pathList.push(route);
+		var icon=0;
+		for(var j=0;j<list.length;j++){
+			strcontent="";
+			if(list[j].type=="PICKUP"){
+				var lat = list[j].pickupLat;
+				var lng = list[j].pickupLng;
+				icon=0;
+				strcontent="Address: "+ list[j].pickupAdress+"<br>Pickup Date Time: " +list[j].arriveTimePickup+"<br> Expected DateTime Pickup:"+list[j].expectedTimePickup+"<br> Quantity: "+list[j].volumn;
+			} else if(list[j].type=="DELIVERY"){
+				var lat = list[j].deliveryLat;
+				var lng = list[j].deliveryLng;
+				icon=1;
+				strcontent= "Address: "+ list[j].deliveryAdress+"<br>Delivery Date Time: " +list[j].arriveTimeDelivery+"<br> Expected DateTime Delivery:"+list[j].expectedTimeDelivery+"<br> Quantity: "+list[j].volumn;
+			}
+			var point = new google.maps.LatLng(lat,lng);
+			var infowindow = new google.maps.InfoWindow({
+			    content: strcontent
+			  });
+				
+			var marker = new google.maps.Marker({
+				position:point,
+				map: map,
+				label:null,
+				icon: baseUrl+"/assets/icon/"+listicon[icon],
+				path: pathList.indexOf(route),
+				infowindow: infowindow
+			});
+			marker.addListener('click', function() {
+			    this.infowindow.open(map, this);
+			});
+			list[j].marker=marker;
+			markerList.push(marker);
+			route.getPath().push(point);
+			route.setMap(map);
+		}		
+		
+		
+	}
+	
 }
 function initMap() {
 	directionsService = new google.maps.DirectionsService;

@@ -283,34 +283,7 @@ public class DiChungControler extends BaseWeb {
 		System.out.println(name()+" ::loadRouteInBatch"+res);
 		return res;
 	}
-	@ResponseBody @RequestMapping(value="/update-route-assignshipper", method=RequestMethod.POST)
-	public boolean updateRouteAssignShipper(HttpSession session,@RequestBody String json){
-		User u=(User) session.getAttribute("currentUser");
-		log.info(u.getUsername());
-		JSONParser parser = new JSONParser();
-		JSONObject req;
-		try {
-			req = (JSONObject) parser.parse(json);
-			String shipperCode=(String) req.get("shipper");
-			System.out.print(name()+shipperCode);
-			JSONArray listRoute=(JSONArray) req.get("listRoute");
-			for(int i=0;i<listRoute.size();i++){
-				String routeCode=(String) listRoute.get(i);
-				System.out.println(name()+routeCode);
-				mRoutes r=routeService.getRoutes(routeCode);
-			
-				r.setRoute_Shipper_Code(shipperCode);
-				routeService.updateARoutes(r);
-			}
-			
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
+	
 	String name(){
 		return "DiChungControler:: ";
 	}
