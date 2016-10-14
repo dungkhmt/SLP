@@ -31,7 +31,19 @@
 	</div>
 	<div class="row">
 		<div class="panel panel-default">
-			<div class="panel-body">
+			<div class="panel-body">				
+				<div class="col-sm-2">
+					<div class = "form-group">
+						<select class="form-control">
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-primary">Assign Shipper</button>
+				</div>
+				<div class="col-sm-1">
+					<button class="btn btn-primary">View Routes</button>
+				</div>
 				<div class="dataTable_wrapper">
 					<table class="table table-striped table-bordered table-hover" id="tbl-infoOfRoutes">
 						<thead>
@@ -92,7 +104,7 @@ function initialize() {
 
 function displayInfo(response){
 	//var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	//console.log("response: "+JSON.stringify(response));
+	console.log("response: "+JSON.stringify(response));
 	var storePosition = response[0].storeLatLng;
 	//console.log("storePostion: "+storePosition);
 	var indexPo = storePosition.indexOf(",");
@@ -103,7 +115,7 @@ function displayInfo(response){
 	var storePos = new google.maps.LatLng(storePositionLat,storePositionLng);
 	var markerStorePostion = new google.maps.Marker({
 		position: storePos,
-		icon : baseUrl+"/assets/icon/store.png",
+		icon : baseUrl+"/assets/icon/store-icon.png",
 		map: map
 	});
 	var lstinfowindow = [];
@@ -154,8 +166,8 @@ function displayInfo(response){
 			var lng = response[i].routeElement[j].addLng;
 			var point = new google.maps.LatLng(lat,lng);
 			var time = response[i].routeElement[j].expectedTime;
-			var timeEarly = time.substring(0,16);
-			var timeLate = time.substring(17,time.length);
+			var timeEarly = time.substring(0,19);
+			var timeLate = time.substring(20,time.length);
 			var infowindow = new google.maps.InfoWindow({
 			    content: "STT giao hàng: "+ response[i].routeElement[j].routeSequence +"</br>"+
 			    		"Mã khách hàng: " + response[i].routeElement[j].clientCode +"</br>"+
@@ -167,7 +179,7 @@ function displayInfo(response){
 			lstinfowindow.push(infowindow);
 			var marker = new google.maps.Marker({
 				position:point,
-				icon: baseUrl+"/assets/img/marker20_20.png",
+				icon: baseUrl+"/assets/icon/marker_black16.png",
 				//label:labels[labelIndex++ % labels.length],
 				map: map,
 				infowindow: infowindow

@@ -32,13 +32,13 @@ public class InfoAutoRouteElementDAOImpl extends BaseDao implements InfoAutoRout
 				infoAutoRouteElement tmp = new infoAutoRouteElement();
 				tmp.setClientCode((String) sql_result.get(i)[0]);
 				tmp.setClientAddress((String) sql_result.get(i)[1]);
-				String expectedTime = (String)sql_result.get(i)[2] + " " +(String)sql_result.get(i)[4] + "-" 
+				String expectedTime = (String)sql_result.get(i)[2] + " " +(String)sql_result.get(i)[4] + ">" 
 							+ (String)sql_result.get(i)[3] +" "+ (String)sql_result.get(i)[5];
 				tmp.setExpectedTime(expectedTime);
 				tmp.setAddLat((float)sql_result.get(i)[6]);
 				tmp.setAddLng((float)sql_result.get(i)[7]);
 				tmp.setRouteSequence((int)sql_result.get(i)[8]);
-				System.out.println(tmp.toString());
+				//System.out.println(tmp.toString());
 				lst.add(tmp);
 			}
 			

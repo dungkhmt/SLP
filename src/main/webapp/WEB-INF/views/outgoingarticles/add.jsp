@@ -21,6 +21,20 @@
 	</div>
 	<form:form action="${baseUrl}/outgoingarticles/save-an-order.html" method="POST" commandName="orderFormAdd" role="form" class="form-horizontal">
 	<div class="row">
+		<div class="col-sm-3">
+			<div class="form-group">
+				<div>
+					<select class="form-control" name="batchCode" path="batchCode">
+						<option>Chọn batch</option>
+						<c:forEach items="${lstreBatch}" var="batch">
+							<option value="${batch.REQBAT_Code}"><c:out value="${batch.REQBAT_Code}"></c:out></option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
 		<div class="panel panel-default">
 			
 			<div class="panel-heading">
@@ -57,12 +71,12 @@
 						<label class="control-label col-sm-2">Thông tin tọa độ</label>
 						<div class="col-lg-6">
 						
-							<div class="col-lg-2 orderDeliveryLat">
+							<div class="col-lg-3 orderDeliveryLat">
 							<label class="control-label col-sm-1">Lat:</label>
 							<form:input path="orderDeliveryLat" class="form-control" id="orderDeliveryLat" name="orderDeliveryLat" ></form:input>
 							</div>
 						
-							<div class="col-lg-2 orderDeliveryLng">
+							<div class="col-lg-3 orderDeliveryLng">
 							<label class="control-label col-sm-1 orderDeliveryLng">Lng:</label>
 							<form:input path="orderDeliveryLng" class="form-control" id="orderDeliveryLng" name="orderDeliveryLng" ></form:input>
 							</div>
@@ -129,7 +143,7 @@
 		<div class="panel-body">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-	                  Thành viên
+	                  Hóa đơn
 	            </div>
 	            <div class="panel-body">
 	            	<div class="table-responsive">
@@ -149,14 +163,19 @@
 	                        </tbody>
 	            		</table>
 	            	</div>
-	            </div>
+	            	<div class="row">
+	            	<div class="col-sm-offset-7 col-sm-5">
+	            		<div class="form-group text-center">
+							<h4 >Tổng giá trị hóa đơn là: <b><span id="price" class=""></span></b></h4>
+							<form:input type="hidden" path="orderPrice"  id="orderPrice" name="orderPrice" ></form:input>
+						</div>
+	            	</div>
+	            	</div>
+	        	</div>
 			</div>
 		</div>
 		</div>
-		<div class="form-group text-center">
-			<h4 >Tổng giá trị hóa đơn là: <span id="price" class=""></span></h4>
-			<form:input type="hidden" path="orderPrice"  id="orderPrice" name="orderPrice" ></form:input>
-		</div>
+		
 		<button type="submit" class="btn btn-primary" id="addANewOrder">Lưu</button>
         <button type="reset" class="btn btn-primary cancel">Hủy</button>
 	</div>
@@ -224,7 +243,9 @@
 <!-- Javascript -->
 <script>
 	$(function() {
-        $( ".datepicker" ).datepicker();
+        $( ".datepicker" ).datepicker({
+        		format: 'yyyy-mm-dd'
+        		});
         
     });
 	$("#pac-input").keyup(function(){
@@ -232,7 +253,9 @@
 	});
 
 	$('.timepicker').timepicker({
-		showMeridian: false 
+		showMeridian: false,
+        showSeconds: true,
+		//timeFormat : 'HH:mm:ss'
 	});
 	$(".selectMap").hide();
 	$(".ok-selectMap").hide();
@@ -254,7 +277,18 @@ function pushPrice(){
 	}
 	console.log(price);
 	$("#orderPrice").val(price);
-	document.getElementById("price").innerHTML=price;
+	var sprice = ""+price;
+	var printedPrice = "";
+	var check =0;
+	for(var i=sprice.length-1;i>=0; i--){
+		printedPrice = sprice[i] + printedPrice;
+    	check++;
+    	if(check==3){
+    		printedPrice = "." + printedPrice;
+    		check = 0;
+    	}
+    }
+	document.getElementById("price").innerHTML=(printedPrice+" VNĐ");
 	
 }
 function pushPhoneModal(){
