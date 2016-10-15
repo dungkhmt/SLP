@@ -466,7 +466,7 @@ public class mOrderController extends BaseWeb{
 			List<Stores> lstStr = StoresService.getListStoreInBatch(batch);
 			String storeLatLng = lstStr.get(0).getSTR_LatLng();
 			List<infoAutoRouteElement> routeElement = InfoAutoRouteElementService.getList(routeCode);
-			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(storeLatLng,shipperCode, routeElement);
+			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(storeLatLng,shipperCode, routeCode,routeElement);
 			//System.out.println(name()+"viewBatchRoute--response:"+tmp.toString());
 			response.add(tmp);
 		}

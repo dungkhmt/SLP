@@ -7,8 +7,15 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.infoAut
 public class mAutoRouteResponseInfo {
 	private String storeLatLng;
 	private String shipperCode;
+	private String routeCode;
 	private List<infoAutoRouteElement> routeElement;
 	
+	public String getRouteCode() {
+		return routeCode;
+	}
+	public void setRouteCode(String routeCode) {
+		this.routeCode = routeCode;
+	}
 	public String getStoreLatLng() {
 		return storeLatLng;
 	}
@@ -27,10 +34,11 @@ public class mAutoRouteResponseInfo {
 	public void setRouteElement(List<infoAutoRouteElement> routeElement) {
 		this.routeElement = routeElement;
 	}
-	public mAutoRouteResponseInfo(String storeLatLng, String shipperCode,
+	public mAutoRouteResponseInfo(String storeLatLng, String shipperCode,String routeCode,
 			List<infoAutoRouteElement> routeElement) {
 		super();
 		this.storeLatLng = storeLatLng;
+		this.routeCode = routeCode;
 		this.shipperCode = shipperCode;
 		this.routeElement = routeElement;
 	}
