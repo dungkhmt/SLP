@@ -72,6 +72,7 @@
 <script src="<c:url value="/assets/libs/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js"/>"></script>
 
 <script>
+var checkedList=[];
 var table;
 //var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
 var colorInit=["#B0171F","#FF1493","#8B5F65","#000080","#006400","#a52a2a","#ff0000","#ff1493","#9400d3"];
@@ -101,7 +102,48 @@ function initialize() {
 	};
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 }
-
+function updateCheckList(i){
+	var tmp= checkedList.indexOf(i);
+	
+	if (tmp==-1) checkedList.push(i);
+	else checkedList.splice(tmp,1);
+}
+function assignShipper(){
+	var shipper= $("#shipperselect").val();
+	
+	res={
+		"shipper":shipper	
+	};
+	
+	
+	res["listRoute"]=[];
+	
+	for(var i=0;i<checkedList.length;i++){
+		res.listRoute.push(data[checkedList[i]].route_Code);
+	}
+	console.log(res);
+	$.ajax({ 
+	    type:"POST", 
+	    url:"${baseUrl}/ship/update-route-assignshipper",
+	    data: JSON.stringify(res),
+	    contentType: "application/json; charset=utf-8",
+	    dataType: "json",
+	    success: function(response){
+	        // Success Message Handler
+	        //console.log(response);
+	      	if(response==true){
+	      		for(var i=0;i<checkedList.length;i++){
+	      			for(var j=0;j<data[checkedList[i]].listPoint.length;j++){
+	      				var cells=document.getElementById("tableRoute").rows[indexRowTable[checkedList[i]]+1+j].cells;
+	      				cells[5].innerHTML=shipper;
+	      			}
+	      		}
+	      		
+	      	}
+	        
+	    }
+    });
+}
 function displayInfo(response){
 	//var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	console.log("response: "+JSON.stringify(response));
