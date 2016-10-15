@@ -34,7 +34,8 @@
 			<div class="panel-body">				
 				<div class="col-sm-2">
 					<div class = "form-group">
-						<select class="form-control">
+						<select class="form-control" id="sel-shipper">
+							<option>Chọn shipper</option>
 						</select>
 					</div>
 				</div>
@@ -165,6 +166,10 @@ function displayInfo(response){
 	var colorOfRow = ["#F9F9F9","#FFFFFF"];
 	for(var i=0;i<response.length; i++){
 		//console.log(JSON.stringify(response[i]));		
+		$('#sel-shipper').append($('<option>',{
+			value : response[i].shipperCode,
+			text : response[i].shipperCode
+		}));
 		var route;
 		if(i>=colorInit.length){
 			route = new google.maps.Polyline({
@@ -192,17 +197,8 @@ function displayInfo(response){
 		var labelIndex=0;
 		route.getPath().push(storePos);
 		
-		var firstRowNode = table.row.add([
-			"",
-		    "",
-		    "",
-		    "",
-		    "",
-		    "",
-		    "<input type='checkbox'>"
-		]).draw().node();
 		var rowColor = colorOfRow[i%2];
-		$(firstRowNode).css('background-color',rowColor);
+		//$(firstRowNode).css('background-color',rowColor);
 		for(var j=0; j<response[i].routeElement.length; j++){
 			var lat = response[i].routeElement[j].addLat;
 			var lng = response[i].routeElement[j].addLng;
@@ -233,15 +229,27 @@ function displayInfo(response){
 			    this.infowindow.open(map, this);
 			});
 			route.getPath().push(point);
-			var rowNode = table.row.add([
-				response[i].routeElement[j].clientCode,
-				response[i].routeElement[j].clientAddress,
-				"",
-				response[i].routeElement[j].expectedTime,
-				response[i].routeElement[j].routeSequence,
-				response[i].shipperCode,
-				"<input type='checkbox'>"
-			]).draw().node();
+			if(j==0){
+				var rowNode = table.row.add([
+					response[i].routeElement[j].clientCode,
+				    response[i].routeElement[j].clientAddress,
+				    "",
+				    response[i].routeElement[j].expectedTime,
+				    response[i].routeElement[j].routeSequence,
+				    response[i].shipperCode,
+				    "<input type='checkbox'>"
+				]).draw().node();
+			}else{
+				var rowNode = table.row.add([
+					response[i].routeElement[j].clientCode,
+				    response[i].routeElement[j].clientAddress,
+				    "",
+				    response[i].routeElement[j].expectedTime,
+				    response[i].routeElement[j].routeSequence,
+				    response[i].shipperCode,
+				    ""
+				]).draw().node();
+			}
 			//var rowColor = colorOfRow[i%2];
 			$(rowNode).css('background-color',rowColor);
 			/*

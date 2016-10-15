@@ -24,7 +24,7 @@
 				<!--  
 				<li><a href="<c:url value="${baseUrl}/incomingArticles/list"/>">Nhập hàng</a></li>
 				-->
-				<li><a href="<c:url value="${baseUrl}/outgoingarticles/add-an-order"/>">Nhận đơn hàng</a></li>
+				<li><a href="<c:url value="${baseUrl}/outgoingarticles/list"/>">Nhận đơn hàng đơn lẻ</a></li>
 				
 				<li><a href="<c:url value="${baseUrl}/outgoingarticles/uploadFile"/>">Nhận đơn hàng qua Excel</a></li>
 				<!-- 
