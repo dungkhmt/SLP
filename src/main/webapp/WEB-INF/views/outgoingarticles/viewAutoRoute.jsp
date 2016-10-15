@@ -73,7 +73,9 @@
 <script src="<c:url value="/assets/libs/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js"/>"></script>
 
 <script>
+var data;
 var checkedList=[];
+var indexOfRow=[];
 var table;
 //var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
 var colorInit=["#B0171F","#FF1493","#8B5F65","#000080","#006400","#a52a2a","#ff0000","#ff1493","#9400d3"];
@@ -110,7 +112,7 @@ function updateCheckList(i){
 	else checkedList.splice(tmp,1);
 }
 function assignShipper(){
-	var shipper= $("#shipperselect").val();
+	var shipper= $("#sel-shipper").val();
 	
 	res={
 		"shipper":shipper	
@@ -145,7 +147,9 @@ function assignShipper(){
 	    }
     });
 }
+
 function displayInfo(response){
+	data=response;
 	//var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	console.log("response: "+JSON.stringify(response));
 	var storePosition = response[0].storeLatLng;

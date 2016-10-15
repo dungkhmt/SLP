@@ -17,7 +17,10 @@
     	<put-attribute name="header" value="/WEB-INF/views/layout/layout3/header.jsp" />
     	<put-attribute name="footer" value="/WEB-INF/views/layout/layout3/footer.jsp" />            
     </definition> 
-    
+    <definition name="layout4" template="/WEB-INF/views/layout/layout4/base.jsp">           
+    	<put-attribute name="header" value="/WEB-INF/views/layout/layout4/header.jsp" />
+    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout4/footer.jsp" />            
+    </definition>
     <!-- Error -->
     <definition name="layout.errorBase" template="/WEB-INF/views/error/errorBase.jsp"></definition>
     <definition name="error.notFound404" extends="layout.errorBase">
@@ -147,5 +150,15 @@
     	<put-attribute name="title" value="View Route Di Chung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/viewRouteDiChung.jsp" /> 
     </definition>
+    <!-- Manager -->
+    <definition name="manager.home" extends="layout4">
+    	<put-attribute name="title" value="Chức năng quản lý danh mục" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/managerhome.jsp" />                
+    </definition> 
+    
+    <definition name="usermanager.home" extends="layout4">
+    	<put-attribute name="title" value="Chức năng quản lý người sử dụng" />
+    	<put-attribute name="content" value="/WEB-INF/views/usermanager/list.jsp" />                
+    </definition> 
     
 </tiles-definitions>
