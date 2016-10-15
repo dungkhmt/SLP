@@ -451,7 +451,9 @@ public class mOrderController extends BaseWeb{
 		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
 		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
+		List<mShippers> lstShipper = mShippersService.getList();
 		model.put("lstBatch", lstreBatch);
+		model.put("lstShipper", lstShipper);
 		return "outgoingarticles.viewAutoRoute";
 	}
 	

@@ -115,12 +115,13 @@ $(document).ready(function(){
 	// 10/9/2016 not view a table
 });
 function assignShipper(){
+	
 	var shipper= $("#shipperselect").val();
 	
 	res={
 		"shipper":shipper	
 	};
-	
+	console.log(shipper);
 	
 	res["listRoute"]=[];
 	
