@@ -171,10 +171,10 @@ public class mOrderController extends BaseWeb{
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
 	public String listOutGoingArticles(ModelMap model,HttpSession session){
-		System.out.print("listIncommingArticles");
+		//System.out.print("listIncommingArticles");
 		List<mOrders> inArtList = orderService.getList();
 		
-		System.out.print(inArtList);
+		//System.out.print(inArtList);
 	
 		model.put("outArtList", inArtList);
 		User u=(User) session.getAttribute("currentUser");

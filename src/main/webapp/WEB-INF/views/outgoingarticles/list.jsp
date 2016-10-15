@@ -23,7 +23,7 @@
 	<div class="row">
 		
 		<!-- /.form-group .col-sm-3  -->
-		<div class="col-sm-offset-9 col-sm-1">
+		<div class="col-sm-offset-11 col-sm-1">
 			<button type="button" class="btn btn-primary addOutOrder">Thêm</button>
 		</div>
 	</div>
