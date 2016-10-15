@@ -83,6 +83,16 @@ public class PickupDeliveryRequest {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+
+	@Override
+	public String toString() {
+		return "PickupDeliveryRequest [requestCode=" + requestCode
+				+ ", pickupAddress=" + pickupAddress + ", pickupLatLng="
+				+ pickupLatLng + ", pickupDateTime=" + pickupDateTime
+				+ ", deliveryAddress=" + deliveryAddress + ", deliveryLatLng="
+				+ deliveryLatLng + ", deliveryDateTime=" + deliveryDateTime
+				+ ", quantity=" + quantity + "]";
+	}
 	
 	
 }

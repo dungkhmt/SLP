@@ -182,9 +182,9 @@ public class ShippingController extends BaseWeb{
 				
 				
 				if((Long)orderRoute.get("isPickup")==1)
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP", null,j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"),(String)orderRoute.get("orderCode"), "PICKUP", null,j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
 				else
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY",null, j, Integer.parseInt(String.valueOf(orderRoute.get("quantity"))));
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"),(String)orderRoute.get("orderCode"), "DELIVERY",null, j, Integer.parseInt(String.valueOf(orderRoute.get("quantity"))));
 				int q= routeDetailContainerService.loadQuantityOfOrderInRouteByOrderCode((String)orderRoute.get("orderCode"));
 				if(q>= opd.getOPD_Volumn()) mPickupDeliveryService.updateStatus( (String)orderRoute.get("orderCode"), Constants.ORDER_STATUS_IN_ROUTE);
 			}
@@ -218,9 +218,9 @@ public class ShippingController extends BaseWeb{
 				for(int j=0;j<listOrder.size();j++){
 					JSONObject orderRoute=(JSONObject) listOrder.get(j);
 					if((Long)orderRoute.get("isPickup")==1)
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "PICKUP",null, j, Integer.parseInt( String.valueOf( orderRoute.get("quantity"))));
+						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"),(String)orderRoute.get("orderCode"), "PICKUP",null, j, Integer.parseInt( String.valueOf( orderRoute.get("quantity"))));
 					else
-						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"), "DELIVERY",null, j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
+						routeDetailContainerService.saveARouteDetailContainer(routeCode, (String)orderRoute.get("orderCode"),(String)orderRoute.get("orderCode"), "DELIVERY",null, j, Integer.parseInt( String.valueOf(orderRoute.get("quantity"))));
 				}
 			}
 			log.info(user.getUsername()+" DONE");

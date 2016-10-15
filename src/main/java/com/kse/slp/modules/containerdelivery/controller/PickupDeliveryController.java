@@ -74,8 +74,8 @@ import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
 @Controller("mPickupDeliveryController")
 @RequestMapping(value = {"/containerdelivery"})
-public class mPickupDeliveryController extends BaseWeb{
-	private static final Logger log = Logger.getLogger(mPickupDeliveryController.class);
+public class PickupDeliveryController extends BaseWeb{
+	private static final Logger log = Logger.getLogger(PickupDeliveryController.class);
 	@Autowired
 	mPickupDeliveryOrdersService pickupDeliveryOrders;
 	@Autowired
@@ -258,11 +258,23 @@ public class mPickupDeliveryController extends BaseWeb{
 			trck[i]=t;
 		}
 		List<mPickupDeliveryOrders> lPDO= pickupDeliveryOrders.getListOrderPickupDelivery(batchCode);
-		PickupDeliveryRequest pDR[]=new PickupDeliveryRequest[lPDO.size()];
+		List<PickupDeliveryRequest> pDR=new ArrayList<PickupDeliveryRequest>();
+		int t=0;
 		for(int i=0;i<lPDO.size();i++){
 			mPickupDeliveryOrders pDO=lPDO.get(i);
-			PickupDeliveryRequest p= new PickupDeliveryRequest(pDO.getOPD_Code(), pDO.getOPD_PickupAddress(), pDO.getOPD_PickupLat()+", "+pDO.getOPD_PickupLng() , pDO.getOPD_EarlyPickupDateTime(), pDO.getOPD_DeliveryAddress(), pDO.getOPD_DeliveryLat()+", "+pDO.getOPD_DeliveryLng(), pDO.getOPD_EarlyDeliveryDateTime(), pDO.getOPD_Volumn());
-			pDR[i]=p;
+			int tmp=pDO.getOPD_Volumn();
+			int maxLimit=2;
+			int count=0;
+			while (tmp >0){
+				
+				int qDown= tmp <maxLimit ? tmp:maxLimit;
+				
+				tmp-=qDown;
+				PickupDeliveryRequest p= new PickupDeliveryRequest(pDO.getOPD_Code()+"-"+count, pDO.getOPD_PickupAddress(), pDO.getOPD_PickupLat()+", "+pDO.getOPD_PickupLng() , pDO.getOPD_EarlyPickupDateTime(), pDO.getOPD_DeliveryAddress(), pDO.getOPD_DeliveryLat()+", "+pDO.getOPD_DeliveryLng(), pDO.getOPD_EarlyDeliveryDateTime(), qDown);
+				pDR.add(p);
+				t++;
+				count++;
+			}
 		}
 		PickupDeliveryInput pDI=new PickupDeliveryInput(pDR, trck);
 		Gson gson = new Gson();
@@ -295,9 +307,11 @@ public class mPickupDeliveryController extends BaseWeb{
 				String routeCode="conatainerdelivery"+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
 				routeService.saveARoute(routeCode, "containerdelivery", "-", Constants.ROUTE_STATUS_CONFIRMED, batchCode);
 				for(int j=0;j<lPDRE.length;j++){
-					routeDetailContainerService.saveARouteDetailContainer(routeCode, lPDRE[j].getRequestCode(), lPDRE[j].getAction(),lPDRE[j].getArrivalDateTime(), j, lPDRE[j].getQuantity());
+					String tmp[]=lPDRE[j].getRequestCode().split("-");
+					routeDetailContainerService.saveARouteDetailContainer(routeCode, lPDRE[j].getRequestCode(),tmp[0], lPDRE[j].getAction(),lPDRE[j].getArrivalDateTime(), j, lPDRE[j].getQuantity());
 				}
 			}
+			 //System.out.println(json);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -305,7 +319,7 @@ public class mPickupDeliveryController extends BaseWeb{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	   
+		
 		return true;
 	}
 	// 10/9/2016

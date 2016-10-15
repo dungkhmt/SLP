@@ -15,7 +15,7 @@ public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerSe
 	mRouteDetailContainerDAO routeDetailContainerDAO;
 	
 	@Override
-	public int saveARouteDetailContainer(String rTDC_RouteCode,String rTDC_OrderCode,String rTDC_Type,String rTDC_ArrivalDateTime, int rTDC_Sequence,int rTDC_Quantity) {
+	public int saveARouteDetailContainer(String rTDC_RouteCode,String rTDC_OrderCode,String rTDC_ParentOrderCode, String rTDC_Type,String rTDC_ArrivalDateTime, int rTDC_Sequence,int rTDC_Quantity) {
 		// TODO Auto-generated method stub
 		RouteDetailContainer route= new RouteDetailContainer();
 		route.setRTDC_OrderCode(rTDC_OrderCode);
@@ -24,6 +24,7 @@ public class mRouteDetailContainerServiceImpl implements mRouteDetailContainerSe
 		route.setRTDC_Type(rTDC_Type);
 		route.setRTDC_Quantity(rTDC_Quantity);
 		route.setRTDC_ArrivalDateTime(rTDC_ArrivalDateTime);
+		route.setRTDC_ParentOrderCode(rTDC_ParentOrderCode);
 		return routeDetailContainerDAO.saveARouteDetailContainer(route);
 	}
 

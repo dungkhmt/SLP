@@ -303,7 +303,7 @@ function viewRoute(){
 	for(var i=0;i<markerList.length;i++ )
 		markerList[i].setMap(null);
 	for(var i=0;i<checkedList.length;i++){
-		list=data[i].listPoint;
+		list=data[checkedList[i]].listPoint;
 		for(var j=0;j<list.length;j++){
 			list[j].marker.setMap(map);
 			if(list[j].marker.path!=-1)

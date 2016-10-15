@@ -17,7 +17,14 @@ public class RouteDetailContainer {
 	String RTDC_ArrivalDateTime;
 	int RTDC_Sequence;
 	int RTDC_Quantity;
+	String RTDC_ParentOrderCode;
 	
+	public String getRTDC_ParentOrderCode() {
+		return RTDC_ParentOrderCode;
+	}
+	public void setRTDC_ParentOrderCode(String rTDC_ParentOrderCode) {
+		RTDC_ParentOrderCode = rTDC_ParentOrderCode;
+	}
 	public String getRTDC_ArrivalDateTime() {
 		return RTDC_ArrivalDateTime;
 	}
@@ -67,11 +74,8 @@ public class RouteDetailContainer {
 				+ RTDC_RouteCode + ", RTDC_OrderCode=" + RTDC_OrderCode
 				+ ", RTDC_Type=" + RTDC_Type + ", RTDC_ArrivalDateTime="
 				+ RTDC_ArrivalDateTime + ", RTDC_Sequence=" + RTDC_Sequence
-				+ ", RTDC_Quantity=" + RTDC_Quantity + "]";
+				+ ", RTDC_Quantity=" + RTDC_Quantity
+				+ ", RTDC_ParentOrderCode=" + RTDC_ParentOrderCode + "]";
 	}
 	
-
-	
-	
-
 }

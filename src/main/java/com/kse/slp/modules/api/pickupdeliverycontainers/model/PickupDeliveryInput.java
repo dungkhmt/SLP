@@ -1,7 +1,10 @@
 package com.kse.slp.modules.api.pickupdeliverycontainers.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class PickupDeliveryInput {
-	private PickupDeliveryRequest[] requests;
+	private List<PickupDeliveryRequest> requests;
 	private Truck[] trucks;
 	
 	public PickupDeliveryInput() {
@@ -9,13 +12,28 @@ public class PickupDeliveryInput {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PickupDeliveryInput(PickupDeliveryRequest[] requests, Truck[] trucks) {
+	
+
+	
+	@Override
+	public String toString() {
+		return "PickupDeliveryInput [requests=" + requests + ", trucks="
+				+ Arrays.toString(trucks) + "]";
+	}
+
+
+
+
+	public PickupDeliveryInput(List<PickupDeliveryRequest> requests,
+			Truck[] trucks) {
 		super();
 		this.requests = requests;
 		this.trucks = trucks;
 	}
 
-	
+
+
+
 	public Truck[] getTrucks() {
 		return trucks;
 	}
@@ -24,12 +42,19 @@ public class PickupDeliveryInput {
 		this.trucks = trucks;
 	}
 
-	public PickupDeliveryRequest[] getRequests() {
+
+
+
+	public List<PickupDeliveryRequest> getRequests() {
 		return requests;
 	}
 
-	public void setRequests(PickupDeliveryRequest[] requests) {
+
+
+
+	public void setRequests(List<PickupDeliveryRequest> requests) {
 		this.requests = requests;
 	}
+
 	
 }
