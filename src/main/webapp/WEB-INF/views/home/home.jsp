@@ -69,6 +69,7 @@ body{
      		</div>
      		</a>
      	</div> 
+     
      	<div class="col-sm-6">
      		<a href="<c:url value = "/onlinestore"/>">
      		<div class="card">
@@ -81,7 +82,7 @@ body{
      	</div>   
 	</div>
 	
-    <div class="row">
+    
     	<div class="col-sm-6">
     		<a href="<c:url value = "/dichung"/>" style="">
      		<div class="card">
@@ -92,7 +93,17 @@ body{
      		</div>
      		</a>
      	</div> 
-     	   
+		<div class="col-sm-6">
+    		<a href="<c:url value = "/manager"/>" style="">
+     		<div class="card">
+     			<div class="card-block">
+     				<h4 class="card-title"><b>Quản lý danh mục</b></h4>
+     			</div>
+     			<img class="card-img" style="width:538px;" src="<c:url value="/assets/img/home/dichung.png" />">
+     		</div>
+     		</a>
+     	</div> 
+		     	   
 	</div>	
 </body>
 </html>

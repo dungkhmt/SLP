@@ -58,7 +58,9 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
+import com.kse.slp.modules.usermanagement.model.StaffCustomer;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.usermanagement.service.StaffCustomerServiceImpl;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
 
@@ -76,6 +78,8 @@ public class DiChungControler extends BaseWeb {
 	RouteDetailDiChungService routeDetailDiChungService;
 	@Autowired
 	mShippersService shipperService;
+	@Autowired
+	StaffCustomerServiceImpl staffCustomerService;
 	private static final Logger log = Logger.getLogger(DiChungControler.class);
 	@RequestMapping(value="",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
@@ -87,7 +91,9 @@ public class DiChungControler extends BaseWeb {
 	public String addDiChungRequestsXls(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		
 		model.put("listBatch", listBatch);
 		model.put("formAdd", new FormAddFileExcel());
 		return "dichung.adddichungrequestsbyxls";
@@ -158,7 +164,8 @@ public class DiChungControler extends BaseWeb {
 	public String createRouteAuto(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		return "dichung.createroute";
 	}
@@ -255,7 +262,8 @@ public class DiChungControler extends BaseWeb {
 	public String viewRoute(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		List<mShippers> lSH=shipperService.getList();
 		model.put("listShipper", lSH);

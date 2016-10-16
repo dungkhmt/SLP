@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.metamodel.StaticMetamodel;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -61,14 +62,15 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrders
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
-
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
 import com.kse.slp.modules.onlinestores.service.mArticlesCategoryService;
+import com.kse.slp.modules.usermanagement.model.StaffCustomer;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.usermanagement.service.StaffCustomerServiceImpl;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 
 
@@ -86,6 +88,8 @@ public class PickupDeliveryController extends BaseWeb{
 	mShippersService shipperService;
 	@Autowired
 	mRequestBatchService requestBatchService;
+	@Autowired
+	StaffCustomerServiceImpl staffCustomerService;
 	/*future fix
 	 * reset route ->save vào csdl (null có lưu không) -> tăng increment id rất nhanh
 	 * 
@@ -112,7 +116,8 @@ public class PickupDeliveryController extends BaseWeb{
 	@RequestMapping(value = "/add-a-pickupdelivery-order", method = RequestMethod.GET)
 	public String addAPickupDeliveryOrder(ModelMap model, HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		model.put("orderPickupDeliveryFormAdd", new mOrderPickupDeliveryFormAdd());
 		log.info(u.getUsername());
@@ -122,7 +127,8 @@ public class PickupDeliveryController extends BaseWeb{
 	public String addPickupDeliveryOrders(ModelMap model, HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		model.put("formAdd", new FormAddFileExcel());
 		
@@ -217,7 +223,9 @@ public class PickupDeliveryController extends BaseWeb{
 		model.put("listShipper", listShipper);
 		
 		
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		
 		model.put("listBatch", listBatch);
 		return "containerdelivery.viewallroutecontainer";
 	}
@@ -242,7 +250,9 @@ public class PickupDeliveryController extends BaseWeb{
 	public String createRouteAuto(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList();
+		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
+		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		
 		model.put("listBatch", listBatch);
 		return "containerdelivery.createAutoRoute";
 	}
