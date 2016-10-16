@@ -107,15 +107,15 @@ $(document).ready(function(){
 	        };
 
 	        var pageTotalPrice = api
-	        		.column(2, { page: 'current'} )
-	        		.data();
-	       	var pageTotalAmount = api
-	        		.column(1, { page: 'current'} )
-	        		.data();
-	        var pageTotal = 0;
+    			.column(2, { page: 'current'} )
+    			.data();
+   			var pageTotalAmount = api
+    			.column(1, { page: 'current'} )
+    			.data();
+    		var pageTotal = 0;
 			for(var i=0; i<pageTotalPrice.length; i++){
 				 pageTotal += pageTotalPrice[i]*pageTotalAmount[i];
-			}	       
+			}	     
 	        
 	        var SpageTotal = "";
 	        var tmp = ""+pageTotal;

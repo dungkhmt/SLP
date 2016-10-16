@@ -167,7 +167,7 @@ public class mOrderController extends BaseWeb{
 			
 			//orderService.saveAnOrder( clientCode, orderDate, dueDate,address,lat,lng,timeEarly,timeLate,price,orderArticles);
 			log.info(u.getUsername()+" DONE");
-			return "redirect:/onlinestore";
+			return "redirect:list";
 		}
 		return "redirect:add-an-order";
 		
@@ -178,10 +178,19 @@ public class mOrderController extends BaseWeb{
 	public String listOutGoingArticles(ModelMap model,HttpSession session){
 		//System.out.print("listIncommingArticles");
 		List<mOrders> inArtList = orderService.getList();
-		
+		List<String> lstBatchCode = new ArrayList<String>();
+		Map<String,String> test = new HashMap<String, String>();
+		for(int i=0; i<inArtList.size(); i++){
+			String batchCode = inArtList.get(i).getO_BatchCode();
+			if(!test.containsKey(batchCode)){
+				lstBatchCode.add(batchCode);
+				test.put(batchCode, batchCode);
+			}
+		}
 		//System.out.print(inArtList);
 	
 		model.put("outArtList", inArtList);
+		model.put("lstBatchCode",lstBatchCode);
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "outgoingarticles.list";
@@ -208,7 +217,7 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/uploadOrdersFile", method=RequestMethod.POST)
-	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest){
+	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest, ModelMap model){
 		//System.out.println("Upload file");
 		String batchCode = dataRequest.getBatchCode();
 		//System.out.println("batch Code: "+ batchCode);
@@ -377,7 +386,8 @@ public class mOrderController extends BaseWeb{
 			
 		}
 		//System.out.println("Upload file done");
-		return "redirect:/onlinestore";
+		//model.put("lstBatchCode",batchCode);
+		return "redirect:list";
 	}
 
 	@RequestMapping(value="/createAutoRoute",method = RequestMethod.GET)
