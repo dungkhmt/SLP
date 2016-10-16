@@ -78,7 +78,6 @@
 <script>
 var data;
 var checkedList=[];
-var indexRowTable=[];
 var table;
 //var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"];
 var colorInit=["#B0171F","#FF1493","#8B5F65","#000080","#006400","#a52a2a","#ff0000","#ff1493","#9400d3"];
@@ -108,26 +107,32 @@ function initialize() {
 	};
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 }
-function updateCheckList(i){
-	var tmp= checkedList.indexOf(i);
-	
-	if (tmp==-1) checkedList.push(i);
-	else checkedList.splice(tmp,1);
+function updateCheckList(i,element){
+	if(element.checked){
+		console.log("check["+i+"] checked");
+		var tmp= checkedList.indexOf(i);
+		if (tmp == -1) checkedList.push(i);	
+	}else{
+		console.log("check["+i+"] unchecked");
+		var tmp= checkedList.indexOf(i);
+		if (tmp != -1) checkedList.splice(tmp,1);
+		//else checkedList.splice(tmp,1);	
+	}
 }
 function assignShipper(){
 	var shipper= $("#sel-shipper").val();
 	
-	res={
+	var res={
 		"shipper":shipper	
 	};
 	
-	console.log(shipper);
-	res["listRoute"]=[];
+	//console.log(shipper);
+	res.listRoute=[];
 	
 	for(var i=0;i<checkedList.length;i++){
 		res.listRoute.push(data[checkedList[i]].routeCode);
 	}
-	//console.log(res);
+	console.log("data send upadate route:"+JSON.stringify(res));
 	$.ajax({ 
 	    type:"POST", 
 	    url:"${baseUrl}/ship/update-route-assignshipper",
@@ -142,12 +147,15 @@ function assignShipper(){
 	      				data[checkedList[i]].shipperCode=shipper;
 	      		}
 	      		displayInfo(data);
+	      		checkedList = [];
 	      	}
 	        
 	    }
     });
+	
 }
 function viewRoute(){
+	console.log("checked list: "+checkedList);
 	initialize();
 	var storePosition = data[0].storeLatLng;
 	//console.log("storePostion: "+storePosition);
@@ -164,94 +172,75 @@ function viewRoute(){
 	});
 	var lstinfowindow = [];
 	for(var i=0;i<checkedList.length;i++){
-			//console.log(JSON.stringify(response[i]));		
-			var route;
-			if(i>=colorInit.length){
-				route = new google.maps.Polyline({
-					strokeColor: getRandomColor(),
-				    strokeOpacity: 1.0,
-				    strokeWeight: 3,
-				});	
-			}else{
-				var color = colorInit[(i+2)%colorInit.length];
-				var lineSymbol = {
-					path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-					strokeOpacity: 2,
-				    scale:1.5		
-				};
-				route = new google.maps.Polyline({
-					strokeColor: color,
-				    strokeOpacity: 1.0,
-				    strokeWeight: 3,
-				    icons: [{icon: lineSymbol,
-			            offset: '100%',
-			            repeat:'200px'}]
-				});	
-			}
-			 
-			var labelIndex=0;
-			route.getPath().push(storePos);
+		//console.log(JSON.stringify(response[i]));		
+		var route;
+		if(i>=colorInit.length){
+			route = new google.maps.Polyline({
+				strokeColor: getRandomColor(),
+			    strokeOpacity: 1.0,
+			    strokeWeight: 3,
+			});	
+		}else{
+			var color = colorInit[(i+2)%colorInit.length];
+			var lineSymbol = {
+				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+				strokeOpacity: 2,
+			    scale:1.5		
+			};
+			route = new google.maps.Polyline({
+				strokeColor: color,
+			    strokeOpacity: 1.0,
+			    strokeWeight: 3,
+			    icons: [{icon: lineSymbol,
+		            offset: '100%',
+		            repeat:'200px'}]
+			});	
+		} 
+		var labelIndex=0;
+		route.getPath().push(storePos);
 			
-			
-			var checkedListIndex=checkedList[i]
-			//$(firstRowNode).css('background-color',rowColor);
-			for(var j=0; j<data[checkedListIndex].routeElement.length; j++){
-				var lat = data[checkedListIndex].routeElement[j].addLat;
-				var lng = data[checkedListIndex].routeElement[j].addLng;
-				var point = new google.maps.LatLng(lat,lng);
-				var time = data[checkedListIndex].routeElement[j].expectedTime;
-				var timeEarly = time.substring(0,19);
-				var timeLate = time.substring(20,time.length);
-				var infowindow = new google.maps.InfoWindow({
-				    content: "STT giao hàng: "+ data[checkedListIndex].routeElement[j].routeSequence +"</br>"+
-				    		"Mã khách hàng: " + data[checkedListIndex].routeElement[j].clientCode +"</br>"+
-				    		"Địa chỉ: " + data[checkedListIndex].routeElement[j].clientAddress +"</br>"+
-				    		"Thời gian giao hàng sớm nhất: " + timeEarly + "</br>"+
-				    		"Thời gian giao hàng muộn nhất: " + timeLate + "</br>"+
-				    		"Người giao hàng: "+ data[checkedListIndex].shipperCode
-				});
-				lstinfowindow.push(infowindow);
-				var marker = new google.maps.Marker({
-					position:point,
-					icon: baseUrl+"/assets/icon/marker_black16.png",
-					//label:labels[labelIndex++ % labels.length],
-					map: map,
-					infowindow: infowindow
-				});
-				marker.addListener('click', function() {
-					for(var t=0; t<lstinfowindow.length; t++){
-						lstinfowindow[t].close();
-					}
-				    this.infowindow.open(map, this);
-				});
+		var checkedListIndex=checkedList[i]
+		for(var j=0; j<data[checkedListIndex].routeElement.length; j++){
+			var lat = data[checkedListIndex].routeElement[j].addLat;
+			var lng = data[checkedListIndex].routeElement[j].addLng;
+			var point = new google.maps.LatLng(lat,lng);
+			var time = data[checkedListIndex].routeElement[j].expectedTime;
+			var timeEarly = time.substring(0,19);
+			var timeLate = time.substring(20,time.length);
+			var infowindow = new google.maps.InfoWindow({
+			    content: "STT giao hàng: "+ data[checkedListIndex].routeElement[j].routeSequence +"</br>"+
+			    		"Mã khách hàng: " + data[checkedListIndex].routeElement[j].clientCode +"</br>"+
+			    		"Địa chỉ: " + data[checkedListIndex].routeElement[j].clientAddress +"</br>"+
+			    		"Thời gian giao hàng sớm nhất: " + timeEarly + "</br>"+
+			    		"Thời gian giao hàng muộn nhất: " + timeLate + "</br>"+
+			    		"Người giao hàng: "+ data[checkedListIndex].shipperCode
+			});
+			lstinfowindow.push(infowindow);
+			var marker = new google.maps.Marker({
+				position:point,
+				icon: baseUrl+"/assets/icon/marker_black16.png",
+				//label:labels[labelIndex++ % labels.length],
+				map: map,
+				infowindow: infowindow
+			});
+			marker.addListener('click', function() {
+				for(var t=0; t<lstinfowindow.length; t++){
+					lstinfowindow[t].close();
+				}
+			    this.infowindow.open(map, this);
+			});
 				
-				route.getPath().push(point);
-				
-				//var rowColor = colorOfRow[i%2];
-				
-				
-				/*
-				//table.row.add([
-				rows += "<tr style='background-color:"+colorOfRow[i%2]+"'>";
-				rows += "<td>" + response[i].routeElement[j].clientCode +"</td>"
-				rows += "<td>" + response[i].routeElement[j].clientAddress + "</td>";
-				rows += "<td></td>"; 
-				rows += "<td>"+response[i].routeElement[j].expectedTime+"</td>";
-				rows += "<td>"+response[i].routeElement[j].routeSequence+"</td>";
-				rows += "<td>"+response[i].shipperCode+"</td>";
-				rows += "</tr>";
-				//]).draw( false );*/
-			
-			
+			route.getPath().push(point);
 		}
-			route.setMap(map);
+		route.setMap(map);
 	}
+	//checkedList = [];
 }
 function displayInfo(response){
 	data=response;
 	initialize();
 	//var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	console.log("display response: "+JSON.stringify(response));
+	//console.log("display response: "+JSON.stringify(response));
 	var storePosition = response[0].storeLatLng;
 	//console.log("storePostion: "+storePosition);
 	var indexPo = storePosition.indexOf(",");
@@ -342,7 +331,7 @@ function displayInfo(response){
 				    response[i].routeElement[j].expectedTime,
 				    response[i].routeElement[j].routeSequence,
 				    response[i].shipperCode,
-				    "<input type='checkbox' onchange=updateCheckList("+i+") value=''>"
+				    "<input type='checkbox' onchange='updateCheckList("+i+", this)'>"
 				]).draw().node();
 			}else{
 				var rowNode = table.row.add([
