@@ -20,7 +20,7 @@ public class mOrdersServiceImpl implements mOrdersService{
 	@Autowired 
 	mOrderArticlesDAO orderArticlesDAO;
 	@Override
-	public int saveAnOrder(String o_ClientCode, String o_OrderDate,
+	public String saveAnOrder(String o_ClientCode, String o_OrderDate,
 			String o_DueDate,String o_DeliveryAddress,float o_DeliveryLat,float o_DeliveryLng,String o_TimeEarly,String o_TimeLate,float o_Price, String [] orderArticles,String o_BatchCode) {
 		mOrders o= new mOrders();
 		o.setO_Code(o_ClientCode);
@@ -36,7 +36,8 @@ public class mOrdersServiceImpl implements mOrdersService{
 		o.setO_BatchCode(o_BatchCode);
 		o.setO_Status_Code(Constants.ORDER_STATUS_NOT_IN_ROUTE);
 		int id= orderDAO.saveAnOrder(o);
-		o.setO_Code("OR"+CodeGenerationUtility.genOrderCode(id));
+		String O_Code = "OR"+CodeGenerationUtility.genOrderCode(id);
+		o.setO_Code(O_Code);
 		orderDAO.updateAnOrder(o);
 		mOrders m_o= orderDAO.getAnOrderById(id);
 		if(orderArticles != null){
@@ -60,7 +61,7 @@ public class mOrdersServiceImpl implements mOrdersService{
 					orderArticlesDAO.saveAOrderArticles(mOA);
 				}
 		}
-		return id;
+		return O_Code;
 	}
 	@Override
 	public List<mOrders> getList() {
@@ -117,5 +118,10 @@ public class mOrdersServiceImpl implements mOrdersService{
 	public void deleteOrder(String batchCode) {
 		// TODO Auto-generated method stub
 		orderDAO.deleteOrder(batchCode);
+	}
+	@Override
+	public void updateAnOrder(mOrders order) {
+		// TODO Auto-generated method stub
+		orderDAO.updateAnOrder(order);
 	}
 }

@@ -32,7 +32,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderD
 public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 	@Autowired
     private SessionFactory sessionFactory;
-
+	
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

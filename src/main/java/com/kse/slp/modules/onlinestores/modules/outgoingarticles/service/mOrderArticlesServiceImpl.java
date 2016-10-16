@@ -23,5 +23,10 @@ public class mOrderArticlesServiceImpl implements mOrderArticlesService {
 		
 		return orderArticleDAO.saveAOrderArticles(oa);
 	}
+	@Override
+	public void deleteOrderArticles(String orderCode) {
+		// TODO Auto-generated method stub
+		orderArticleDAO.deletOrderArticles(orderCode);
+	}
 
 }
