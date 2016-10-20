@@ -99,7 +99,7 @@ body{
      			<div class="card-block">
      				<h4 class="card-title"><b>Quản lý danh mục</b></h4>
      			</div>
-     			<img class="card-img" style="width:538px;" src="<c:url value="/assets/img/home/dichung.png" />">
+     			<img class="card-img" style="width:538px;" src="<c:url value="/assets/img/home/settings.png" />">
      		</div>
      		</a>
      	</div> 
