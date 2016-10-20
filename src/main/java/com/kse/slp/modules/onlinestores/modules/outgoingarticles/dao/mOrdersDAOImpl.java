@@ -32,7 +32,7 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderD
 public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 	@Autowired
     private SessionFactory sessionFactory;
-
+	
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -80,6 +80,8 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			begin();
 			Criteria criteria = getSession().createCriteria(mOrders.class);
 			criteria.add(Restrictions.ne("O_Status_Code",Constants.ORDER_STATUS_DELIVERIED ));
+			//criteria.createAlias("O_BatchCode", "O_BatchCode");
+			//criteria.addOrder(Order.asc("O_BatchCode.value"));
 			List<mOrders> listOrders = criteria.list();
 			commit();
 			return listOrders;

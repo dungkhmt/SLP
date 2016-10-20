@@ -11,7 +11,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +54,7 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRout
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderArticlesService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
@@ -85,6 +88,8 @@ public class mOrderController extends BaseWeb{
 	mArticlesCategoryService articleService;
 	@Autowired
 	mOrdersService orderService;
+	@Autowired
+	mOrderArticlesService mOrderArticlesService;
 	@Autowired
 	mRequestBatchService mRequestBatchService;
 	@Autowired
@@ -140,7 +145,7 @@ public class mOrderController extends BaseWeb{
 		
 		String[] orderArticles = request.getParameterValues("orderArticles");
 		for(int i=0;i<orderArticles.length;i++){
-			System.out.print(orderArticles[i]);
+			System.out.println(name()+"saveAOrder--orderArticles["+i+"]:"+orderArticles[i]);
 		}
 		model.put("orderFormAdd", new mOrderFormAdd());
 		if(result.hasErrors()){
@@ -162,7 +167,7 @@ public class mOrderController extends BaseWeb{
 			
 			//orderService.saveAnOrder( clientCode, orderDate, dueDate,address,lat,lng,timeEarly,timeLate,price,orderArticles);
 			log.info(u.getUsername()+" DONE");
-			return "redirect:/onlinestore";
+			return "redirect:list";
 		}
 		return "redirect:add-an-order";
 		
@@ -173,10 +178,19 @@ public class mOrderController extends BaseWeb{
 	public String listOutGoingArticles(ModelMap model,HttpSession session){
 		//System.out.print("listIncommingArticles");
 		List<mOrders> inArtList = orderService.getList();
-		
+		List<String> lstBatchCode = new ArrayList<String>();
+		Map<String,String> test = new HashMap<String, String>();
+		for(int i=0; i<inArtList.size(); i++){
+			String batchCode = inArtList.get(i).getO_BatchCode();
+			if(!test.containsKey(batchCode)){
+				lstBatchCode.add(batchCode);
+				test.put(batchCode, batchCode);
+			}
+		}
 		//System.out.print(inArtList);
 	
 		model.put("outArtList", inArtList);
+		model.put("lstBatchCode",lstBatchCode);
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "outgoingarticles.list";
@@ -203,10 +217,14 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/uploadOrdersFile", method=RequestMethod.POST)
-	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest){
+	public String readFile(@ModelAttribute("formAdd") mFormAddFileExcel dataRequest, ModelMap model){
 		//System.out.println("Upload file");
 		String batchCode = dataRequest.getBatchCode();
 		//System.out.println("batch Code: "+ batchCode);
+		List<mOrders> lstOrder = orderService.getListOrderByBatchCode(batchCode);
+		for(int i=0; i<lstOrder.size(); i++){
+			mOrderArticlesService.deleteOrderArticles(lstOrder.get(i).getO_Code());
+		}
 		orderService.deleteOrder(batchCode);
 		ShipperBatchService.deleteShipperBatch(batchCode);
 		StoreBatchService.deleteStoreBatch(batchCode);
@@ -220,79 +238,123 @@ public class mOrderController extends BaseWeb{
 				InputStream readFile = ordersFile.getInputStream();
 				XSSFWorkbook wb = new XSSFWorkbook(readFile);
 				
+				XSSFSheet sheet4 = wb.getSheetAt(3);
+				XSSFRow row4;
+				int rows4 = sheet4.getPhysicalNumberOfRows();
+				Map<String, List<mOrderArticles>> lstMapOrderArticles = new HashMap<String,List<mOrderArticles>>();
+				for(int i=1; i<rows4; i++){
+					row4 = sheet4.getRow(i);
+					String clientCode = "" + (long)row4.getCell(0).getNumericCellValue();
+					System.out.println(name()+"readFile--orderArticleCode["+i+"]: "+clientCode);
+					String articleCode = row4.getCell(1).getStringCellValue();
+					int amount = (int)row4.getCell(2).getNumericCellValue();
+					float price = (float)row4.getCell(3).getNumericCellValue();
+					mOrderArticles tmorar = new mOrderArticles();
+					tmorar.setOA_Code(articleCode);
+					tmorar.setOA_Amount(amount);
+					tmorar.setOA_Price(price);
+					
+					//List<mOrderArticles> tmp = lstMapOrderArticles.get(clientCode);
+					if(lstMapOrderArticles.containsKey(clientCode)){
+						List<mOrderArticles> tmp = lstMapOrderArticles.get(clientCode);
+						tmp.add(tmorar);
+						lstMapOrderArticles.put(clientCode, tmp);
+					
+					}else{
+						List<mOrderArticles> tmp = new ArrayList<mOrderArticles>();
+						tmp.add(tmorar);
+						lstMapOrderArticles.put(clientCode, tmp);
+					}
+				}
+				
 				XSSFSheet sheet = wb.getSheetAt(0);
 				XSSFRow row;
-				
 				int rows = sheet.getPhysicalNumberOfRows();
 				
+				Map<String, String> orderArticle = new HashMap<String, String>();
 				for(int i=1; i<rows; i++){
 					row = sheet.getRow(i);
-					String clientCode = ""+(int)row.getCell(1).getNumericCellValue();
-					//System.out.println(name()+"readFile--O_Code["+i+"]: "+clientCode);
-				
-					String deliveryAddress = row.getCell(2).getStringCellValue();
-					//System.out.println(name()+"readFile--Adderss["+i+"]: "+deliveryAddress);
-					
-					String latlng = row.getCell(3).getStringCellValue();
-					int index = latlng.indexOf(",");
-					
-					float lat = Float.parseFloat(latlng.substring(0,index));
-					//System.out.println(name()+"readFile--lat["+i+"]: "+lat);
-					
-					float lng = Float.parseFloat(latlng.substring(index+1,latlng.length()));
-					//System.out.println(name()+"readFile--lng["+i+"]: "+lng);
-					String timeEearly="";
-					switch(row.getCell(4).getCellType()){
-						case XSSFCell.CELL_TYPE_NUMERIC: 
-							if (DateUtil.isCellDateFormatted(row.getCell(4))) {
-								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-								timeEearly += dateFormat.format(row.getCell(4).getDateCellValue());
-			                    System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEearly);
-			                } else {
-			                    //System.out.println(cell.getNumericCellValue());
-			                	timeEearly += String.valueOf(row.getCell(4).getNumericCellValue());
-			                }
-							break;
-						case XSSFCell.CELL_TYPE_STRING:
-							timeEearly += row.getCell(4).getStringCellValue();
-							break;
+					String clientCode = ""+(long)row.getCell(1).getNumericCellValue();
+					System.out.println(name()+"readFile--O_Code["+i+"]: "+clientCode);
+					if(!orderArticle.containsKey(clientCode)){
+						String deliveryAddress = row.getCell(2).getStringCellValue();
+						//System.out.println(name()+"readFile--Adderss["+i+"]: "+deliveryAddress);
+						
+						String latlng = row.getCell(3).getStringCellValue();
+						int index = latlng.indexOf(",");
+						
+						float lat = Float.parseFloat(latlng.substring(0,index));
+						//System.out.println(name()+"readFile--lat["+i+"]: "+lat);
+						
+						float lng = Float.parseFloat(latlng.substring(index+1,latlng.length()));
+						//System.out.println(name()+"readFile--lng["+i+"]: "+lng);
+						String timeEearly="";
+						switch(row.getCell(4).getCellType()){
+							case XSSFCell.CELL_TYPE_NUMERIC: 
+								if (DateUtil.isCellDateFormatted(row.getCell(4))) {
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+									timeEearly += dateFormat.format(row.getCell(4).getDateCellValue());
+				                    System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEearly);
+				                } else {
+				                    //System.out.println(cell.getNumericCellValue());
+				                	timeEearly += String.valueOf(row.getCell(4).getNumericCellValue());
+				                }
+								break;
+							case XSSFCell.CELL_TYPE_STRING:
+								timeEearly += row.getCell(4).getStringCellValue();
+								break;
+						}
+						 
+						int index2 = timeEearly.indexOf(" ");
+						String orderDate = timeEearly.substring(0,index2);
+						//System.out.println(name()+"readFile--orderDate["+i+"]: "+orderDate);
+						
+						String timeEarly = timeEearly.substring(index2+1,timeEearly.length());
+						//System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEarly);
+						
+						String timeDueTo="";
+						//String timeEearly="";
+						
+						switch(row.getCell(5).getCellType()){
+							case XSSFCell.CELL_TYPE_NUMERIC: 
+								if (DateUtil.isCellDateFormatted(row.getCell(5))) {
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+									timeDueTo += dateFormat.format(row.getCell(5).getDateCellValue());
+				                    System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
+				                } else {
+				                    //System.out.println(cell.getNumericCellValue());
+				                	timeDueTo += String.valueOf(row.getCell(5).getNumericCellValue());
+				                }
+								break;
+							case XSSFCell.CELL_TYPE_STRING:
+								timeDueTo += row.getCell(5).getStringCellValue();
+								break;
+						}
+						//System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
+						int index3 = timeDueTo.indexOf(" ");
+						String dueDate = timeDueTo.substring(0,index3);
+						//System.out.println(name()+"readFile--dueDate["+i+"]: "+dueDate);
+						
+						
+						String timeLate = timeDueTo.substring(index3+1,timeDueTo.length());
+						//System.out.println(name()+"readFile--timeLate["+i+"]: "+timeLate);
+						String OCode = orderService.saveAnOrder(clientCode, orderDate, dueDate, deliveryAddress, lat, lng, timeEarly, timeLate, 0 , null,batchCode);
+						//System.out.println("=========");
+						mOrders orderTmp = orderService.loadAnOrderbyOrderCode(OCode);
+						orderArticle.put(clientCode, OCode);
+						List<mOrderArticles> lstOrderArticles = lstMapOrderArticles.get(clientCode);
+						float price = 0;
+						for(int in=0; in<lstOrderArticles.size(); in++){
+							mOrderArticles tmp = lstOrderArticles.get(in);
+							String oA_Code = tmp.getOA_Code();
+							String oA_Amount = ""+tmp.getOA_Amount();
+							float oA_Price = tmp.getOA_Price();
+							price += oA_Price*tmp.getOA_Amount();
+							mOrderArticlesService.saveAOrderArticles(oA_Code, OCode, oA_Amount, orderDate, oA_Price);
+						}
+						orderTmp.setO_Price(price);
+						orderService.updateAnOrder(orderTmp);
 					}
-					 
-					int index2 = timeEearly.indexOf(" ");
-					String orderDate = timeEearly.substring(0,index2);
-					//System.out.println(name()+"readFile--orderDate["+i+"]: "+orderDate);
-					
-					String timeEarly = timeEearly.substring(index2+1,timeEearly.length());
-					//System.out.println(name()+"readFile--timeEarly["+i+"]: "+timeEarly);
-					
-					String timeDueTo="";
-					//String timeEearly="";
-					
-					switch(row.getCell(5).getCellType()){
-						case XSSFCell.CELL_TYPE_NUMERIC: 
-							if (DateUtil.isCellDateFormatted(row.getCell(5))) {
-								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-								timeDueTo += dateFormat.format(row.getCell(5).getDateCellValue());
-			                    System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
-			                } else {
-			                    //System.out.println(cell.getNumericCellValue());
-			                	timeDueTo += String.valueOf(row.getCell(5).getNumericCellValue());
-			                }
-							break;
-						case XSSFCell.CELL_TYPE_STRING:
-							timeDueTo += row.getCell(5).getStringCellValue();
-							break;
-					}
-					//System.out.println(name()+"readFile--timeDueTo["+i+"]: "+timeDueTo);
-					int index3 = timeDueTo.indexOf(" ");
-					String dueDate = timeDueTo.substring(0,index3);
-					//System.out.println(name()+"readFile--dueDate["+i+"]: "+dueDate);
-					
-					
-					String timeLate = timeDueTo.substring(index3+1,timeDueTo.length());
-					//System.out.println(name()+"readFile--timeLate["+i+"]: "+timeLate);
-					orderService.saveAnOrder(clientCode, orderDate, dueDate, deliveryAddress, lat, lng, timeEarly, timeLate, 0 , null,batchCode);
-					//System.out.println("=========");
 				}
 				
 				XSSFSheet sheet1 = wb.getSheetAt(1);
@@ -324,7 +386,8 @@ public class mOrderController extends BaseWeb{
 			
 		}
 		//System.out.println("Upload file done");
-		return "redirect:/onlinestore";
+		//model.put("lstBatchCode",batchCode);
+		return "redirect:list";
 	}
 
 	@RequestMapping(value="/createAutoRoute",method = RequestMethod.GET)

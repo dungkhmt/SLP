@@ -288,6 +288,9 @@ function pushPrice(){
     		check = 0;
     	}
     }
+	if(sprice.length % 3 == 0){
+		printedPrice = printedPrice.substring(1);
+    }
 	document.getElementById("price").innerHTML=(printedPrice+" VNĐ");
 	
 }
@@ -341,6 +344,7 @@ function pushValueLatLng(){
 }
 function enableSelectMap(){
 	console.log("enableSelectMap");
+	google.maps.event.trigger(map, 'resize');
 	if ($(".selectMap").is(":visible")){
 	$(".selectMap").hide();
 	$(".ok-selectMap").hide();

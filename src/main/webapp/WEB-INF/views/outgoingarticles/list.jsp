@@ -21,9 +21,17 @@
 	</div>
 	<!-- /.row -->
 	<div class="row">
-		
+		<div class="col-sm-4">
+			<div class="form-group">
+				<select class="form-control" id="sel-batchCode">
+					<c:forEach items="${lstBatchCode}" var="batCode">
+						<option value="${batCode}">${batCode}</option>
+					</c:forEach>
+				</select>
+			</div>
+		</div>
 		<!-- /.form-group .col-sm-3  -->
-		<div class="col-sm-offset-11 col-sm-1">
+		<div class="col-sm-offset-7 col-sm-1">
 			<button type="button" class="btn btn-primary addOutOrder">Thêm</button>
 		</div>
 	</div>
@@ -31,7 +39,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">Danh các hóa đơn chưa được giao: <b id="dateInfo"></b></div>
+				<div class="panel-heading">Danh các hóa đơn chưa được giao: <b id=batchCodeInfo></b></div>
 				<div class="panel-body">
 					<div class="dataTable_wrapper">
 						<table class="table table-striped table-bordered table-hover" id="dataTabels-outarticles">
@@ -43,8 +51,14 @@
 									<th>Thời gian giao</th>
 									<th>Địa điểm giao</th>
 									<th>Giá</th>
+									<th>Lô</th>
 								</tr>
 							</thead>
+							<tfoot>
+								<tr>
+									<th colspan="7" style="text-align:right">Tổng: </th>
+								</tr>
+							</tfoot>
 							<tbody>
 								<c:forEach items="${outArtList}" var="outArt">
 									<tr>
@@ -54,6 +68,7 @@
 										<td><c:out value="${outArt.o_TimeEarly}-${outArt.o_TimeLate}"/></td>
 										<td><c:out value="${outArt.o_DeliveryAddress }"/></td>	
 										<td><c:out value=""/>${outArt.o_Price }</td>
+										<td><c:out value=""/>${outArt.o_BatchCode }</td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -75,16 +90,75 @@
 
 
 $(document).ready(function(){
-	var table = $('#dataTabels-outarticles').DataTable();
+	$.fn.dataTable.ext.search.push(function(settings,data,dataInde){
+		var bathCodeSelected = $("#sel-batchCode").val();
+		if(bathCodeSelected==data[6]){
+			return true;
+		}
+		return false;
+	});
+	
+	var table = $('#dataTabels-outarticles').DataTable({
+		"footerCallback": function ( row, data, start, end, display ) {
+	    	var api = this.api(), data;
+	 
+	        // Remove the formatting to get integer data for summation
+	        var intVal = function ( i ) {
+	        	return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
+	        };
+
+	           
+			var pageTotal = api
+    		.column(5, { page: 'current'} )
+    		.data()
+    		.reduce(function(a,b){
+    			return intVal(a)+intVal(b);
+    		});	      
+			
+			console.log("page total price "+pageTotal);
+	        var SpageTotal = "";
+	        var tmp = ""+pageTotal;
+	        var indexDot = tmp.indexOf(".");
+	        var subFixTmp="";
+	        if(indexDot != -1){
+	        	subFixTmp = tmp.substring(indexDot+1);
+	        	tmp = tmp.substring(0,indexDot);
+	        }
+	        
+	        console.log("tmp: "+tmp);
+	        var check=0;
+	        for(var i=tmp.length-1;i>=0; i--){
+	        	SpageTotal = tmp[i] + SpageTotal;
+	        	check++;
+	        	if(check==3){
+	        		SpageTotal = "." + SpageTotal;
+	        		check = 0;
+	        	}
+	        }
+	        if(tmp.length % 3 == 0){
+	        	SpageTotal = SpageTotal.substring(1);
+	        }
+	        if(parseInt(subFixTmp)!=0){
+	        	SpageTotal += subFixTmp;
+	        }
+	       	// Update footer
+	       	$( api.column(5).footer() ).html("Tổng: "+SpageTotal+" VND");
+	    },
+	    "bSort":false,
+	    "columnDefs":[{
+	    	"targets":[6],
+	    	"visible":false
+	    }]
+	});
 	
 	$('.addOutOrder').click(function(){
 		window.location = '${baseUrl}' + "/outgoingarticles/add-an-order.html";
 	});
 	
-	$('#dateInfo').text($('#inArtDate').val());
+	$('#batchCodeInfo').text($('#sel-batchCode').val());
 	
-	$("#inArtDate").click(function(){
-		$('#dateInfo').text($(this).val());
+	$("#sel-batchCode").click(function(){
+		$('#batchCodeInfo').text($(this).val());
 		table.draw();
 	})
 });

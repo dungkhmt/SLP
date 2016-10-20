@@ -4,4 +4,5 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArt
 
 public interface mOrderArticlesDAO {
 	public int saveAOrderArticles(mOrderArticles oa ); 
+	public void deletOrderArticles(String orderCode);
 }
