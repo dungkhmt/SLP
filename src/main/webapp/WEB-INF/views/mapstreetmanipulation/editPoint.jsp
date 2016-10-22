@@ -34,6 +34,8 @@
 <script>
 var map;
 var dataResponse;
+//var listPoint=[];
+var road;
 function initialize() {
 	//construct google map
 	var mapProp = {
@@ -42,6 +44,27 @@ function initialize() {
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	road = new google.maps.Polyline({
+		strokeColor: '#FF0000',
+	    strokeOpacity: 1.0,
+	    strokeWeight: 3
+	    
+	});
+	road.setMap(map);
+	map.addListener('click', function(event){
+		var markerPoint = new google.maps.Marker({
+			map:map,
+			position:event.latLng,
+			icon:"https://www.google.com/mapfiles/marker_green.png"
+		});
+
+		road.getPath().push(event.latLng);
+		markerPoint.addListener('click',function(){
+			markerPoint.setMap(null);
+			var index = road.getPath().indexOf(this.getPosition());
+			road.getPath().splice(index,1);
+		});
+	});
 }
 
 $(document).ready(function(){
@@ -71,11 +94,31 @@ $(document).ready(function(){
 		for(var i=0; dataResponse.length; i++){
 			if(dataResponse[i].RoadCode==street){
 				//roadCodeSelected = dataResponse[i].RoadCode;
+				var roadPoints = dataResponse[i].RoadPoints;
+				var roadPointLatLngs = roadPoints.split(":");
+				for(var j=0; j<roadPointLatLngs.length; j++){
+					var point = new google.maps.LatLng(roadPointLatLngs[j]);
+					var markerPoint = new google.maps.Marker({
+						map:map,
+						position:point,
+						icon:"https://www.google.com/mapfiles/marker_green.png"
+					});
+
+					road.getPath().push(point);
+					markerPoint.addListener('click',function(){
+						markerPoint.setMap(null);
+						var index = road.getPath().indexOf(this.getPosition());
+						road.getPath().splice(index,1);
+					});
+				}
+				break;
 			}
 		}
 	});
 	$('#btn-saveRoad').click(function(){
 		var roadCodeSelected = $('#select-listStreet').val();
+		var dataSend = road.getPath().join(":");
+		console.log("dataSend when click button: "+dataSend);
 		$.ajax({
 			type: 'POST',
 			url : baseUrl + "/mapstreetmanipulation/updateRoad/" + roadCodeSelected,
