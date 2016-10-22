@@ -21,7 +21,7 @@
 	<div class="navbar-default sidebar" id="sidebar" role="navigation">
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
-				<li><a href="<c:url value="${baseUrl}/"/>">Quản lý</a></li>
+				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/create-road"/>">Tạo tuyến đường mới</a></li>
 				
 			</ul>
 		</div>

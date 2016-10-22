@@ -48,4 +48,26 @@ public class RoadsDAOImpl extends BaseDao implements RoadsDAO {
 		}
 	}
 
+	@Override
+	public int saveARoad(Road r) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			int id=0;
+			id = (int)getSession().save(r);
+			commit();
+			return id;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
 }
