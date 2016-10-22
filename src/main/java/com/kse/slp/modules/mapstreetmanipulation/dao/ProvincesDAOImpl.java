@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
-@Repository("ProvincesDAO")
+@Repository("ProvinceDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class ProvincesDAOImpl extends BaseDao implements ProvincesDAO {
+public class ProvincesDAOImpl extends BaseDao implements ProvinceDAO {
 	@Autowired
     private SessionFactory sessionFactory;
 
