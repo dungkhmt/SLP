@@ -26,6 +26,14 @@ public class MapStreetManipulationControler extends BaseWeb {
 	@Autowired
 	ProvinceService ProvinceService;
 
+	
+	@RequestMapping(value="",method=RequestMethod.GET)
+	public String listPickupDelivery(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		return "mapstreetmanipulation.home";
+	}
+	
 	@RequestMapping(value="/editPoint",method=RequestMethod.GET)
 	public String editPoint(ModelMap model){
 		List<Province> lstProvinces = ProvinceService.getListProvince();
@@ -33,14 +41,4 @@ public class MapStreetManipulationControler extends BaseWeb {
 		
 		return "mapstreetmanipulation.editPoint";
 	}
-	
-	@RequestMapping(value="",method=RequestMethod.GET)
-	public String listPickupDelivery(ModelMap model,HttpSession session){
-		User u=(User) session.getAttribute("currentUser");
-		log.info(u.getUsername());
-		return "mapstreetmanipulation.home";
-
-	}
-	
-	
 }
