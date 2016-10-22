@@ -100,7 +100,6 @@ function initialize() {
 			});
 		marker.addListener('click', function(){
 			listMarker.splice(listMarker.indexOf(this),1);
-			
 			var index= poliline.getPath().indexOf(this.getPosition());
 			poliline.getPath().removeAt(index);
 			this.setMap(null);
