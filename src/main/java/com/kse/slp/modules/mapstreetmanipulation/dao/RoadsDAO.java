@@ -6,4 +6,5 @@ import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 
 public interface RoadsDAO {
 	public List<Road> getListByProvince(String proCode);
+	public int saveARoad(Road r);
 }

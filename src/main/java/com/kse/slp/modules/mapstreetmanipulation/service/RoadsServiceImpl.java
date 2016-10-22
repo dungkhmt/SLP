@@ -21,4 +21,24 @@ public class RoadsServiceImpl extends BaseDao implements RoadsService {
 		return RoadsDAO.getListByProvince(proCode);
 	}
 
+	@Override
+	public int saveARoad(String roadCode, String roadName, String roadProvince,
+			String roadInterProvince, String roadPoints, String roadTypeCode,
+			String roadBidirectional, int roadMaxSpeed,
+			String roadCreateUserID, String roadCreateDateTime) {
+		// TODO Auto-generated method stub
+		Road r= new Road();
+		r.setRoadName(roadName);
+		r.setRoadCode(roadCode);
+		r.setRoadProvince(roadProvince);
+		r.setRoadPoints(roadPoints);
+		r.setRoadInterProvince(roadInterProvince);
+		r.setRoadTypeCode(roadTypeCode);
+		r.setRoadBidirectional(roadBidirectional);
+		r.setRoadMaxSpeed(roadMaxSpeed);
+		r.setRoadCreateUserID(roadCreateUserID);
+		r.setRoadCreateDateTime(roadCreateDateTime);
+		return RoadsDAO.saveARoad(r);
+	}
+
 }
