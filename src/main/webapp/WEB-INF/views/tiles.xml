@@ -21,6 +21,10 @@
     	<put-attribute name="header" value="/WEB-INF/views/layout/layout4/header.jsp" />
     	<put-attribute name="footer" value="/WEB-INF/views/layout/layout4/footer.jsp" />            
     </definition>
+    <definition name="layout5" template="/WEB-INF/views/layout/layout5/base.jsp">           
+    	<put-attribute name="header" value="/WEB-INF/views/layout/layout5/header.jsp" />
+    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout5/footer.jsp" />            
+    </definition>
     <!-- Error -->
     <definition name="layout.errorBase" template="/WEB-INF/views/error/errorBase.jsp"></definition>
     <definition name="error.notFound404" extends="layout.errorBase">
@@ -160,5 +164,9 @@
     	<put-attribute name="title" value="Chức năng quản lý người sử dụng" />
     	<put-attribute name="content" value="/WEB-INF/views/usermanager/list.jsp" />                
     </definition> 
-    
+    <!-- Map Street Manipulation -->
+    <definition name="mapstreetmanipulation.home" extends="layout5">
+    	<put-attribute name="title" value="Chức năng quản lý bản đồ" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/mapstreetmanipulationhome.jsp" />                
+    </definition>
 </tiles-definitions>

@@ -104,7 +104,7 @@ body{
      		</a>
      	</div> 
 		<div class="col-sm-6">
-    		<a href="<c:url value = ""/>" style="">
+    		<a href="<c:url value = "/mapstreetmanipulation"/>" style="">
      		<div class="card">
      			<div class="card-block">
      				<h4 class="card-title"><b>Quản lý bản đồ</b></h4>
