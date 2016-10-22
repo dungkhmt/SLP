@@ -1,6 +1,15 @@
 package com.kse.slp.modules.mapstreetmanipulation.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="tblroads")
 public class Roads {
+	@Id
+	@GeneratedValue
 	int RoadID;
 	String RoadCode;
 	String RoadName;

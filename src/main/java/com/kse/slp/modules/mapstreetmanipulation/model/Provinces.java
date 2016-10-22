@@ -1,6 +1,15 @@
 package com.kse.slp.modules.mapstreetmanipulation.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="tblprovinces")
 public class Provinces {
+	@Id
+	@GeneratedValue
 	int PROV_ID;
 	String PROV_Code;
 	String PROV_Name;
