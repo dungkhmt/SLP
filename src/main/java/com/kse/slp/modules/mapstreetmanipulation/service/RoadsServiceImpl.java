@@ -10,7 +10,7 @@ import com.kse.slp.modules.mapstreetmanipulation.dao.RoadsDAO;
 import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 
 @Service("RoadsService")
-public class RoadsServiceImpl extends BaseDao implements RoadsService {
+public class RoadsServiceImpl implements RoadsService {
 
 	@Autowired
 	RoadsDAO RoadsDAO;
@@ -39,6 +39,23 @@ public class RoadsServiceImpl extends BaseDao implements RoadsService {
 		r.setRoadCreateUserID(roadCreateUserID);
 		r.setRoadCreateDateTime(roadCreateDateTime);
 		return RoadsDAO.saveARoad(r);
+	}
+
+	@Override
+	public Road loadARoadByRoadCode(String roadCode) {
+		// TODO Auto-generated method stub
+		return RoadsDAO.loadARoadByRoadCode(roadCode);
+	}
+
+	@Override
+	public void updateARoad(String roadCode, String RoadPoints) {
+		// TODO Auto-generated method stub
+		Road road = RoadsDAO.loadARoadByRoadCode(roadCode);
+		if(road != null){
+			road.setRoadPoints(RoadPoints);
+			RoadsDAO.updateARoad(road);
+		}
+		
 	}
 
 }

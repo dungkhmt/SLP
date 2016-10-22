@@ -7,4 +7,6 @@ import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 public interface RoadsService {
 	public List<Road> getListByProvince(String proCode);
 	public int saveARoad(String roadCode,String roadName,String RoadProvince,String RoadInterProvince,String RoadPoints, String RoadTypeCode,String RoadBidirectional,int RoadMaxSpeed,String RoadCreateUserID,String RoadCreateDateTime );
+	public Road loadARoadByRoadCode(String roadCode);
+	public void updateARoad(String roadCode,String RoadPoints);
 }

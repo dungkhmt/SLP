@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.Road;
-
 import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
@@ -79,5 +78,11 @@ public class MapStreetManipulationControler extends BaseWeb {
 	public @ResponseBody List<Road> getListStreetName(@PathVariable("code") String provinceCode){
 		List<Road> roads = RoadsService.getListByProvince(provinceCode);
 		return roads;
+	}
+	
+	@RequestMapping(value="/updateRoad/{code}")
+	public @ResponseBody String updateRoad(@PathVariable("code") String roadCode, @RequestBody String roadPoints){
+		RoadsService.updateARoad(roadCode, roadPoints);
+		return "400";
 	}
 }

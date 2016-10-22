@@ -25,7 +25,7 @@
 			</div>
 		</div>
 		<div class="col-sm-1">
-			<button class="btn btn-primary">Lưu</button>
+			<button class="btn btn-primary" id="btn-saveRoad">Lưu</button>
 		</div>
 	</div>
 </div>
@@ -64,13 +64,23 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	
 	$('#select-listStreet').change(function(){
 		var street = $(this).val();
 		for(var i=0; dataResponse.length; i++){
 			if(dataResponse[i].RoadCode==street){
-				
+				//roadCodeSelected = dataResponse[i].RoadCode;
 			}
 		}
+	});
+	$('#btn-saveRoad').click(function(){
+		var roadCodeSelected = $('#select-listStreet').val();
+		$.ajax({
+			type: 'POST',
+			url : baseUrl + "/mapstreetmanipulation/updateRoad/" + roadCodeSelected,
+			
+		})
 	});
 });
 </script>
