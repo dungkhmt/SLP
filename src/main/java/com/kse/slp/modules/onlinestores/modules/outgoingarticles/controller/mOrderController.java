@@ -499,7 +499,7 @@ public class mOrderController extends BaseWeb{
 			e.printStackTrace();
 		}
 		
-		return "redirect:/onlinestore";
+		return "redirect:viewAutoRoute";
 	}
 	@RequestMapping("/viewAutoRoute")
 	public String viewAutoRoute(ModelMap model,HttpSession session){
