@@ -1,15 +1,21 @@
 package com.kse.slp.modules.mapstreetmanipulation.controller;
 
 import java.util.List;
+
 import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
+import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.mapstreetmanipulation.service.ProvinceService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadsService;
@@ -40,5 +46,11 @@ public class MapStreetManipulationControler extends BaseWeb {
 		model.put("lstProvinces", lstProvinces);
 		
 		return "mapstreetmanipulation.editPoint";
+	}
+	
+	@RequestMapping(value="/getListStreetName/{code}")
+	public @ResponseBody List<Road> getListStreetName(@PathVariable("code") String provinceCode){
+		List<Road> roads = RoadsService.getListByProvince(provinceCode);
+		return roads;
 	}
 }

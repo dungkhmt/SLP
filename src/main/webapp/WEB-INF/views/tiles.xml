@@ -169,9 +169,9 @@
     	<put-attribute name="title" value="Chức năng quản lý bản đồ" />
     	<put-attribute name="content" value="/WEB-INF/views/home/mapstreetmanipulationhome.jsp" />                
     </definition>
-    <definition name="mapstreetmanipulation.home" extends="layout5">
-    	<put-attribute name="title" value="Chức năng quản lý bản đồ" />
-    	<put-attribute name="content" value="/WEB-INF/views/home/mapstreetmanipulationhome.jsp" />                
+    <definition name="mapstreetmanipulation.editPoint" extends="layout5">
+    	<put-attribute name="title" value="Chức năng sửa bản đồ" />
+    	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/editPoint.jsp" />                
     </definition>
     
 </tiles-definitions>

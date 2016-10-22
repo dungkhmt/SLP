@@ -21,7 +21,7 @@ public class RoadsDAOImpl extends BaseDao implements RoadsDAO {
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public List<String> getListByProvince(String proCode) {
+	public List<Road> getListByProvince(String proCode) {
 		// TODO Auto-generated method stub
 		try{
 			
@@ -29,13 +29,8 @@ public class RoadsDAOImpl extends BaseDao implements RoadsDAO {
 			Criteria criteria = getSession().createCriteria(Road.class);
 			criteria.add(Restrictions.eq("RoadProvince", proCode));
 			List<Road> road = criteria.list();
-			List<String> streetNames = new ArrayList<String>();
-			for(int i=0; i<road.size(); i++){
-				String streetName = road.get(i).getRoadName();
-				streetNames.add(streetName);
-			}
 			commit();
-			return streetNames;
+			return road;
 			
 		}catch(HibernateException e){
 			e.printStackTrace();
