@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="tblroads")
-public class Roads {
+public class Road {
 	@Id
 	@GeneratedValue
 	int RoadID;
