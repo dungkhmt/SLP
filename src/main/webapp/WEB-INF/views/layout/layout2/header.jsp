@@ -25,7 +25,7 @@
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/list-pickupdelivery-order"/>">Xem danh sách hóa đơn chuyển hàng</a></li>
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/add-pickupdelivery-orders-by-xls"/>">Nhập đơn hàng qua file excel</a></li>
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/create-route-auto"/>">Lập tuyến tự động</a></li>
-				<li><a href="<c:url value="${baseUrl}/ship/create-pickupdelivery-route"/>">Lập tuyến giao hàng container</a></li>
+				<%-- <li><a href="<c:url value="${baseUrl}/ship/create-pickupdelivery-route"/>">Lập tuyến giao hàng container</a></li> --%>
 				<li><a href="<c:url value="${baseUrl}/containerdelivery/view-route-detail-container"/>">Xem cac route</a></li>
 			</ul>
 		</div>

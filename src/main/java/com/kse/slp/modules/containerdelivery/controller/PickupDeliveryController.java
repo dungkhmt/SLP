@@ -243,6 +243,7 @@ public class PickupDeliveryController extends BaseWeb{
 			RouteContainerDeliveryJson r= new RouteContainerDeliveryJson(mr.getRoute_Code(), mr.getRoute_Shipper_Code(), mr.getRoute_Start_DateTime(), mr.getRoute_BatchCode(), lRDC);
 			res.add(r);
 		}
+		System.out.println(res);
 		return res;
 		
 	}

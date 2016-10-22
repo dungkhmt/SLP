@@ -120,7 +120,7 @@ public class mRouteDetailContainerDAOImpl extends BaseDao implements mRouteDetai
 		try{
 			begin();
 			List<RouteContainerDetailExtension> list = new ArrayList<RouteContainerDetailExtension>();
-			String sql = "SELECT mc.C_Code,  mc.C_Name, mo.OPD_PickupAddress ,mo.OPD_EarlyPickupDateTime ,"
+			String sql = "SELECT DISTINCT mc.C_Code,  mc.C_Name, mo.OPD_PickupAddress ,mo.OPD_EarlyPickupDateTime ,"
 					+ "mo.OPD_DeliveryAddress, mo.OPD_EarlyDeliveryDateTime, mo.OPD_PickupLat , mo.OPD_PickupLng , mo.OPD_DeliveryLat , mo.OPD_DeliveryLng ,"
 					+ "mrdc.RTDC_Quantity, mrdc.RTDC_Sequence, mrdc.RTDC_Type, mrdc.RTDC_ArrivalDateTime ,mrdc.RTDC_ParentOrderCode"
 					+ " FROM RouteDetailContainer mrdc, mRoutes mr, mPickupDeliveryOrders mo, mClients mc  "
