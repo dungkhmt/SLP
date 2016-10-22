@@ -124,7 +124,7 @@ public class RouteContainerDetailExtension {
 				+ ", pickupLat=" + pickupLat + ", pickupLng=" + pickupLng
 				+ ", deliveryLat=" + deliveryLat + ", deliveryLng="
 				+ deliveryLng + ", volumn=" + volumn + ", sequence=" + sequence
-				+ ", type=" + type + "]";
+				+ ", type=" + type + "]" +"\n" ;
 	}
 	
 
