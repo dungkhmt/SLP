@@ -10,7 +10,7 @@ import com.kse.slp.modules.mapstreetmanipulation.dao.RoadsDAO;
 import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 
 @Service("RoadsService")
-public class RoadsServiceImpl extends BaseDao implements RoadsService {
+public class RoadsServiceImpl implements RoadsService {
 
 	@Autowired
 	RoadsDAO RoadsDAO;

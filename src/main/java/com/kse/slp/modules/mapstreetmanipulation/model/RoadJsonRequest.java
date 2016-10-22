@@ -7,7 +7,7 @@ public class RoadJsonRequest {
 	String roadType;
 	String provice;
 	String optionRoad;
-	String maxSpeed;
+	int maxSpeed;
 	String ProvicesPass;
 	List<Point> listPoint;
 	
@@ -41,10 +41,11 @@ public class RoadJsonRequest {
 	public void setOptionRoad(String optionRoad) {
 		this.optionRoad = optionRoad;
 	}
-	public String getMaxSpeed() {
+	
+	public int getMaxSpeed() {
 		return maxSpeed;
 	}
-	public void setMaxSpeed(String maxSpeed) {
+	public void setMaxSpeed(int maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 	public String getProvicesPass() {

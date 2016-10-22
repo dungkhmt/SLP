@@ -45,8 +45,8 @@
 					<label class="control-label col-lg-2 ">Hai chiều/Một chiều</label>
 					<div class="col-lg-4">
 					<select class="form-control" id="sel-option">
-						<option value="1">Một chiều</option>
-						<option value="2">Hai chiều</option>
+						<option value="DIRECTIONAL">Một chiều</option>
+						<option value="BIDIRECTIONAL">Hai chiều</option>
 					</select>
 					</div>
 				</div>
@@ -110,10 +110,11 @@ function saveRoad(){
 		})
 	}
 	console.log(data);
+	var jsonData=JSON.stringify(data);
 	$.ajax({
 		type: 'POST',
 		url: baseUrl+'/mapstreetmanipulation/save-A-Road',
-		data: data,
+		data: jsonData,
 		contentType: 'application/json',
 		success: function(response){
 			console.log("success--"+response);

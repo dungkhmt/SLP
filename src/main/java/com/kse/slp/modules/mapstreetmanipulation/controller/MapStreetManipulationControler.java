@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.Road;
-
 import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadJsonRequest;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadType;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 import com.kse.slp.modules.mapstreetmanipulation.service.ProvinceService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadTypeService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadsService;
@@ -64,7 +64,21 @@ public class MapStreetManipulationControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		Gson gson= new Gson();
+		System.out.print(name()+road);
 		RoadJsonRequest r= gson.fromJson(road,RoadJsonRequest.class);
+		String roadCode= "ROAD"+GenerationDateTimeFormat.genDateTimeFormatStandardCurrently();
+		String roadName= r.getNameStreet();
+		String roadProvince=r.getProvice();
+		String roadInterProvince=r.getProvicesPass();
+		String roadTypeCode=r.getRoadType();
+		int roadMaxSpeed=r.getMaxSpeed();
+		String roadCreateDateTime= GenerationDateTimeFormat.genDateTimeFormatyyyy_MM_ddhhMMssCurrently();
+		String roadPoints="";
+		for(int i=0;i< r.getListPoint().size();i++){
+			roadPoints+=r.getListPoint().get(i).getLat()+", "+r.getListPoint().get(i).getLng()+" : ";
+		}
+		String RoadBidirectional=r.getOptionRoad();
+		RoadsService.saveARoad(roadCode, roadName, roadProvince, roadInterProvince, roadPoints, roadTypeCode, null, roadMaxSpeed, u.getUsername(), roadCreateDateTime);
 		return true;
 	}
 	@RequestMapping(value="/editPoint",method=RequestMethod.GET)
@@ -79,5 +93,8 @@ public class MapStreetManipulationControler extends BaseWeb {
 	public @ResponseBody List<Road> getListStreetName(@PathVariable("code") String provinceCode){
 		List<Road> roads = RoadsService.getListByProvince(provinceCode);
 		return roads;
+	}
+	String name(){
+		return "mapstreetmanipulation::";
 	}
 }
