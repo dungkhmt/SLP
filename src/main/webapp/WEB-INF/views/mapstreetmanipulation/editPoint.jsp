@@ -52,17 +52,39 @@ function initialize() {
 	});
 	road.setMap(map);
 	map.addListener('click', function(event){
+		var pos = event.latLng;
+		console.log("position clicked: ("+pos.lat()+", "+pos.lng()+")");
 		var markerPoint = new google.maps.Marker({
 			map:map,
-			position:event.latLng,
+			position:pos,
 			icon:"https://www.google.com/mapfiles/marker_green.png"
 		});
-
-		road.getPath().push(event.latLng);
+		var path = road.getPath();
+		console.log("path: "+JSON.stringify(path));
+		//console.log("path length: "+path.length);
+		var indexMax=0;
+		var max = -10000000;
+		for(var i=0; i<path.length-1; i++){
+			var latlngA = path.getAt(i);
+			var latlngB = path.getAt(i+1);
+			//console.log("latlngA["+i+"]: "+JSON.stringify(latlngA));
+			//console.log("latlngB["+i+"]: "+JSON.stringify(latlngB));
+			var tmp = angleABC(latlngA.lat(), latlngA.lng(), pos.lat(), pos.lng(), latlngB.lat(), latlngB.lng());
+			//console.log("goc giua "+i+" va "+(i+1)+": "+tmp);
+			if(tmp > max ){
+				max = tmp;
+				indexMax = i+1;
+			}
+			//console.log("latlng["+i+"]:"+JSON.stringify(latlng));
+		}
+		console.log("index of point insert: "+ indexMax);
+		path.insertAt(indexMax,pos);
+		console.log("path : "+JSON.stringify(path));
+		//road.getPath().push(event.latLng);
 		markerPoint.addListener('click',function(){
 			markerPoint.setMap(null);
 			var index = road.getPath().indexOf(this.getPosition());
-			road.getPath().splice(index,1);
+			road.getPath().removeAt(index);
 		});
 	});
 }
@@ -70,18 +92,20 @@ function initialize() {
 $(document).ready(function(){
 	$('#select-listProvince').change(function(){
 		var province = $(this).val();
-		console.log("province code"+province);
+		//console.log("province code"+province);
 		$.ajax({
 			type: 'GET',
 			url: baseUrl + "/mapstreetmanipulation/getListStreetName/"+province,
 			contentType: 'application/json',
 			success: function(response){
-				console.log("response:"+response);
+				//console.log("response:"+JSON.stringify(response));
 				dataResponse = response;
 				for(var i=0; i<response.length; i++){
+					//console.log("response["+i+"].RoadCode"+response[i].roadCode);
+					//console.log("response["+i+"].RoadName"+response[i].roadName);
 					$('#select-listStreet').append($('<option>', {
-					    value: response[i].RoadCode,
-					    text: response[i].RoadName
+					    value: response[i].roadCode,
+					    text: response[i].roadName
 					}));
 				}
 			}
@@ -90,14 +114,21 @@ $(document).ready(function(){
 	
 	
 	$('#select-listStreet').change(function(){
+		initialize();
 		var street = $(this).val();
-		for(var i=0; dataResponse.length; i++){
-			if(dataResponse[i].RoadCode==street){
+		for(var i=0; i < dataResponse.length; i++){
+			if(dataResponse[i].roadCode==street){
 				//roadCodeSelected = dataResponse[i].RoadCode;
-				var roadPoints = dataResponse[i].RoadPoints;
+				var roadPoints = dataResponse[i].roadPoints;
 				var roadPointLatLngs = roadPoints.split(":");
+				//console.log("roadPointLatLngs"+roadPointLatLngs)
 				for(var j=0; j<roadPointLatLngs.length; j++){
-					var point = new google.maps.LatLng(roadPointLatLngs[j]);
+					//console.log("roadPointLatLngs["+j+"]"+roadPointLatLngs[j]);
+					var index = roadPointLatLngs[j].indexOf(",");
+					var lat = parseFloat(roadPointLatLngs[j].substring(0,index));
+					var lng = parseFloat(roadPointLatLngs[j].substring(index+1,roadPointLatLngs[j].length));
+					var point = new google.maps.LatLng(lat,lng);
+					//console.log("point["+j+"]"+JSON.stringify(point));
 					var markerPoint = new google.maps.Marker({
 						map:map,
 						position:point,
@@ -106,9 +137,9 @@ $(document).ready(function(){
 
 					road.getPath().push(point);
 					markerPoint.addListener('click',function(){
-						markerPoint.setMap(null);
+						this.setMap(null);
 						var index = road.getPath().indexOf(this.getPosition());
-						road.getPath().splice(index,1);
+						road.getPath().removeAt(index);
 					});
 				}
 				break;
@@ -117,13 +148,56 @@ $(document).ready(function(){
 	});
 	$('#btn-saveRoad').click(function(){
 		var roadCodeSelected = $('#select-listStreet').val();
-		var dataSend = road.getPath().join(":");
+		var path = road.getPath();
+		var dataPreSend=[];
+		for(var i=0; i<path.length; i++){
+			var latlng = path.getAt(i);
+			var tmp = latlng.lat()+", "+latlng.lng();
+			dataPreSend.push(tmp);
+		}
+		dataSend = dataPreSend.join(":");
 		console.log("dataSend when click button: "+dataSend);
 		$.ajax({
 			type: 'POST',
 			url : baseUrl + "/mapstreetmanipulation/updateRoad/" + roadCodeSelected,
-			
+			data: dataSend,
+			contentType: 'application/text',
+			success: function(response){
+				alert("ok");
+			}
 		})
 	});
 });
+function angle(x1,y1,x2,y2){
+	var dx = x1 - x2;
+	var dy = y1 - y2;
+	if(Math.abs(dx) < 0.0000001){
+		if(dy > 0) return Math.PI/2 + Math.PI/2+Math.PI;
+		else return Math.PI/2;
+	}
+	var angle = Math.atan(Math.abs(dy)/Math.abs(dx));
+	if(dx > 0){
+		if(dy < 0) return Math.PI-angle;
+		else if(dy > 0) return Math.PI + angle;
+		else return Math.PI;
+	}else{
+		if(dy < 0) return angle;
+		else if(dy > 0) return 2*Math.PI - angle;
+		else return 0;
+	}
+}
+
+function angleABC(XA,YA,XB,YB,XC,YC){
+	//console.log("angleABC("+XA+", "+YA+", "+XB+", "+YB+", "+XC+", "+YC+")")
+	var a = angle(XB,YB,XA,YA);
+	//console.log("a="+a);
+	var c = angle(XB,YB,XC,YC);
+	//console.log("c="+c);
+	var r = a-c;
+	while(r < 0) r += 2*Math.PI;
+	while(r > 2*Math.PI) r -= 2*Math.PI;
+	if(r > Math.PI) r = r - Math.PI;
+	//console.log("r="+r);
+	return r;
+}
 </script>
