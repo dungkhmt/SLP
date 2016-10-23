@@ -41,4 +41,21 @@ public class RoadsServiceImpl implements RoadsService {
 		return RoadsDAO.saveARoad(r);
 	}
 
+	@Override
+	public Road loadARoadByRoadCode(String roadCode) {
+		// TODO Auto-generated method stub
+		return RoadsDAO.loadARoadByRoadCode(roadCode);
+	}
+
+	@Override
+	public void updateARoad(String roadCode, String RoadPoints) {
+		// TODO Auto-generated method stub
+		Road road = RoadsDAO.loadARoadByRoadCode(roadCode);
+		if(road != null){
+			road.setRoadPoints(RoadPoints);
+			RoadsDAO.updateARoad(road);
+		}
+		
+	}
+
 }

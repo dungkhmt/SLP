@@ -96,6 +96,14 @@ public class MapStreetManipulationControler extends BaseWeb {
 		List<Road> roads = RoadsService.getListByProvince(provinceCode);
 		return roads;
 	}
+	
+	@RequestMapping(value="/updateRoad/{code}")
+	public @ResponseBody String updateRoad(@PathVariable("code") String roadCode, @RequestBody String roadPoints){
+		System.out.println(name()+"updateRoad---roadPoints"+roadPoints);
+		//RoadsService.updateARoad(roadCode, roadPoints);
+		return "400";
+	}	
+
 	String name(){
 		return "mapstreetmanipulation::";
 	}

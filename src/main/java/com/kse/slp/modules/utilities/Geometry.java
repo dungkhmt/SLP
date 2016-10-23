@@ -31,6 +31,7 @@ public class Geometry {
 	}
 	public static double angleABC(double XA, double YA, double XB, double YB, double XC, double YC){
 		// return the angle ABC where A = (XA, YA), B=(XB,YB), C = (XC, YC)
+		// x equiv latitude, y equiv langitude
 		double a = angle(XB,YB,XA,YA);
 		double c = angle(XB,YB,XC, YC);
 		
