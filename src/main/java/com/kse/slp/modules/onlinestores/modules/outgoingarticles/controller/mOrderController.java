@@ -46,8 +46,8 @@ import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodSolution;
 import com.kse.slp.modules.api.deliverygoods.model.DeliveryRequest;
 import com.kse.slp.modules.api.deliverygoods.model.Shipper;
 import com.kse.slp.modules.api.deliverygoods.model.Store;
-import com.kse.slp.modules.containerdelivery.model.RequestBatch;
-import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
+import com.kse.slp.modules.containerdelivery.model.RequestBatchOnlineStore;
+import com.kse.slp.modules.containerdelivery.service.mRequestBatchOnlineStoreService;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteJSONResponse;
@@ -91,7 +91,7 @@ public class mOrderController extends BaseWeb{
 	@Autowired
 	mOrderArticlesService mOrderArticlesService;
 	@Autowired
-	mRequestBatchService mRequestBatchService;
+	mRequestBatchOnlineStoreService mRequestBatchService;
 	@Autowired
 	CustomerService CustomerService;
 	@Autowired
@@ -123,7 +123,7 @@ public class mOrderController extends BaseWeb{
 		String CustomerCode = sc.getSTFCUS_CustomerCode();
 		//System.out.println(name()+"upLoadFile--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
-		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
+		List<RequestBatchOnlineStore> lstreBatch = mRequestBatchService.getList(CustomerCode);
 		model.put("lstreBatch", lstreBatch);
 		model.put("orderFormAdd", new mOrderFormAdd());
 		List<mArticlesCategory> list= articleService.getList();
@@ -209,7 +209,7 @@ public class mOrderController extends BaseWeb{
 		String CustomerCode = sc.getSTFCUS_CustomerCode();
 		//System.out.println(name()+"upLoadFile--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
-		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
+		List<RequestBatchOnlineStore> lstreBatch = mRequestBatchService.getList(CustomerCode);
 		model.put("lstreBatch", lstreBatch);
 		model.put("formAdd",new mFormAddFileExcel());
 		
@@ -402,7 +402,7 @@ public class mOrderController extends BaseWeb{
 		String CustomerCode = sc.getSTFCUS_CustomerCode();
 		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
-		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
+		List<RequestBatchOnlineStore> lstreBatch = mRequestBatchService.getList(CustomerCode);
 		
 		model.put("lstreBatch", lstreBatch);
 		
@@ -513,7 +513,7 @@ public class mOrderController extends BaseWeb{
 		String CustomerCode = sc.getSTFCUS_CustomerCode();
 		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
-		List<RequestBatch> lstreBatch = mRequestBatchService.getList(CustomerCode);
+		List<RequestBatchOnlineStore> lstreBatch = mRequestBatchService.getList(CustomerCode);
 		List<mShippers> lstShipper = mShippersService.getList();
 		model.put("lstBatch", lstreBatch);
 		model.put("lstShipper", lstShipper);

@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tblrequestbatch")
-public class RequestBatch implements Serializable {
+@Table(name="tblrequestbatchcontainerdelivery")
+public class RequestBatchContainerDelivery implements Serializable {
 	@Id
 	@GeneratedValue
 	int REQBAT_ID;
@@ -40,5 +40,6 @@ public class RequestBatch implements Serializable {
 	public void setREQBAT_CustomerCode(String rEQBAT_CustomerCode) {
 		REQBAT_CustomerCode = rEQBAT_CustomerCode;
 	}
+	
 	
 }
