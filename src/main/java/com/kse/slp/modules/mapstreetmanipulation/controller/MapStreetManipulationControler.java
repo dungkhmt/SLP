@@ -74,11 +74,13 @@ public class MapStreetManipulationControler extends BaseWeb {
 		int roadMaxSpeed=r.getMaxSpeed();
 		String roadCreateDateTime= GenerationDateTimeFormat.genDateTimeFormatyyyy_MM_ddhhMMssCurrently();
 		String roadPoints="";
-		for(int i=0;i< r.getListPoint().size();i++){
+		for(int i=0;i< r.getListPoint().size()-1;i++){
 			roadPoints+=r.getListPoint().get(i).getLat()+", "+r.getListPoint().get(i).getLng()+" : ";
 		}
+		roadPoints+=r.getListPoint().get(r.getListPoint().size()).getLat()+", "+r.getListPoint().get(r.getListPoint().size()).getLng();
+		
 		String RoadBidirectional=r.getOptionRoad();
-		RoadsService.saveARoad(roadCode, roadName, roadProvince, roadInterProvince, roadPoints, roadTypeCode, null, roadMaxSpeed, u.getUsername(), roadCreateDateTime);
+		RoadsService.saveARoad(roadCode, roadName, roadProvince, roadInterProvince, roadPoints, roadTypeCode, RoadBidirectional, roadMaxSpeed, u.getUsername(), roadCreateDateTime);
 		return true;
 	}
 	@RequestMapping(value="/editPoint",method=RequestMethod.GET)

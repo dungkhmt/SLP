@@ -65,7 +65,7 @@ body{
      			<div class="card-block">
      				<h4 class="card-title"><b>Quản lý vận chuyển container</b></h4>
      			</div>
-     			<img class="card-img" style="width:538px;" src="<c:url value="/assets/img/home/container.jpg" />">
+     			<img class="card-img" src="<c:url value="/assets/img/home/container.jpg" />">
      		</div>
      		</a>
      	</div> 
@@ -76,7 +76,7 @@ body{
      			<div class="card-block">
      				<h4 class="card-title"><b>Quản lý giao hàng online</b></h4>
      			</div>
-     			<img class="card-img" style="width:538px; height:254px;" src="<c:url value="/assets/img/home/online-shopping.jpg" />">
+     			<img class="card-img" src="<c:url value="/assets/img/home/online-shopping.jpg" />">
      		</div>
      		</a>
      	</div>   
@@ -89,7 +89,7 @@ body{
      			<div class="card-block">
      				<h4 class="card-title"><b>Dịch vụ Dichung taxi</b></h4>
      			</div>
-     			<img class="card-img" style="width:538px;" src="<c:url value="/assets/img/home/dichung.png" />">
+     			<img class="card-img" src="<c:url value="/assets/img/home/dichung.png" />">
      		</div>
      		</a>
      	</div> 
@@ -99,7 +99,7 @@ body{
      			<div class="card-block">
      				<h4 class="card-title"><b>Quản lý danh mục</b></h4>
      			</div>
-     			<img class="card-img" style="width:538px; high: 150px" src="<c:url value="/assets/img/home/settings.png" />">
+     			<img class="card-img"  src="<c:url value="/assets/img/home/settings.png" />">
      		</div>
      		</a>
      	</div> 
@@ -109,7 +109,7 @@ body{
      			<div class="card-block">
      				<h4 class="card-title"><b>Quản lý bản đồ</b></h4>
      			</div>
-     			<img class="card-img" style="width:520px; high: 300px" src="<c:url value="/assets/img/home/slp_map.png" />">
+     			<img class="card-img"  src="<c:url value="/assets/img/home/slp_map.png" />">
      		</div>
      		</a>
      	</div>   	   

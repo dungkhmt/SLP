@@ -72,8 +72,9 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruL-HLFSNh6G2MLhjS-eBTea7r7EFa5A&libraries=places&callback=initialize" async defer></script>
 <script>
 var map;
-
+var listPoint=[];
 var listMarker=[];
+var poliline;
 function initialize() {
 	//construct google map
 	var mapProp = {
@@ -81,15 +82,32 @@ function initialize() {
 		zoom: 12,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
+	poliline = new google.maps.Polyline({
+		
+		strokeColor: 'blue',
+	    strokeOpacity: 1.0,
+	    strokeWeight: 3,
+	    map:map
+	});
+	
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 	map.addListener('click', function(event){
 		console.log(event.latLng.lat());
-		listMarker.push(new google.maps.Marker({
+		marker=new google.maps.Marker({
 			map:map,
 			position:event.latLng,
 			icon:"https://www.google.com/mapfiles/marker_green.png"
-			}));
-		console.log(listMarker[0].getPosition());
+			});
+		marker.addListener('click', function(){
+			listMarker.splice(listMarker.indexOf(this),1);
+			var index= poliline.getPath().indexOf(this.getPosition());
+			poliline.getPath().removeAt(index);
+			this.setMap(null);
+			
+		});
+		listMarker.push(marker);
+		poliline.getPath().push(event.latLng);
+		poliline.setMap(map);
 	});
 }
 

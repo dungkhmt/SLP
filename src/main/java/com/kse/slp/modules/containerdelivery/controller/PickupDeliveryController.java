@@ -315,7 +315,7 @@ public class PickupDeliveryController extends BaseWeb{
 			PickupDeliveryRoute[] lPDR=sol.getRoutes();
 			for(int i=0;i<lPDR.length;i++){
 				PickupDeliveryRouteElement lPDRE[]= lPDR[i].getRouteElements();
-				String routeCode="conatainerdelivery"+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently();
+				String routeCode="conatainerdelivery"+GenerationDateTimeFormat.genDateTimeFormatyyyyMMddCurrently()+"T"+i;
 				routeService.saveARoute(routeCode, "containerdelivery", "-", Constants.ROUTE_STATUS_CONFIRMED, batchCode);
 				for(int j=0;j<lPDRE.length;j++){
 					String tmp[]=lPDRE[j].getRequestCode().split("-");
