@@ -168,6 +168,7 @@ $(document).ready(function(){
 		})
 	});
 });
+/*
 function angle(x1,y1,x2,y2){
 	var dx = x1 - x2;
 	var dy = y1 - y2;
@@ -199,5 +200,17 @@ function angleABC(XA,YA,XB,YB,XC,YC){
 	if(r > Math.PI) r = r - Math.PI;
 	//console.log("r="+r);
 	return r;
+}*/
+
+function distance(x1,y1,x2,y2){
+	return Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2,2));	
+}
+
+function angleABC(XA,YA,XB,YB,XC,YC){
+	var AB = distance(XA,YA,XB,YB);
+	var BC = distance(XB,YB,XC,YC);
+	var AC = distance(XA,YA,XC,YC);
+	var cosABC = (Math.pow(AB,2) + Math.pow(BC,2) - Math.pow(AC,2))/(2*AB*BC);
+	return Math.acos(cosABC);
 }
 </script>
