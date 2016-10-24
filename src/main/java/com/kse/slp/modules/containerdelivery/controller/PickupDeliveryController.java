@@ -45,11 +45,11 @@ import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliveryRout
 import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliveryRouteElement;
 import com.kse.slp.modules.api.pickupdeliverycontainers.model.PickupDeliverySolution;
 import com.kse.slp.modules.api.pickupdeliverycontainers.model.Truck;
-import com.kse.slp.modules.containerdelivery.model.RequestBatch;
+import com.kse.slp.modules.containerdelivery.model.RequestBatchContainerDelivery;
 import com.kse.slp.modules.containerdelivery.model.RouteContainerDeliveryJson;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
-import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
+import com.kse.slp.modules.containerdelivery.service.mRequestBatchContainerDeliveryService;
 import com.kse.slp.modules.containerdelivery.validation.mOrderPickupDeliveryFormAdd;
 import com.kse.slp.modules.dichung.model.FormAddFileExcel;
 import com.kse.slp.modules.dichung.model.RouteDiChungJson;
@@ -87,7 +87,7 @@ public class PickupDeliveryController extends BaseWeb{
 	@Autowired
 	mShippersService shipperService;
 	@Autowired
-	mRequestBatchService requestBatchService;
+	mRequestBatchContainerDeliveryService requestBatchService;
 	@Autowired
 	StaffCustomerServiceImpl staffCustomerService;
 	/*future fix
@@ -117,7 +117,7 @@ public class PickupDeliveryController extends BaseWeb{
 	public String addAPickupDeliveryOrder(ModelMap model, HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		List<RequestBatchContainerDelivery> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		model.put("orderPickupDeliveryFormAdd", new mOrderPickupDeliveryFormAdd());
 		log.info(u.getUsername());
@@ -128,7 +128,7 @@ public class PickupDeliveryController extends BaseWeb{
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		List<RequestBatchContainerDelivery> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		model.put("formAdd", new FormAddFileExcel());
 		
@@ -224,7 +224,7 @@ public class PickupDeliveryController extends BaseWeb{
 		
 		
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		List<RequestBatchContainerDelivery> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		
 		model.put("listBatch", listBatch);
 		return "containerdelivery.viewallroutecontainer";
@@ -252,7 +252,7 @@ public class PickupDeliveryController extends BaseWeb{
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		List<RequestBatchContainerDelivery> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		
 		model.put("listBatch", listBatch);
 		return "containerdelivery.createAutoRoute";

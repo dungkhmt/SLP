@@ -43,9 +43,9 @@ import com.kse.slp.modules.api.dichung.model.SharedTaxiRequest;
 import com.kse.slp.modules.api.dichung.model.SharedTaxiRoute;
 import com.kse.slp.modules.api.dichung.model.SharedTaxiRouteElement;
 import com.kse.slp.modules.api.dichung.model.SharedTaxiSolution;
-import com.kse.slp.modules.containerdelivery.model.RequestBatch;
+import com.kse.slp.modules.containerdelivery.model.RequestBatchDiChung;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
-import com.kse.slp.modules.containerdelivery.service.mRequestBatchService;
+import com.kse.slp.modules.containerdelivery.service.mRequestBatchDiChungService;
 import com.kse.slp.modules.dichung.dao.RouteDetailDiChungDAO;
 import com.kse.slp.modules.dichung.model.RequestDiChung;
 import com.kse.slp.modules.dichung.model.RouteDetailDiChung;
@@ -69,7 +69,7 @@ import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 @RequestMapping(value = {"/dichung"})
 public class DiChungControler extends BaseWeb {
 	@Autowired
-	mRequestBatchService requestBatchService;
+	mRequestBatchDiChungService requestBatchService;
 	@Autowired
 	RequestDiChungService requestDiChungService;
 	@Autowired
@@ -92,7 +92,7 @@ public class DiChungControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		List<RequestBatchDiChung> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		
 		model.put("listBatch", listBatch);
 		model.put("formAdd", new FormAddFileExcel());
@@ -117,7 +117,7 @@ public class DiChungControler extends BaseWeb {
 			InputStream readFile = file.getInputStream();
 			XSSFWorkbook wb = new XSSFWorkbook(readFile);
 			XSSFSheet sheet = wb.getSheetAt(1);
-			XSSFSheet sheet2 = wb.getSheetAt(2);
+			
 			XSSFRow row;
 			//get batch code
 			//row = sheet2.getRow(0);
@@ -165,7 +165,7 @@ public class DiChungControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		List<RequestBatchDiChung> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		return "dichung.createroute";
 	}
@@ -263,7 +263,7 @@ public class DiChungControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
-		List<RequestBatch> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
+		List<RequestBatchDiChung> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
 		List<mShippers> lSH=shipperService.getList();
 		model.put("listShipper", lSH);

@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kse.slp.dao.BaseDao;
-import com.kse.slp.modules.containerdelivery.model.RequestBatch;
 
-@Repository("mRequestBatchDAO")
+import com.kse.slp.modules.containerdelivery.model.RequestBatchDiChung;
+
+@Repository("mRequestBatchDiChungDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class mRequestBatchDAOImpl extends BaseDao implements mRequestBatchDAO {
+public class mRequestBatchDiChungDAOImpl extends BaseDao implements mRequestBatchDiChungDAO {
 	@Autowired
     private SessionFactory sessionFactory;
 
@@ -22,12 +23,12 @@ public class mRequestBatchDAOImpl extends BaseDao implements mRequestBatchDAO {
         this.sessionFactory = sessionFactory;
     }
     @Override
-	public List<RequestBatch> getList() {
+	public List<RequestBatchDiChung> getList() {
 		// TODO Auto-generated method stub
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(RequestBatch.class);
-			List<RequestBatch > list = criteria.list();
+			Criteria criteria = getSession().createCriteria(RequestBatchDiChung.class);
+			List<RequestBatchDiChung > list = criteria.list();
 			commit();
 			return list;
 		}catch(HibernateException e){
@@ -41,13 +42,13 @@ public class mRequestBatchDAOImpl extends BaseDao implements mRequestBatchDAO {
 		}
 	}
 	@Override
-	public RequestBatch getByCode(String code) {
+	public RequestBatchDiChung getByCode(String code) {
 		// TODO Auto-generated method stub
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(RequestBatch.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			Criteria criteria = getSession().createCriteria(RequestBatchDiChung.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			criteria.add(Restrictions.eq("REQBAT_Code", code));
-			RequestBatch batch = (RequestBatch)criteria.uniqueResult();
+			RequestBatchDiChung batch = (RequestBatchDiChung)criteria.uniqueResult();
 			commit();
 			return batch;
 		}catch(HibernateException e){
@@ -61,12 +62,12 @@ public class mRequestBatchDAOImpl extends BaseDao implements mRequestBatchDAO {
 		}
 	}
 	@Override
-	public List<RequestBatch> getList(String CustomerCode) {
+	public List<RequestBatchDiChung> getList(String CustomerCode) {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(RequestBatch.class);
+			Criteria criteria = getSession().createCriteria(RequestBatchDiChung.class);
 			criteria.add(Restrictions.eq("REQBAT_CustomerCode", CustomerCode));
-			List<RequestBatch > list = criteria.list();
+			List<RequestBatchDiChung > list = criteria.list();
 			commit();
 			return list;
 		}catch(HibernateException e){
