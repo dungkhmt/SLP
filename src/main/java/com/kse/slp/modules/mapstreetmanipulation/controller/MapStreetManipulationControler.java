@@ -106,7 +106,21 @@ public class MapStreetManipulationControler extends BaseWeb {
 		RoadsService.updateARoad(roadCode, roadPoints);
 		return "400";
 	}	
-
+	
+	@RequestMapping(value = "/viewStreets")
+	public String viewStreets(ModelMap model){
+		List<Province> lstProvinces = ProvinceService.getListProvince();
+		model.put("lstProvinces", lstProvinces);
+		
+		List<Road>  lstRoads = RoadsService.getList();
+		model.put("lstRoads", lstRoads);
+		
+		String jsonRoads = new Gson().toJson(lstRoads);
+		model.put("jsonRoads",jsonRoads);
+		
+		return "mapstreetmanipulation.viewStreets";
+	}
+	
 	String name(){
 		return "mapstreetmanipulation::";
 	}

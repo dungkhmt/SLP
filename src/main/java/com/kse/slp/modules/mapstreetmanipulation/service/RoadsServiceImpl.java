@@ -58,4 +58,10 @@ public class RoadsServiceImpl implements RoadsService {
 		
 	}
 
+	@Override
+	public List<Road> getList() {
+		// TODO Auto-generated method stub
+		return RoadsDAO.getList();
+	}
+
 }

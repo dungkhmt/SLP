@@ -9,4 +9,5 @@ public interface RoadsDAO {
 	public int saveARoad(Road r);
 	public void updateARoad(Road road);
 	public Road loadARoadByRoadCode(String roadCode);
+	public List<Road> getList();
 }
