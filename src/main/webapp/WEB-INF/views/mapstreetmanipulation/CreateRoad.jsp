@@ -135,16 +135,9 @@ function saveRoad(){
 		data: jsonData,
 		contentType: 'application/json',
 		success: function(response){
-			console.log("success--"+response);
-			if(response=="400"){
-				window.location = baseUrl + '/';
-			}
-			if(response=="404"){
-				alert("Error");
-			}
-		},
-		error: function(response){
-			console.log("error--"+JSON.stringify(response));
+			alert("DONE");
+			window.location = baseUrl + "/mapstreetmanipulation/create-road"
+		
 		}
 	});
 }

@@ -77,7 +77,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 		for(int i=0;i< r.getListPoint().size()-1;i++){
 			roadPoints+=r.getListPoint().get(i).getLat()+", "+r.getListPoint().get(i).getLng()+" : ";
 		}
-		roadPoints+=r.getListPoint().get(r.getListPoint().size()).getLat()+", "+r.getListPoint().get(r.getListPoint().size()).getLng();
+		roadPoints+=r.getListPoint().get(r.getListPoint().size()-1).getLat()+", "+r.getListPoint().get(r.getListPoint().size()-1).getLng();
 		
 		String RoadBidirectional=r.getOptionRoad();
 		RoadsService.saveARoad(roadCode, roadName, roadProvince, roadInterProvince, roadPoints, roadTypeCode, RoadBidirectional, roadMaxSpeed, u.getUsername(), roadCreateDateTime);
