@@ -85,7 +85,6 @@ function initialize(){
 }
 
 function addStreets(roadCode,elem){
-	console.log("checkbox onchange");
 	var indexRoad = roadViewed.indexOf(roadCode);
 	if(elem.checked){
 		if(indexRoad == -1){

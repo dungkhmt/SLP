@@ -36,6 +36,7 @@ var map;
 var dataResponse;
 //var listPoint=[];
 var road;
+var listMarker = [];
 function initialize() {
 	//construct google map
 	var mapProp = {
@@ -47,8 +48,8 @@ function initialize() {
 	road = new google.maps.Polyline({
 		strokeColor: '#FF0000',
 	    strokeOpacity: 1.0,
-	    strokeWeight: 3
-	    
+	    strokeWeight: 3,
+	    draggable: true
 	});
 	road.setMap(map);
 	map.addListener('click', function(event){
@@ -57,6 +58,7 @@ function initialize() {
 		var markerPoint = new google.maps.Marker({
 			map:map,
 			position:pos,
+			draggable: true,
 			icon:"https://www.google.com/mapfiles/marker_green.png"
 		});
 		var path = road.getPath();
@@ -77,17 +79,46 @@ function initialize() {
 			}
 			//console.log("latlng["+i+"]:"+JSON.stringify(latlng));
 		}
-		console.log("index of point insert: "+ indexMax);
-		path.insertAt(indexMax,pos);
-		console.log("path : "+JSON.stringify(path));
+		if(max < (Math.PI)/2){
+			//console.log("max < pi/2 --- max="+max+" ---- index="+indexMax);
+			var latlng0 = path.getAt(0);
+			var latlngN = path.getAt(path.length-1);
+			var distancePosTo0 = distance(latlng0.lat(),latlng0.lng(),pos.lat(),pos.lng());
+			var distancePosToN = distance(latlngN.lat(),latlngN.lng(),pos.lat(),pos.lng());
+			if(distancePosTo0 > distancePosToN){
+				path.push(pos);
+				listMarker.push(markerPoint);
+			}else{
+				path.insertAt(0,pos);
+				listMarker.splice(0,0,markerPoint);
+			}
+		}else{
+			//console.log("index of point insert: "+ indexMax);
+			path.insertAt(indexMax,pos);
+			listMarker.splice(indexMax,0,markerPoint);
+			//console.log("path : "+JSON.stringify(path));
+				
+		}
 		//road.getPath().push(event.latLng);
 		markerPoint.addListener('click',function(){
-			markerPoint.setMap(null);
+			this.setMap(null);
+			var indexMarker = listMarker.indexOf(this);
+			listMarker.splice(indexMarker,1);
 			var index = road.getPath().indexOf(this.getPosition());
 			road.getPath().removeAt(index);
 		});
+		markerPoint.addListener('dragEnd',handleEventDrag);
+		//markerPoint.addListener('dragEnd',handleEventDrag);
 	});
 }
+
+function handleEventDrag(event){
+	console.log("start dragEnd function");
+	var indexMarker = listMarker.indexOf(this);
+	road.getPath().removeAt(indexMarker);
+	road.getPath().insertAt(indexMarker,this.getPosition());
+}
+
 
 $(document).ready(function(){
 	$('#select-listProvince').change(function(){
@@ -132,15 +163,21 @@ $(document).ready(function(){
 					var markerPoint = new google.maps.Marker({
 						map:map,
 						position:point,
+						draggable : true,
 						icon:"https://www.google.com/mapfiles/marker_green.png"
 					});
 
 					road.getPath().push(point);
+					listMarker.push(markerPoint);
 					markerPoint.addListener('click',function(){
 						this.setMap(null);
+						var indexMarker = listMarker.indexOf(this);
+						listMarker.splice(indexMarker, 1, this);
 						var index = road.getPath().indexOf(this.getPosition());
 						road.getPath().removeAt(index);
 					});
+					//markerPoint.addListener('drag',handleEventDrag);
+					markerPoint.addListener('dragend',handleEventDrag);
 				}
 				break;
 			}
