@@ -43,7 +43,7 @@
 							<th>Tên đường</th>
 							<th>Loại đường</th>
 							<th>Tốc độ tối đa</th>
-							<th></th>
+							<th><input type="checkbox" onClick="checkAll(this)"/></th>
 							<th>Tỉnh thành</th>
 						</tr>
 					</thead>
@@ -53,7 +53,7 @@
 								<td><c:out value="${road.roadName}"/></td>
 								<td><c:out value="${road.roadTypeCode}"/></td>
 								<td><c:out value="${road.roadMaxSpeed}"/></td>
-								<td><input type="checkbox" onchange="addStreets('${road.roadCode}',this)"/></td>
+								<td><input type="checkbox" name="checkStreet" onchange="addStreets('${road.roadCode}',this)"/></td>
 								<td><c:out value="${road.roadProvince}"/></td>
 							</tr>
 						</c:forEach>
@@ -85,6 +85,7 @@ function initialize(){
 }
 
 function addStreets(roadCode,elem){
+	console.log("checkbox onchange");
 	var indexRoad = roadViewed.indexOf(roadCode);
 	if(elem.checked){
 		if(indexRoad == -1){
@@ -94,6 +95,28 @@ function addStreets(roadCode,elem){
 		if(indexRoad != -1){
 			roadViewed.splice(indexRoad,1);
 		}
+	}
+}
+
+function checkAll(elem){
+	var checkBoxes = document.getElementsByName('checkStreet');
+	if(elem.checked){
+		for(var i=0; i<roads.length; i++){
+			if(roadViewed.indexOf(roads[i].RoadCode) == -1){
+				roadViewed.push(roads[i].RoadCode);
+			}	
+		}	
+	}else{
+		for(var i=0; i<roads.length; i++){
+			var test = roadViewed.indexOf(roads[i].RoadCode);
+			if( test != -1){
+				roadViewed.splice(test,1);
+			}	
+		}
+	}
+	
+	for(var i=0; i<checkBoxes.length; i++){
+		checkBoxes[i].checked = elem.checked;
 	}
 }
 
