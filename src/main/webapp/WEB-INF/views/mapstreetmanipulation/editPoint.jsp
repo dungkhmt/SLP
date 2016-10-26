@@ -107,7 +107,7 @@ function initialize() {
 			var index = road.getPath().indexOf(this.getPosition());
 			road.getPath().removeAt(index);
 		});
-		markerPoint.addListener('dragEnd',handleEventDrag);
+		markerPoint.addListener('dragend',handleEventDrag);
 		//markerPoint.addListener('dragEnd',handleEventDrag);
 	});
 }
@@ -172,7 +172,7 @@ $(document).ready(function(){
 					markerPoint.addListener('click',function(){
 						this.setMap(null);
 						var indexMarker = listMarker.indexOf(this);
-						listMarker.splice(indexMarker, 1, this);
+						listMarker.splice(indexMarker, 1);
 						var index = road.getPath().indexOf(this.getPosition());
 						road.getPath().removeAt(index);
 					});
