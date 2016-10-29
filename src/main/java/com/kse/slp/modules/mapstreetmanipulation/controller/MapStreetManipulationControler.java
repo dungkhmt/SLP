@@ -74,12 +74,15 @@ public class MapStreetManipulationControler extends BaseWeb {
 		int roadMaxSpeed=r.getMaxSpeed();
 		String roadCreateDateTime= GenerationDateTimeFormat.genDateTimeFormatyyyy_MM_ddhhMMssCurrently();
 		String roadPoints="";
+		if(r.getListPoint() != null && r.getListPoint().size() > 0){
 		for(int i=0;i< r.getListPoint().size()-1;i++){
 			roadPoints+=r.getListPoint().get(i).getLat()+", "+r.getListPoint().get(i).getLng()+" : ";
 		}
 		roadPoints+=r.getListPoint().get(r.getListPoint().size()-1).getLat()+", "+r.getListPoint().get(r.getListPoint().size()-1).getLng();
+		}
 		
 		String RoadBidirectional=r.getOptionRoad();
+		System.out.println(name() + "::saveARoad, start save to DB, road name = " + r.getNameStreet());
 		RoadsService.saveARoad(roadCode, roadName, roadProvince, roadInterProvince, roadPoints, roadTypeCode, RoadBidirectional, roadMaxSpeed, u.getUsername(), roadCreateDateTime);
 		return true;
 	}
@@ -103,7 +106,21 @@ public class MapStreetManipulationControler extends BaseWeb {
 		RoadsService.updateARoad(roadCode, roadPoints);
 		return "400";
 	}	
-
+	
+	@RequestMapping(value = "/viewStreets")
+	public String viewStreets(ModelMap model){
+		List<Province> lstProvinces = ProvinceService.getListProvince();
+		model.put("lstProvinces", lstProvinces);
+		
+		List<Road>  lstRoads = RoadsService.getList();
+		model.put("lstRoads", lstRoads);
+		
+		String jsonRoads = new Gson().toJson(lstRoads);
+		model.put("jsonRoads",jsonRoads);
+		
+		return "mapstreetmanipulation.viewStreets";
+	}
+	
 	String name(){
 		return "mapstreetmanipulation::";
 	}

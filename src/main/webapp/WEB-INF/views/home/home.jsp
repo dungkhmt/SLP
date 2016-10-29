@@ -52,70 +52,93 @@ body{
 			</li>
 		</ul>
 	</nav>
+	
 	<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">Hệ thống lập kế hoạch vận tải người và hàng hoá</h1>
-        </div>
-	</div>
-    <div class="row">
-    	<div class="col-sm-6">
-    		<a href="<c:url value = "/containerdelivery"/>" style="">
-     		<div class="card">
-     			<div class="card-block">
-     				<h4 class="card-title"><b>Quản lý vận chuyển container</b></h4>
-     			</div>
-     			<img class="card-img" style="high:700px;width:500px" src="<c:url value="/assets/img/home/container.jpg" />">
-     		</div>
-     		</a>
-     	</div> 
-     
-     	<div class="col-sm-6">
-     		<a href="<c:url value = "/onlinestore"/>">
-     		<div class="card">
-     			<div class="card-block">
-     				<h4 class="card-title"><b>Quản lý giao hàng online</b></h4>
-     			</div>
-     			<img class="card-img" style="high:700px;width:500px" src="<c:url value="/assets/img/home/online-shopping.jpg" />">
-     		</div>
-     		</a>
-     	</div>   
-	</div>
+	    <div class="row">
+	        <div class="col-lg-12">
+	            <h1 class="page-header">Hệ thống lập kế hoạch vận tải người và hàng hoá</h1>
+	        </div>
+	        <!-- /.col-lg-12 -->
+		</div>
+		<!-- /.row -->
+		
+	    <div class="row">
+	    	<div class="col-sm-4">
+	    		<a href="<c:url value = "/containerdelivery"/>">
+		     		<div class="card">
+		     			<div class="card-block">
+		     				<h4 class="card-title"><b>Quản lý vận chuyển container</b></h4>
+		     			</div>
+		     			<!-- /.card-block -->
+		     			<img class="card-img" style="height:200px;width:348px" src="<c:url value="/assets/img/home/container.jpg" />"/>
+		     		</div>
+		     		<!-- /.card -->
+	     		</a>
+	     	</div> 
+	     	<!-- /.col-sm-4 -->
+	     	
+	     	<div class="col-sm-4">
+	     		<a href="<c:url value = "/onlinestore"/>">
+		     		<div class="card">
+		     			<div class="card-block">
+		     				<h4 class="card-title"><b>Quản lý giao hàng online</b></h4>
+		     			</div>
+		     			<!-- /.card-block -->
+		     			<img class="card-img" style="height:200px;width:348px" src="<c:url value="/assets/img/home/online-shopping.jpg" />">
+		     		</div>
+		     		<!-- /.card -->
+	     		</a>
+	     	</div> 
+	     	<!-- /.col-sm-4 -->  
 	
-    
-    	<div class="col-sm-6">
-    		<a href="<c:url value = "/dichung"/>" style="">
-     		<div class="card">
-     			<div class="card-block">
-     				<h4 class="card-title"><b>Dịch vụ Dichung taxi</b></h4>
-     			</div>
-     			<img class="card-img" style="high:700px;width:500px" src="<c:url value="/assets/img/home/dichung.png" />">
-     		</div>
-     		</a>
-     	</div> 
-     	
-	
-		<div class="col-sm-6">
-    		<a href="<c:url value = "/mapstreetmanipulation"/>" style="">
-     		<div class="card">
-     			<div class="card-block">
-     				<h4 class="card-title"><b>Quản lý bản đồ</b></h4>
-     			</div>
-     			<img class="card-img"  style="high:700px;width:500px" src="<c:url value="/assets/img/home/slp_map.png" />">
-     		</div>
-     		</a>
-     	</div>   
-     	
-     	<div class="col-sm-6">
-    		<a href="<c:url value = "/manage"/>" style="">
-     		<div class="card">
-     			<div class="card-block">
-     				<h4 class="card-title"><b>Quản lý danh mục</b></h4>
-     			</div>
-     			<img class="card-img" style="high:700px;width:500px" src="<c:url value="/assets/img/home/settings.png" />">
-     		</div>
-     		</a>
-     	</div> 	   
-	</div>	
+	    	<div class="col-sm-4">
+	    		<a href="<c:url value = "/dichung"/>">
+		     		<div class="card">
+		     			<div class="card-block">
+		     				<h4 class="card-title"><b>Dịch vụ Dichung taxi</b></h4>
+		     			</div>
+		     			<!-- /.card-block -->
+		     			<img class="card-img" style="height:200px;width:348px" src="<c:url value="/assets/img/home/dichung.png" />">
+		     		</div>
+		     		<!-- /.card -->
+	     		</a>
+	     	</div> 
+	     	<!-- /.col-sm-4 -->
+		</div>
+		<!-- /.row -->
+		
+		<div class="row">
+			<div class="col-sm-4">
+		    	<a href="<c:url value = "/mapstreetmanipulation"/>">
+		     		<div class="card">
+		     			<div class="card-block">
+		     				<h4 class="card-title"><b>Quản lý bản đồ</b></h4>
+		     			</div>
+		     			<!-- /.card-block -->
+		     			<img class="card-img"  style="height:200px;width:348px" src="<c:url value="/assets/img/home/slp_map.png" />"/>
+		     		</div>
+		     		<!-- /.card -->
+		     	</a>
+		     </div>   
+		     <!-- /.col-sm-6(/mapstreetmanipulation) -->
+		     
+	     	<div class="col-sm-4">
+	    		<a href="<c:url value = "/manage"/>">
+		     		<div class="card">
+		     			<div class="card-block">
+		     				<h4 class="card-title"><b>Quản lý danh mục</b></h4>
+		     			</div>
+		     			<!-- /.card-block -->
+		     			<img class="card-img" style="height:200px;width:348px" src="<c:url value="/assets/img/home/settings.png" />">
+		     		</div>
+		     		<!-- /.card -->
+	     		</a>
+	     	</div> 	 
+	     	<!-- /.col-sm-6(/manager) -->  
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container -->
+
 </body>
 </html>

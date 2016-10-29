@@ -104,4 +104,26 @@ public class RoadsDAOImpl extends BaseDao implements RoadsDAO {
 		}
 	}
 
+	@Override
+	public List<Road> getList() {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			Criteria criteria = getSession().createCriteria(Road.class);
+			List<Road> roads = criteria.list();
+			commit();
+			return roads;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
 }
