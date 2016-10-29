@@ -19,7 +19,6 @@ public class UserManagerController {
 	public String home(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		model.put("a", "hello world");
 		return "usermanager.home";
 	}
 

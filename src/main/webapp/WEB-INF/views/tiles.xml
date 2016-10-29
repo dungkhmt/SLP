@@ -155,9 +155,9 @@
     	<put-attribute name="content" value="/WEB-INF/views/dichung/viewRouteDiChung.jsp" /> 
     </definition>
     <!-- Manager -->
-    <definition name="manager.home" extends="layout4">
+    <definition name="manage.home" extends="layout4">
     	<put-attribute name="title" value="Chức năng quản lý danh mục" />
-    	<put-attribute name="content" value="/WEB-INF/views/home/managerhome.jsp" />                
+    	<put-attribute name="content" value="/WEB-INF/views/home/managehome.jsp" />                
     </definition> 
     
     <definition name="usermanager.home" extends="layout4">
