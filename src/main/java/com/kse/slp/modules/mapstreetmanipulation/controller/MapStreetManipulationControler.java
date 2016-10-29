@@ -121,6 +121,12 @@ public class MapStreetManipulationControler extends BaseWeb {
 		return "mapstreetmanipulation.viewStreets";
 	}
 	
+	@RequestMapping(value="/findIntersectionPoints")
+	public String findPoints(ModelMap model){
+		List<Road> listRoads = RoadsService.getList();
+		return "mapstreetmanipulation.findIntersectionPoints";
+	}
+	
 	String name(){
 		return "mapstreetmanipulation::";
 	}
