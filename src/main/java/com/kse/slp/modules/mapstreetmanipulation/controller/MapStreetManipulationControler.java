@@ -21,10 +21,14 @@ import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadJsonRequest;
+import com.kse.slp.modules.mapstreetmanipulation.model.RoadPoint;
+import com.kse.slp.modules.mapstreetmanipulation.model.RoadSegment;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadType;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
 import com.kse.slp.modules.mapstreetmanipulation.service.ProvinceService;
+import com.kse.slp.modules.mapstreetmanipulation.service.RoadPointsService;
+import com.kse.slp.modules.mapstreetmanipulation.service.RoadSegmentsService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadTypeService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadsService;
 
@@ -40,6 +44,10 @@ public class MapStreetManipulationControler extends BaseWeb {
 	ProvinceService ProvinceService;
 	@Autowired
 	RoadTypeService roadTypeService;
+	@Autowired
+	RoadPointsService roadPointsService;
+	@Autowired
+	RoadSegmentsService roadSegmentsService;
 	
 	@RequestMapping(value="",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
@@ -83,7 +91,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 		
 		String RoadBidirectional=r.getOptionRoad();
 		System.out.println(name() + "::saveARoad, start save to DB, road name = " + r.getNameStreet());
-		RoadsService.saveARoad(roadCode, roadName, roadProvince, roadInterProvince, roadPoints, roadTypeCode, RoadBidirectional, roadMaxSpeed, u.getUsername(), roadCreateDateTime);
+		RoadsService.saveARoad(roadCode, roadName, roadProvince, roadInterProvince, roadPoints, roadTypeCode, RoadBidirectional, roadMaxSpeed, u.getUsername(), roadCreateDateTime, "NOT_PROCCESSED");
 		return true;
 	}
 	@RequestMapping(value="/editPoint",method=RequestMethod.GET)
@@ -123,9 +131,32 @@ public class MapStreetManipulationControler extends BaseWeb {
 	
 	@RequestMapping(value="/findIntersectionPoints")
 	public String findPoints(ModelMap model){
-		List<Road> listRoads = RoadsService.getList();
+		List<Road> listRoads = RoadsService.getListNotProccessed();
+		List<RoadPoint> lstRoadPoints = roadPointsService.getList();
+		List<RoadSegment> lstRoadSegments = roadSegmentsService.getList();
+		
+		String jsonRoadPoints = new Gson().toJson(lstRoadPoints);
+		String jsonRoadSegments = new Gson().toJson(lstRoadSegments);
+		String jsonRoads = new Gson().toJson(listRoads);
+		
+		model.put("listRoads", listRoads);
+		model.put("jsonRoadPoints",jsonRoadPoints);
+		model.put("jsonRoadSegments",jsonRoadSegments);
+		model.put("jsonRoads",jsonRoads);
+		
 		return "mapstreetmanipulation.findIntersectionPoints";
 	}
+	
+	@RequestMapping(value="/findAndSaveIntersectionPoints")
+	public @ResponseBody String findAndSaveIntersectionPoints(@RequestBody String[] roadsCode){
+		System.out.println(name()+"findAndSaveIntersectionPoints");
+		System.out.println();
+		for(int i=0 ; i<roadsCode.length; i++){
+			System.out.print(roadsCode[i]+" ");
+		}
+		return "400";	
+	}
+	
 	@RequestMapping(value="/edit-road-points",method=RequestMethod.GET)
 	public String editroadpoints(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
