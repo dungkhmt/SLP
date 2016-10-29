@@ -107,7 +107,7 @@ body{
      	</div>   
      	
      	<div class="col-sm-6">
-    		<a href="<c:url value = "/manager"/>" style="">
+    		<a href="<c:url value = "/manage"/>" style="">
      		<div class="card">
      			<div class="card-block">
      				<h4 class="card-title"><b>Quản lý danh mục</b></h4>
