@@ -10,4 +10,5 @@ public interface RoadsDAO {
 	public void updateARoad(Road road);
 	public Road loadARoadByRoadCode(String roadCode);
 	public List<Road> getList();
+	public List<Road> getListNotProccessed();
 }

@@ -126,4 +126,27 @@ public class RoadsDAOImpl extends BaseDao implements RoadsDAO {
 		}
 	}
 
+	@Override
+	public List<Road> getListNotProccessed() {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			Criteria criteria = getSession().createCriteria(Road.class);
+			criteria.add(Restrictions.eq("RoadStatus", "NOT_PROCCESSED"));
+			List<Road> roads = criteria.list();
+			commit();
+			return roads;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
 }
