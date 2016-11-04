@@ -25,6 +25,7 @@
 				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/editPoint" />">Sửa tuyến đường</a></li>
 				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/viewStreets" />">Xem các tuyến đường</a></li>
 				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/findIntersectionPoints" />">Tìm điểm giao cắt</a></li>
+				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/edit-road-points" />">Chỉnh sửa điểm nút bản đồ</a></li>
 			</ul>
 		</div>
 	</div>

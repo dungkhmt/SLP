@@ -261,6 +261,12 @@ public class MapStreetManipulationControler extends BaseWeb {
 		return "400";	
 	}
 	
+	@RequestMapping(value="/edit-road-points",method=RequestMethod.GET)
+	public String editroadpoints(ModelMap model,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		return "mapstreetmanipulation.editroadpoints";
+	}
 	String name(){
 		return "mapstreetmanipulation::";
 	}
