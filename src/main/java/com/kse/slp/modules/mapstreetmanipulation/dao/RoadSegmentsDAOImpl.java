@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +33,65 @@ public class RoadSegmentsDAOImpl extends BaseDao implements RoadSegmentsDAO {
 			rollback();
 			close();
 			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+	@Override
+	public int saveASegment(RoadSegment segment) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			int id = 0;
+			id = (int)getSession().save(segment);
+			commit();
+			return id;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		}finally{
+			flush();
+			close();
+		}
+	}
+	@Override
+	public void updateASegment(RoadSegment segment) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			getSession().update(segment);
+			commit();
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+	}
+	@Override
+	public void deleteSegmentByCode(int code) {
+		// TODO Auto-generated method stub
+		RoadSegment segment = new RoadSegment();
+		segment.setRSEG_Code(code);
+		try{
+			
+			begin();
+			getSession().delete(segment);
+			commit();
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
 		}finally{
 			flush();
 			close();

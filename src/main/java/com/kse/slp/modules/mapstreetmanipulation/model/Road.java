@@ -94,5 +94,16 @@ public class Road {
 	public void setRoadStatus(String roadStatus) {
 		RoadStatus = roadStatus;
 	}
+	@Override
+	public String toString() {
+		return "Road [RoadID=" + RoadID + ", RoadCode=" + RoadCode
+				+ ", RoadName=" + RoadName + ", RoadProvince=" + RoadProvince
+				+ ", RoadInterProvince=" + RoadInterProvince + ", RoadPoints="
+				+ RoadPoints + ", RoadTypeCode=" + RoadTypeCode
+				+ ", RoadBidirectional=" + RoadBidirectional
+				+ ", RoadMaxSpeed=" + RoadMaxSpeed + ", RoadCreateUserID="
+				+ RoadCreateUserID + ", RoadCreateDateTime="
+				+ RoadCreateDateTime + ", RoadStatus=" + RoadStatus + "]";
+	}
 	
 }

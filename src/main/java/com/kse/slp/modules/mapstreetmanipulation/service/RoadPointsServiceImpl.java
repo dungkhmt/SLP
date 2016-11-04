@@ -16,5 +16,18 @@ public class RoadPointsServiceImpl implements RoadPointsService {
 		// TODO Auto-generated method stub
 		return roadPointDAO.getList();
 	}
+	@Override
+	public int saveARoadPoint(int rpCode, String rpLatLng,
+			String provinceCode) {
+		// TODO Auto-generated method stub
+		RoadPoint road = new RoadPoint();
+		road.setRP_Code(rpCode);
+		road.setProvinceCode(provinceCode);
+		road.setRP_LatLng(rpLatLng);
+		int id = roadPointDAO.saveARoadPoint(road);
+		road.setRP_Code(id);
+		roadPointDAO.update(road);
+		return id;
+	}
 
 }

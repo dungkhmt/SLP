@@ -26,6 +26,10 @@ import com.kse.slp.modules.mapstreetmanipulation.model.RoadSegment;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadType;
 import com.kse.slp.modules.usermanagement.model.User;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
+import com.kse.slp.modules.utilities.gismap.Approximation;
+import com.kse.slp.modules.utilities.gismap.Line;
+import com.kse.slp.modules.utilities.gismap.Point;
+import com.kse.slp.modules.utilities.gismap.TWO_SEGMENTS_RELATION;
 import com.kse.slp.modules.mapstreetmanipulation.service.ProvinceService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadPointsService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadSegmentsService;
@@ -148,11 +152,111 @@ public class MapStreetManipulationControler extends BaseWeb {
 	}
 	
 	@RequestMapping(value="/findAndSaveIntersectionPoints")
-	public @ResponseBody String findAndSaveIntersectionPoints(@RequestBody String[] roadsCode){
+	public String findAndSaveIntersectionPoints(@RequestBody String roadsCode){
 		System.out.println(name()+"findAndSaveIntersectionPoints");
-		System.out.println();
-		for(int i=0 ; i<roadsCode.length; i++){
-			System.out.print(roadsCode[i]+" ");
+		String roadCodes[] = roadsCode.split(";");
+		for(int i=0; i<roadCodes.length; i++){
+			Road road = RoadsService.loadARoadByRoadCode(roadCodes[i]);
+			String[] points = road.getRoadPoints().split(":");
+			List<RoadPoint> roadPoints = roadPointsService.getList();
+			List<RoadSegment> roadSegments = roadSegmentsService.getList();
+			if(roadPoints.size() == 0 || roadSegments.size() == 0){
+				int idFrom = roadPointsService.saveARoadPoint(0, points[0], road.getRoadProvince());
+				
+				for(int j=1; j< points.length; j++){
+					int idTo = roadPointsService.saveARoadPoint(0, points[j], road.getRoadProvince());
+					
+					int index1 = points[j-1].indexOf(",");
+					int index2 = points[j].indexOf(",");
+					
+					double lat1 = Double.parseDouble(points[j-1].substring(0, index1));
+					double long1 = Double.parseDouble(points[j-1].substring(index1+1,points[j-1].length()));
+					double lat2 = Double.parseDouble(points[j].substring(0, index2));
+					double long2 = Double.parseDouble(points[j].substring(index2+1, points[j].length()));
+					
+					Approximation ap = new Approximation();
+					double distance = ap.computeDistanceHav(long1, lat1, long2, lat2);
+					roadSegmentsService.saveARoadSegment(0, idFrom, idTo, distance, road.getRoadMaxSpeed(), road.getRoadBidirectional());
+					idFrom = idTo;
+				}
+			}else{
+				int idFrom = roadPointsService.saveARoadPoint(0, points[0], road.getRoadProvince());
+				String pointFromLatLng = points[0];
+				for(int in = 1; in < points.length-1; in++){
+					int idTo = roadPointsService.saveARoadPoint(0, points[in], road.getRoadProvince());
+					
+					int index1 = points[in-1].indexOf(",");
+					int index2 = points[in].indexOf(",");
+					
+					double lat1 = Double.parseDouble(points[in-1].substring(0, index1));
+					double long1 = Double.parseDouble(points[in-1].substring(index1+1,points[in-1].length()));
+					double lat2 = Double.parseDouble(points[in].substring(0, index2));
+					double long2 = Double.parseDouble(points[in].substring(index2+1, points[in].length()));
+					Line l1 = new Line(lat1, long1, lat2, long2);
+					
+					int midFrom;
+					int midTo;
+					for(int j=0; j < roadSegments.size(); j++){
+						RoadSegment segment = roadSegments.get(j);
+						
+						//find lat and lng of fromPoint and to point  
+						int fromPoint = segment.getRSEG_FromPoint();
+						int toPoint = segment.getRSEG_ToPoint();
+						String fromPointLatLng = null;
+						String toPointLatLng = null;
+						for(int k=0; k<roadPoints.size(); k++){
+							RoadPoint point = roadPoints.get(k);
+							if(point.getRP_Code() == fromPoint){
+								fromPointLatLng = point.getRP_LatLng();
+							}
+							if(point.getRP_Code() == toPoint){
+								toPointLatLng = point.getRP_LatLng();
+							}
+							if(fromPointLatLng != null && toPointLatLng != null){
+								break;
+							}
+						}
+						
+						//get lat and lng
+						int tmpIndex1 = fromPointLatLng.indexOf(",");
+						int tmpIndex2 = toPointLatLng.indexOf(",");
+						
+						double fromPointLat = Double.parseDouble(fromPointLatLng.substring(0, tmpIndex1));
+						double fromPointLng = Double.parseDouble(fromPointLatLng.substring(tmpIndex1+1, fromPointLatLng.length()));
+						double toPointLat = Double.parseDouble(toPointLatLng.substring(0, tmpIndex2));
+						double toPointLng = Double.parseDouble(toPointLatLng.substring(tmpIndex2+1, toPointLatLng.length())); 
+						
+						//
+						Line l2 = new Line(fromPointLat, fromPointLng, toPointLat, toPointLng);
+						Point p = new Point(1, 1);
+						
+						//find intersection point
+						TWO_SEGMENTS_RELATION r = l1.intersectSegment(l2, p);
+						if(r == TWO_SEGMENTS_RELATION.SEGMENT_INTERSECTIONAL){
+							String pointLng = p.getdLat()+", "+p.getdLong();
+							int idPoint = roadPointsService.saveARoadPoint(0, pointLng , road.getRoadProvince());
+							Approximation ap = new Approximation();
+							
+							int indexTmp = pointFromLatLng.indexOf(",");
+							double fromLat = Double.parseDouble(pointFromLatLng.substring(0,indexTmp));
+							double fromLng = Double.parseDouble(pointFromLatLng.substring(indexTmp+1,pointFromLatLng.length()));
+							double distance = ap.computeDistanceHav(fromLng, fromLat, p.getdLong(), p.getdLat());
+							idFrom = idPoint;
+							pointFromLatLng = pointLng;
+							roadSegmentsService.saveARoadSegment(0, idFrom, idPoint, distance, road.getRoadMaxSpeed(), road.getRoadBidirectional());
+							
+							roadSegmentsService.deleteASegmentByCod(segment.getRSEG_Code());
+							double distance1 = ap.computeDistanceHav(fromPointLng, fromPointLat, p.getdLong(), p.getdLat()); 
+							roadSegmentsService.saveARoadSegment(0, fromPoint, idPoint, distance1,segment.getRSEG_Speed(), segment.getRSEG_Bidirectional());
+							
+							double distance2 = ap.computeDistanceHav(p.getdLong(), p.getdLat(), toPointLng, toPointLat);
+							roadSegmentsService.saveARoadSegment(0, idPoint, toPoint, distance2, segment.getRSEG_Speed(), segment.getRSEG_Bidirectional());
+						}
+					}
+					idFrom = idTo;
+					pointFromLatLng = points[in];
+				}
+			}
 		}
 		return "400";	
 	}
