@@ -29,5 +29,10 @@ public class RoadPointsServiceImpl implements RoadPointsService {
 		roadPointDAO.update(road);
 		return id;
 	}
+	@Override
+	public void removePointbyCode(int code) {
+		// TODO Auto-generated method stub
+		roadPointDAO.removePointbyCode(code);
+	}
 
 }

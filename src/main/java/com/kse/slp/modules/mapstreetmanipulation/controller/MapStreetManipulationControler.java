@@ -21,7 +21,9 @@ import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.mapstreetmanipulation.model.EditPointSegmentJsonRespone;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadJsonRequest;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadPoint;
@@ -162,9 +164,15 @@ public class MapStreetManipulationControler extends BaseWeb {
 			Road road = RoadsService.loadARoadByRoadCode(roadCodes[i]);
 			RoadsService.updateStatusRoad(roadCodes[i], "PROCCESSED");
 			String[] points = road.getRoadPoints().split(":");
+			System.out.print("roadPoitns: ");
+			for(int j = 0; j < points.length; j++){
+				System.out.println(points[j]+", ");
+			}
+
 			//for(int j=0; j < points.length; j++){
 				
 			//}
+
 			List<RoadPoint> roadPoints = roadPointsService.getList();
 			List<RoadSegment> roadSegments = roadSegmentsService.getList();
 			if(roadPoints.size() == 0 || roadSegments.size() == 0){
@@ -194,6 +202,9 @@ public class MapStreetManipulationControler extends BaseWeb {
 				}
 			}else{
 				System.out.println("Map != null insert roadCode="+roadCodes[i]+" save to tables");
+
+				System.out.println("road points[0]="+points[0]);
+
 				int idFrom = roadPointsService.saveARoadPoint(0, points[0], road.getRoadProvince());
 				System.out.println(" roadPoint idPoint[0]="+idFrom);
 				String pointFromLatLng = points[0];
@@ -203,13 +214,15 @@ public class MapStreetManipulationControler extends BaseWeb {
 					double lat = Double.parseDouble(pointFromLatLng.substring(0,indexCut));
 					double lng = Double.parseDouble(pointFromLatLng.substring(indexCut+1, pointFromLatLng.length()));
 					Point first = new Point(lat,lng);
+					
+					System.out.println("road points["+in+"]="+points[in]);
+
 					if(points[in-1].trim().equals(points[in].trim())){
 						System.out.println("BUG at line roadCode" + roadCodes[i]);
 						System.exit(-1);
 					}
 					int idTo = roadPointsService.saveARoadPoint(0, points[in], road.getRoadProvince());
 					System.out.println(" roadPoint idPoint["+in+"]="+idTo);
-					
 					int index1 = points[in-1].indexOf(",");
 					int index2 = points[in].indexOf(",");
 					
@@ -258,6 +271,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 						TWO_SEGMENTS_RELATION r = l1.intersectSegment(l2, p);
 						if(r == TWO_SEGMENTS_RELATION.SEGMENT_INTERSECTIONAL){
 							String pointLng = p.getdLat()+", "+p.getdLong();
+							System.out.println("intersection Point = "+pointLng);
 							int idPoint = roadPointsService.saveARoadPoint(0, pointLng , road.getRoadProvince());
 							System.out.println(" intersectPoint idPoint="+idPoint);
 							
@@ -333,6 +347,77 @@ public class MapStreetManipulationControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "mapstreetmanipulation.editroadpoints";
+	}
+	String corectString(String s){
+		String lS[]= s.split(":");
+		String re="";
+		String last = "";
+		for(int i=0;i<lS.length;i++){
+			System.out.println(name()+re+"-- "+last+" "+lS[i]);
+			if(lS[i].contains("NaN")|| (lS[i].trim().equals("") || (lS[i]==null))) continue;
+			//if(lS[i].trim().equals(last.trim())) continue;
+			if(re.equals("")){
+				re=re+lS[i];
+				last = lS[i];
+				continue;
+			}
+			System.out.println(name()+"add");
+			re=re+":"+lS[i];
+			last = lS[i];
+		}
+		
+		return re;
+	}
+	
+	@RequestMapping(value="/fix")
+	public void fixBug(){
+		List<Road> lR= RoadsService.getList();
+		for(int i=0;i<lR.size();i++){
+			Road r= lR.get(i);
+			String s=r.getRoadPoints();
+			RoadsService.updateARoad(r.getRoadCode(), corectString(s));
+		}
+	}
+	@RequestMapping(value="/get-point-segment-in-range",method=RequestMethod.POST)
+	public  @ResponseBody EditPointSegmentJsonRespone getPointSegmentInRange(@RequestBody String jsonData,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		Gson gson= new Gson();
+		ArrayList<com.kse.slp.modules.mapstreetmanipulation.model.Point> listPoint = (ArrayList<com.kse.slp.modules.mapstreetmanipulation.model.Point>) gson.fromJson(jsonData,new TypeToken<ArrayList<com.kse.slp.modules.mapstreetmanipulation.model.Point>>() {}.getType());
+		EditPointSegmentJsonRespone ePJR = roadSegmentsService.getSegmentInRange(listPoint.get(0),listPoint.get(1));
+		System.out.println(name()+ePJR);
+		return ePJR;
+	}
+	
+	@RequestMapping(value ="/merge-points")
+	public @ResponseBody boolean mergePoints(@RequestBody String jsonData,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		Gson gson= new Gson();
+		ArrayList<RoadPoint> lRP = (ArrayList<RoadPoint>) gson.fromJson(jsonData,new TypeToken<ArrayList<RoadPoint>>() {}.getType());
+		System.out.println(name()+ lRP);
+		int pM=lRP.get(0).getRP_Code();
+		System.out.println(name()+"pM"+pM);
+		for(int i=1;i<lRP.size();i++){
+			System.out.println(name()+"zzz"+lRP.get(i).getRP_Code());
+			List<RoadSegment> lRS= roadSegmentsService.getListbyPoint(lRP.get(i).getRP_Code());
+			System.out.println(name()+"getListbyPoint size"+lRS.size());
+			for(int j=0;j<lRS.size();j++){
+				RoadSegment rS=lRS.get(j);
+				System.out.println(name()+" rS "+rS);
+				if(rS.getRSEG_FromPoint()==lRP.get(i).getRP_Code())  {
+					rS.setRSEG_FromPoint(pM);
+				} else  {
+					rS.setRSEG_ToPoint(pM);
+				}
+				if(rS.getRSEG_FromPoint()==rS.getRSEG_ToPoint()){
+					roadSegmentsService.deleteASegmentByCode(rS.getRSEG_Code());
+					
+				} else roadSegmentsService.updateASegment(rS);
+			}
+			roadPointsService.removePointbyCode(lRP.get(i).getRP_Code());
+		}
+		return true;
 	}
 	String name(){
 		return "mapstreetmanipulation::";
