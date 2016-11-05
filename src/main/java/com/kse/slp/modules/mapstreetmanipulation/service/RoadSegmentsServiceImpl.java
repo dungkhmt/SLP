@@ -98,4 +98,5 @@ public class RoadSegmentsServiceImpl implements RoadSegmentsService {
 		// TODO Auto-generated method stub
 		roadSegmentDAO.updateASegment(rS);
 	}
+	
 }

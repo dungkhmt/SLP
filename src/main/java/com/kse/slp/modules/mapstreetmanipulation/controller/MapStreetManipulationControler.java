@@ -164,16 +164,15 @@ public class MapStreetManipulationControler extends BaseWeb {
 			Road road = RoadsService.loadARoadByRoadCode(roadCodes[i]);
 			RoadsService.updateStatusRoad(roadCodes[i], "PROCCESSED");
 			String[] points = road.getRoadPoints().split(":");
-<<<<<<< HEAD
 			System.out.print("roadPoitns: ");
 			for(int j = 0; j < points.length; j++){
 				System.out.println(points[j]+", ");
 			}
-=======
+
 			//for(int j=0; j < points.length; j++){
 				
 			//}
->>>>>>> 5e6bf4cecb603bf227689bf7bce1c46beea9e62c
+
 			List<RoadPoint> roadPoints = roadPointsService.getList();
 			List<RoadSegment> roadSegments = roadSegmentsService.getList();
 			if(roadPoints.size() == 0 || roadSegments.size() == 0){
@@ -203,10 +202,9 @@ public class MapStreetManipulationControler extends BaseWeb {
 				}
 			}else{
 				System.out.println("Map != null insert roadCode="+roadCodes[i]+" save to tables");
-<<<<<<< HEAD
+
 				System.out.println("road points[0]="+points[0]);
-=======
->>>>>>> 5e6bf4cecb603bf227689bf7bce1c46beea9e62c
+
 				int idFrom = roadPointsService.saveARoadPoint(0, points[0], road.getRoadProvince());
 				System.out.println(" roadPoint idPoint[0]="+idFrom);
 				String pointFromLatLng = points[0];
@@ -216,18 +214,15 @@ public class MapStreetManipulationControler extends BaseWeb {
 					double lat = Double.parseDouble(pointFromLatLng.substring(0,indexCut));
 					double lng = Double.parseDouble(pointFromLatLng.substring(indexCut+1, pointFromLatLng.length()));
 					Point first = new Point(lat,lng);
-<<<<<<< HEAD
 					
 					System.out.println("road points["+in+"]="+points[in]);
-=======
+
 					if(points[in-1].trim().equals(points[in].trim())){
 						System.out.println("BUG at line roadCode" + roadCodes[i]);
 						System.exit(-1);
 					}
->>>>>>> 5e6bf4cecb603bf227689bf7bce1c46beea9e62c
 					int idTo = roadPointsService.saveARoadPoint(0, points[in], road.getRoadProvince());
 					System.out.println(" roadPoint idPoint["+in+"]="+idTo);
-					
 					int index1 = points[in-1].indexOf(",");
 					int index2 = points[in].indexOf(",");
 					
