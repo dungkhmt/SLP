@@ -1,5 +1,6 @@
 package com.kse.slp.modules.mapstreetmanipulation.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -18,7 +19,10 @@ import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.mapstreetmanipulation.model.EditPointSegmentJsonRespone;
+import com.kse.slp.modules.mapstreetmanipulation.model.Point;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadJsonRequest;
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadPoint;
@@ -162,6 +166,45 @@ public class MapStreetManipulationControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "mapstreetmanipulation.editroadpoints";
+	}
+	
+	@RequestMapping(value="/get-point-segment-in-range",method=RequestMethod.POST)
+	public  @ResponseBody EditPointSegmentJsonRespone getPointSegmentInRange(@RequestBody String jsonData,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		Gson gson= new Gson();
+		ArrayList<Point> listPoint = (ArrayList<Point>) gson.fromJson(jsonData,new TypeToken<ArrayList<Point>>() {}.getType());
+		EditPointSegmentJsonRespone ePJR = roadSegmentsService.getSegmentInRange(listPoint.get(0),listPoint.get(1));
+		System.out.println(name()+ePJR);
+		return ePJR;
+	}
+	
+	@RequestMapping(value ="/merge-points")
+	public @ResponseBody boolean mergePoints(@RequestBody String jsonData,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		Gson gson= new Gson();
+		ArrayList<RoadPoint> lRP = (ArrayList<RoadPoint>) gson.fromJson(jsonData,new TypeToken<ArrayList<RoadPoint>>() {}.getType());
+		System.out.println(name()+ lRP);
+		int pM=lRP.get(0).getRP_Code();
+		System.out.println(name()+"pM"+pM);
+		for(int i=1;i<lRP.size();i++){
+			System.out.println(name()+"zzz"+lRP.get(i).getRP_Code());
+			List<RoadSegment> lRS= roadSegmentsService.getListbyPoint(lRP.get(i).getRP_Code());
+			System.out.println(name()+"getListbyPoint size"+lRS.size());
+			for(int j=0;j<lRS.size();j++){
+				RoadSegment rS=lRS.get(j);
+				System.out.println(name()+" rS "+rS);
+				if(rS.getRSEG_FromPoint()==lRP.get(i).getRP_Code() && rS.getRSEG_ToPoint()!=pM) {
+					rS.setRSEG_FromPoint(pM);
+				} else if(rS.getRSEG_ToPoint()==lRP.get(i).getRP_Code() && rS.getRSEG_FromPoint()!=pM) {
+					rS.setRSEG_ToPoint(pM);
+				}
+				System.out.println(name()+" rS2 "+rS);
+				roadSegmentsService.updateASegment(rS);
+			}
+		}
+		return true;
 	}
 	String name(){
 		return "mapstreetmanipulation::";
