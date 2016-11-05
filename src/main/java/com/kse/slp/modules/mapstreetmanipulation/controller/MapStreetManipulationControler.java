@@ -155,7 +155,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 	}
 	
 	@RequestMapping(value="/findAndSaveIntersectionPoints")
-	public String findAndSaveIntersectionPoints(@RequestBody String roadsCode){
+	public @ResponseBody String findAndSaveIntersectionPoints(@RequestBody String roadsCode){
 		//System.out.println(name()+"findAndSaveIntersectionPoints");
 		String roadCodes[] = roadsCode.split(";");
 		for(int i=0; i<roadCodes.length; i++){
@@ -297,7 +297,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 				}
 			}
 		}
-		return "ok";	
+		return "400";	
 	}
 	
 	class Pair{
