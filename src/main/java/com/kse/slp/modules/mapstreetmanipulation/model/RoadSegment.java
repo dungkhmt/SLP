@@ -17,6 +17,14 @@ public class RoadSegment {
 	double RSEG_Distance;
 	int RSEG_Speed;
 	String RSEG_Bidirectional;
+	String RSEG_RoadCode;
+	
+	public String getRSEG_RoadCode() {
+		return RSEG_RoadCode;
+	}
+	public void setRSEG_RoadCode(String rSEG_RoadCode) {
+		RSEG_RoadCode = rSEG_RoadCode;
+	}
 	public int getRSEG_ID() {
 		return RSEG_ID;
 	}
@@ -61,12 +69,13 @@ public class RoadSegment {
 	}
 	@Override
 	public String toString() {
-		return "RoadSegments [RSEG_ID=" + RSEG_ID + ", RSEG_Code=" + RSEG_Code
+		return "RoadSegment [RSEG_ID=" + RSEG_ID + ", RSEG_Code=" + RSEG_Code
 				+ ", RSEG_FromPoint=" + RSEG_FromPoint + ", RSEG_ToPoint="
 				+ RSEG_ToPoint + ", RSEG_Distance=" + RSEG_Distance
 				+ ", RSEG_Speed=" + RSEG_Speed + ", RSEG_Bidirectional="
-				+ RSEG_Bidirectional + "]";
+				+ RSEG_Bidirectional + ", RSEG_RoadCode=" + RSEG_RoadCode + "]";
 	}
+	
 	
 
 }

@@ -18,7 +18,7 @@ public class RoadSegmentsServiceImpl implements RoadSegmentsService {
 	}
 	@Override
 	public void saveARoadSegment(int code, int fromPoint, int toPoint,
-			double distance, int speed, String bidi) {
+			double distance, int speed, String bidi,String roadCode) {
 		// TODO Auto-generated method stub
 		RoadSegment segment = new RoadSegment();
 		segment.setRSEG_Bidirectional(bidi);
@@ -27,6 +27,7 @@ public class RoadSegmentsServiceImpl implements RoadSegmentsService {
 		segment.setRSEG_FromPoint(fromPoint);
 		segment.setRSEG_Speed(speed);
 		segment.setRSEG_ToPoint(toPoint);
+		segment.setRSEG_RoadCode(roadCode);
 		int id = roadSegmentDAO.saveASegment(segment);
 		segment.setRSEG_Code(id);
 		roadSegmentDAO.updateASegment(segment);
