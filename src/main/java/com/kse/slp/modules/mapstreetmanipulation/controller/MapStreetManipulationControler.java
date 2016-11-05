@@ -257,6 +257,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 							 * ERROR HERE
 							 * CAN'T DELETE SEGMENT
 							 */
+							System.out.println("segment intersect "+segment.getRSEG_Code());
 							roadSegmentsService.deleteASegmentByCode(segment.getRSEG_Code());
 							
 							double distance1 = ap.computeDistanceHav(fromPointLng, fromPointLat, p.getdLong(), p.getdLat()); 
