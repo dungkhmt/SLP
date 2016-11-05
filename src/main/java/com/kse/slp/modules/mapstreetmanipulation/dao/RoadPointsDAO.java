@@ -10,4 +10,5 @@ public interface RoadPointsDAO {
 	RoadPoint getRoadPointbyCode(int Code);
 	public int saveARoadPoint(RoadPoint point);
 	public void update(RoadPoint point);
+	void removePointbyCode(int code);
 }

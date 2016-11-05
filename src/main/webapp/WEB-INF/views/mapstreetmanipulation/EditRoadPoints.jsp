@@ -156,7 +156,7 @@ function viewMap(){
 			position:point,
 			map: map,
 			label:null,
-			icon: baseUrl+"/assets/icon/marker_black16.png",
+			icon: baseUrl+"/assets/icon/oval_green.png",
 			path: -1,
 			index: i
 		});

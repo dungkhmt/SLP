@@ -101,6 +101,7 @@ public class RoadSegmentsDAOImpl extends BaseDao implements RoadSegmentsDAO {
 			
 			begin();
 			int id = 0;
+			System.out.println("save segment: "+segment.toString());
 			id = (int)getSession().save(segment);
 			commit();
 			return id;

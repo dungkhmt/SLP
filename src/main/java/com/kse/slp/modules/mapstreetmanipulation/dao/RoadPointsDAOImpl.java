@@ -70,7 +70,8 @@ public class RoadPointsDAOImpl extends BaseDao implements RoadPointsDAO {
 			criteria.add(Restrictions.eq("RP_Code", Code));
 			List<RoadPoint> list = criteria.list();
 			commit();
-			if(list==null) return null;
+			System.out.print(name()+list);
+			if(list.size()<=0) return null;
 			return list.get(0);
 		}catch(HibernateException e){
 			e.printStackTrace();
@@ -101,6 +102,30 @@ public class RoadPointsDAOImpl extends BaseDao implements RoadPointsDAO {
 			close();
 		}
 	}
+	@Override
+	public void removePointbyCode(int code) {
+		try{
+			begin();
+			Criteria criteria = getSession().createCriteria(RoadPoint.class);
+			criteria.add(Restrictions.eq("RP_Code", code));
+			List<RoadPoint> points = criteria.list();
+			for(RoadPoint point : points){
+				getSession().delete(point);
+			}
+			commit();
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+		
+	}
 
-
+	String name(){
+		return "RoadPointsDAOImpl::";
+	}
 }
