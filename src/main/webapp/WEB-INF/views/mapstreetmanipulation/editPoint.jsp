@@ -208,7 +208,7 @@ $(document).ready(function(){
 			contentType: 'application/text',
 			success: function(response){
 				alert("ok");
-				window.location = baseUrl + "/mapstreetmanipulation/editPoint"
+				window.location = baseUrl + "/mapstreetmanipulation/editPoint";
 			}
 		})
 	});

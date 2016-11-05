@@ -32,7 +32,7 @@ public class RoadSegmentsServiceImpl implements RoadSegmentsService {
 		roadSegmentDAO.updateASegment(segment);
 	}
 	@Override
-	public void deleteASegmentByCod(int code) {
+	public void deleteASegmentByCode(int code) {
 		// TODO Auto-generated method stub
 		roadSegmentDAO.deleteSegmentByCode(code);
 	}

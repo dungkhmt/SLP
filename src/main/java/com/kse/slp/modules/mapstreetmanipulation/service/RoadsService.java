@@ -11,4 +11,5 @@ public interface RoadsService {
 	public void updateARoad(String roadCode,String RoadPoints);
 	public List<Road> getList();
 	public List<Road> getListNotProccessed();
+	public void updateStatusRoad(String roadCode, String status);
 }

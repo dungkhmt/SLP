@@ -50,6 +50,10 @@ public class Point {
     	this.dLong = dLong;
     	this.dLat = dLat;
     }
+    
+    public double computeDistanceE(Point p){
+    	return Math.sqrt(Math.pow(this.dLat-p.getdLat(), 2)+Math.pow(this.dLong-p.getdLong(),2 ));
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 

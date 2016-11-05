@@ -71,4 +71,14 @@ public class RoadsServiceImpl implements RoadsService {
 		return RoadsDAO.getListNotProccessed();
 	}
 
+	@Override
+	public void updateStatusRoad(String roadCode, String status) {
+		// TODO Auto-generated method stub
+		Road road = RoadsDAO.loadARoadByRoadCode(roadCode);
+		if(road != null){
+			road.setRoadStatus(status);
+			RoadsDAO.updateARoad(road);
+		}
+	}
+
 }

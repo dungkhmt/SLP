@@ -78,8 +78,8 @@ function initialize(){
 		var toPointCode = segments[i].RSEG_ToPoint;
 		var fromPointLatLng = null;
 		var toPointLatLng = null;
-		var indexFromPoint;
-		var indexToPoint;
+		var indexFromPoint=-1;
+		var indexToPoint=-1;
 		for(var j=0; j<points.length; j++){
 			if(fromPointCode == points[j].RP_Code){
 				fromPointLatLng = points[j].RP_LatLng;
@@ -182,9 +182,8 @@ function findIntersections(){
 		data : dataSend,
 		contentType : 'application/text',
 		success: function(response){
-			if(response=="400"){
-				window.location = baseUrl + '/mapstreetmanipulation/findAndSaveIntersectionPoints';
-			}
+			alert("ok");
+			window.location = baseUrl + "/mapstreetmanipulation/findIntersectionPoints";
 		}
 	});
 }
