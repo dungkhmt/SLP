@@ -12,5 +12,6 @@ public interface RoadSegmentsService {
 	List<RoadSegment> getListbyPoint(int code);
 	void updateASegment(RoadSegment rS);
 	public void saveARoadSegment(int code, int fromPoint, int toPoint, double distance, int speed, String bidi ); 
+	public void saveARoadSegment(int code, int fromPoint, int toPoint, double distance, int speed, String bidi,String roadCode ); 
 	public void deleteASegmentByCode(int code);
 }
