@@ -253,10 +253,6 @@ public class MapStreetManipulationControler extends BaseWeb {
 							
 							Approximation ap = new Approximation();
 							
-							/*
-							 * ERROR HERE
-							 * CAN'T DELETE SEGMENT
-							 */
 							//System.out.println("segment intersect "+segment.getRSEG_Code());
 							roadSegmentsService.deleteASegmentByCode(segment.getRSEG_Code());
 							
