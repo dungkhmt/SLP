@@ -8,4 +8,6 @@ import com.kse.slp.modules.mapstreetmanipulation.model.RoadSegment;
 public interface RoadPointsDAO {
 	List<RoadPoint> getList();
 	RoadPoint getRoadPointbyCode(int Code);
+	public int saveARoadPoint(RoadPoint point);
+	public void update(RoadPoint point);
 }

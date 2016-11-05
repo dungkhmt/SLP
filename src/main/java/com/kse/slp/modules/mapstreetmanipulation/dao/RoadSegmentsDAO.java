@@ -9,5 +9,8 @@ public interface RoadSegmentsDAO {
 	List<RoadSegment> getList();
 	List<RoadSegment> getSegmentInRange(Point ne,Point sw);
 	List<RoadSegment> getListbyPoint(int code);
-	void updateASegment(RoadSegment rS);
+	public int saveASegment(RoadSegment segment);
+	public void updateASegment(RoadSegment segment);
+	public void deleteSegmentByCode(int code);
+
 }

@@ -12,6 +12,13 @@
 <script src="<c:url value="/assets/libs/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js"/>"></script>
 
 <div id="page-wrapper">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">Tìm điểm giao cắt</h1>
+		</div>
+		<!-- /.col-lg-12 -->
+	</div>
+	<!-- /.row -->
 	<div id="googleMap" style="width:100%; height:100%; margin-bottom:10px;"></div>
 	<div class="row">
 		<div class="col-sm-offset-11 col-sm-1">
@@ -51,6 +58,9 @@
 var map;
 var roadSelected = [];
 var roads = ${jsonRoads};
+var segments = ${jsonRoadSegments};
+var points = ${jsonRoadPoints};
+
 function initialize(){
 	var mapProp = {
 		center : {lat:21.03333, lng: 105.849998},
@@ -58,6 +68,75 @@ function initialize(){
 		mapTypeIDd : google.maps.MapTypeId.ROADMAP
 	}
 	map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	var checkIntersectPoint = [];
+	for(var i=0; i<points.length; i++){
+		checkIntersectPoint[i] = 0;
+	}
+	
+	for(var i=0; i<segments.length; i++){
+		var fromPointCode = segments[i].RSEG_FromPoint;
+		var toPointCode = segments[i].RSEG_ToPoint;
+		var fromPointLatLng = null;
+		var toPointLatLng = null;
+		var indexFromPoint=-1;
+		var indexToPoint=-1;
+		for(var j=0; j<points.length; j++){
+			if(fromPointCode == points[j].RP_Code){
+				fromPointLatLng = points[j].RP_LatLng;
+				checkIntersectPoint[j]++;
+				indexFromPoint = j;
+			}
+			if(toPointCode == points[j].RP_Code){
+				toPointLatLng = points[j].RP_LatLng;
+				checkIntersectPoint[j]++;
+				indexToPoint = j;
+			}
+			if(fromPointLatLng != null && toPointLatLng != null){
+				break;
+			}
+		}
+		var indexCutFromPoint = fromPointLatLng.indexOf(',');
+		var indexCutToPoint = toPointLatLng.indexOf(',');
+		var fromPointLat = fromPointLatLng.substring(0,indexCutFromPoint);
+		var fromPointLng = fromPointLatLng.substring(indexCutFromPoint+1,fromPointLatLng.length);
+		var toPointLat = toPointLatLng.substring(0,indexCutToPoint);
+		var toPointLng = toPointLatLng.substring(indexCutToPoint+1,toPointLatLng.length);
+		
+		var polyLine = new google.maps.Polyline({
+			strokeColor: '#FF0000',
+			strokeOpacity : 1.0,
+			strokeWeight :3,
+			path : [new google.maps.LatLng(fromPointLat,fromPointLng), new google.maps.LatLng(toPointLat,toPointLng)]
+		})
+		polyLine.setMap(map);
+		if(checkIntersectPoint[indexFromPoint]==1){
+			var marker = new google.maps.Marker({
+				position : new google.maps.LatLng(fromPointLat,fromPointLng),
+				icon : baseUrl + "/assets/icon/oval_blue.png"
+			});
+			marker.setMap(map);
+		}else if(checkIntersectPoint[indexFromPoint] >= 3){
+			var marker = new google.maps.Marker({
+				position : new google.maps.LatLng(fromPointLat,fromPointLng),
+				icon : baseUrl + "/assets/icon/oval_green.png"
+			});
+			marker.setMap(map);
+		}
+		
+		if(checkIntersectPoint[indexToPoint]==1){
+			var marker = new google.maps.Marker({
+				position : new google.maps.LatLng(toPointLat,toPointLng),
+				icon : baseUrl + "/assets/icon/oval_blue.png"
+			});
+			marker.setMap(map);
+		}else if(checkIntersectPoint[indexToPoint] >= 3){
+			var marker = new google.maps.Marker({
+				position : new google.maps.LatLng(toPointLat,toPointLng),
+				icon : baseUrl + "/assets/icon/oval_green.png"
+			});
+			marker.setMap(map);
+		}
+	}
 }
 
 function addStreets(roadCode,elem){
@@ -96,14 +175,15 @@ function checkAll(elem){
 }
 
 function findIntersections(){
+	dataSend = roadSelected.join(";");
 	$.ajax({
 		type : 'POST',
 		url : baseUrl + '/mapstreetmanipulation/findAndSaveIntersectionPoints',
-		data : roadSelected,
-		success : function(response){
-			if(response == "400"){
-				window.location = baseUrl + "/mapstreetmanipulation/findIntersectionPoints"
-			}
+		data : dataSend,
+		contentType : 'application/text',
+		success: function(response){
+			alert("ok");
+			window.location = baseUrl + "/mapstreetmanipulation/findIntersectionPoints";
 		}
 	});
 }

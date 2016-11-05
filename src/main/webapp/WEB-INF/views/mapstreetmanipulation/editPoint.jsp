@@ -4,6 +4,13 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <div id="page-wrapper">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">Sửa tuyến đường đã tạo</h1>
+		</div>
+		<!-- /.col-lg-12 -->
+	</div>
+	<!-- /.row -->
 	<div id="googleMap" style="width:100%;height:100%;margin-bottom:10px;"></div>
 	
 	<div class="row">
@@ -201,7 +208,7 @@ $(document).ready(function(){
 			contentType: 'application/text',
 			success: function(response){
 				alert("ok");
-				window.location = baseUrl + "/mapstreetmanipulation/editPoint"
+				window.location = baseUrl + "/mapstreetmanipulation/editPoint";
 			}
 		})
 	});

@@ -26,6 +26,26 @@ public class RoadSegmentsServiceImpl implements RoadSegmentsService {
 		return roadSegmentDAO.getList();
 	}
 	@Override
+	public void saveARoadSegment(int code, int fromPoint, int toPoint,
+			double distance, int speed, String bidi) {
+		// TODO Auto-generated method stub
+		RoadSegment segment = new RoadSegment();
+		segment.setRSEG_Bidirectional(bidi);
+		segment.setRSEG_Code(code);
+		segment.setRSEG_Distance(distance);
+		segment.setRSEG_FromPoint(fromPoint);
+		segment.setRSEG_Speed(speed);
+		segment.setRSEG_ToPoint(toPoint);
+		int id = roadSegmentDAO.saveASegment(segment);
+		segment.setRSEG_Code(id);
+		roadSegmentDAO.updateASegment(segment);
+	}
+	@Override
+	public void deleteASegmentByCode(int code) {
+		// TODO Auto-generated method stub
+		roadSegmentDAO.deleteSegmentByCode(code);
+	}
+	@Override
 	public EditPointSegmentJsonRespone getSegmentInRange(Point ne,
 			Point sw) {
 		// TODO Auto-generated method stub
@@ -46,8 +66,9 @@ public class RoadSegmentsServiceImpl implements RoadSegmentsService {
 				mapRP.put(rP.getRP_Code(), lRP.size()-1);
 				rS.setRSEG_FromPoint(lRP.size()-1);
 			}
-
+			
 			rP= roadPointDAO.getRoadPointbyCode(lSg.get(i).getRSEG_ToPoint());
+			
 			if(set.contains(rP.getRP_Code())){
 				rS.setRSEG_ToPoint(mapRP.get(rP.getRP_Code()));
 				

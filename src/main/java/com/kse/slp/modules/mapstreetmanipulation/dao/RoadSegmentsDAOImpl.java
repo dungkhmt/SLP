@@ -93,6 +93,27 @@ public class RoadSegmentsDAOImpl extends BaseDao implements RoadSegmentsDAO {
 			flush();
 			close();
 		}
+	}
+
+	public int saveASegment(RoadSegment segment) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			int id = 0;
+			id = (int)getSession().save(segment);
+			commit();
+			return id;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+
+		}finally{
+			flush();
+			close();
+		}
 
 	}
 	String name(){
@@ -124,12 +145,36 @@ public class RoadSegmentsDAOImpl extends BaseDao implements RoadSegmentsDAO {
 		}
 	}
 	@Override
-	public void updateASegment(RoadSegment  rS) {
+	public void updateASegment(RoadSegment segment) {
 		// TODO Auto-generated method stub
 		try{
+			
 			begin();
-			getSession().update(rS);
+			getSession().update(segment);
 			commit();
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+	}
+	@Override
+	public void deleteSegmentByCode(int code) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			Criteria criteria = getSession().createCriteria(RoadSegment.class);
+			criteria.add(Restrictions.eq("RSEG_Code", code));
+			List<RoadSegment> segments = criteria.list();
+			for(RoadSegment segment : segments){
+				getSession().delete(segment);
+			}
+			commit();
+			
 		}catch(HibernateException e){
 			e.printStackTrace();
 			rollback();
