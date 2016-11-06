@@ -72,6 +72,7 @@ function initialize(){
 	for(var i=0; i<points.length; i++){
 		checkIntersectPoint[i] = 0;
 	}
+	var listMarker = [];
 	
 	for(var i=0; i<segments.length; i++){
 		var fromPointCode = segments[i].RSEG_FromPoint;
@@ -109,32 +110,43 @@ function initialize(){
 			path : [new google.maps.LatLng(fromPointLat,fromPointLng), new google.maps.LatLng(toPointLat,toPointLng)]
 		})
 		polyLine.setMap(map);
-		if(checkIntersectPoint[indexFromPoint]==1){
-			var marker = new google.maps.Marker({
-				position : new google.maps.LatLng(fromPointLat,fromPointLng),
-				icon : baseUrl + "/assets/icon/oval_blue.png"
-			});
-			marker.setMap(map);
-		}else if(checkIntersectPoint[indexFromPoint] >= 3){
-			var marker = new google.maps.Marker({
-				position : new google.maps.LatLng(fromPointLat,fromPointLng),
-				icon : baseUrl + "/assets/icon/oval_green.png"
-			});
-			marker.setMap(map);
+		
+		/*
+		 * check intersect point to set color to marker of point	
+		*/
+		if(listMarker[indexFromPoint] && listMarker[indexFromPoint].setMap){
+			listMarker[indexFromPoint].setMap(null);
+		}
+		if(listMarker[indexToPoint] && listMarker[indexToPoint].setMap){
+			listMarker[indexToPoint].setMap(null);
 		}
 		
-		if(checkIntersectPoint[indexToPoint]==1){
-			var marker = new google.maps.Marker({
+		if(checkIntersectPoint[indexFromPoint] >=3 ){
+			listMarker[indexFromPoint] = new google.maps.Marker({
+				map : map,
+				position : new google.maps.LatLng(fromPointLat,fromPointLng),
+				icon : baseUrl + "/assets/icon/oval_green.png"
+			});
+		}else{
+			listMarker[indexFromPoint] = new google.maps.Marker({
+				map : map,
+				position : new google.maps.LatLng(fromPointLat,fromPointLng),
+				icon : baseUrl + "/assets/icon/oval_blue.png"
+			});
+		}
+		
+		if(checkIntersectPoint[indexToPoint] >=3 ){
+			listMarker[indexToPoint] = new google.maps.Marker({
+				map : map,
+				position : new google.maps.LatLng(toPointLat,toPointLat),
+				icon : baseUrl + "/assets/icon/oval_green.png"
+			});
+		}else{
+			listMarker[indexToPoint] = new google.maps.Marker({
+				map : map,
 				position : new google.maps.LatLng(toPointLat,toPointLng),
 				icon : baseUrl + "/assets/icon/oval_blue.png"
 			});
-			marker.setMap(map);
-		}else if(checkIntersectPoint[indexToPoint] >= 3){
-			var marker = new google.maps.Marker({
-				position : new google.maps.LatLng(toPointLat,toPointLng),
-				icon : baseUrl + "/assets/icon/oval_green.png"
-			});
-			marker.setMap(map);
 		}
 	}
 }

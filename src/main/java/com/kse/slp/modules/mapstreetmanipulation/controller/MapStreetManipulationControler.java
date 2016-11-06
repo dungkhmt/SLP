@@ -283,10 +283,10 @@ public class MapStreetManipulationControler extends BaseWeb {
 							roadSegmentsService.deleteASegmentByCode(segment.getRSEG_Code());
 							
 							double distance1 = ap.computeDistanceHav(fromPointLng, fromPointLat, p.getdLong(), p.getdLat()); 
-							roadSegmentsService.saveARoadSegment(0, fromPoint, idPoint, distance1,segment.getRSEG_Speed(), segment.getRSEG_Bidirectional(), roadCodes[i]);
+							roadSegmentsService.saveARoadSegment(0, fromPoint, idPoint, distance1,segment.getRSEG_Speed(), segment.getRSEG_Bidirectional(), segment.getRSEG_RoadCode());
 							
 							double distance2 = ap.computeDistanceHav(p.getdLong(), p.getdLat(), toPointLng, toPointLat);
-							roadSegmentsService.saveARoadSegment(0, idPoint, toPoint, distance2, segment.getRSEG_Speed(), segment.getRSEG_Bidirectional(), roadCodes[i]);
+							roadSegmentsService.saveARoadSegment(0, idPoint, toPoint, distance2, segment.getRSEG_Speed(), segment.getRSEG_Bidirectional(), segment.getRSEG_RoadCode());
 						}
 					}
 					
