@@ -3,6 +3,7 @@ package com.kse.slp.modules.mapstreetmanipulation.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -158,7 +159,10 @@ public class MapStreetManipulationControler extends BaseWeb {
 	
 	@RequestMapping(value="/findAndSaveIntersectionPoints")
 	public @ResponseBody String findAndSaveIntersectionPoints(@RequestBody String roadsCode){
-		System.out.println(name()+"findAndSaveIntersectionPoints");
+		count++;
+		System.out.println(name()+"findAndSaveIntersectionPoints, roadsCode = " + roadsCode + ", count = " + count + ", dijkstra = " + dijkstra.solve(1, 9).toString());
+		
+		if(roadsCode == null || roadsCode.equals("")) return "400";
 		String roadCodes[] = roadsCode.split(";");
 		for(int i=0; i<roadCodes.length; i++){
 			Road road = RoadsService.loadARoadByRoadCode(roadCodes[i]);
@@ -175,6 +179,18 @@ public class MapStreetManipulationControler extends BaseWeb {
 
 			List<RoadPoint> roadPoints = roadPointsService.getList();
 			List<RoadSegment> roadSegments = roadSegmentsService.getList();
+			
+			HashMap<Integer, RoadPoint> mID2Point = new HashMap<Integer, RoadPoint>();
+			for(RoadPoint p: roadPoints){
+				mID2Point.put(p.getRP_ID(), p);
+			}
+			for(RoadSegment s: roadSegments){
+				if(mID2Point.get(s.getRSEG_FromPoint()) == null || mID2Point.get(s.getRSEG_ToPoint())==null){
+					System.out.println(name() + "::findAndSaveIntersectionPoints, BUG at segment " + s.getRSEG_Code());
+					System.exit(-1);
+				}
+			}
+			
 			if(roadPoints.size() == 0 || roadSegments.size() == 0){
 				System.out.println("Map null insert roadCode="+roadCodes[i]+" save to tables");
 				int idFrom = roadPointsService.saveARoadPoint(0, points[0], road.getRoadProvince());
@@ -239,8 +255,16 @@ public class MapStreetManipulationControler extends BaseWeb {
 						//find lat and lng of fromPoint and to point  
 						int fromPoint = segment.getRSEG_FromPoint();
 						int toPoint = segment.getRSEG_ToPoint();
-						String fromPointLatLng = null;
-						String toPointLatLng = null;
+						RoadPoint from = mID2Point.get(segment.getRSEG_FromPoint());
+						RoadPoint to = mID2Point.get(segment.getRSEG_ToPoint());
+						
+						String fromPointLatLng = from.getRP_LatLng();
+						String toPointLatLng = to.getRP_LatLng();
+						
+						//if(from == null || to == null){
+							
+						//}
+						/*
 						for(int k=0; k<roadPoints.size(); k++){
 							RoadPoint point = roadPoints.get(k);
 							if(point.getRP_Code() == fromPoint){
@@ -253,6 +277,8 @@ public class MapStreetManipulationControler extends BaseWeb {
 								break;
 							}
 						}
+						*/
+						
 						
 						//get lat and lng
 						int tmpIndex1 = fromPointLatLng.indexOf(",");
