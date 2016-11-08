@@ -246,6 +246,12 @@ public class DijkstraBinaryHeap {
 		//Element[] d = new Element[n+1];
 		pre = new HashMap<Integer, Integer>();//int[n+1];
 	}
+	public ArrayList<Integer> getVertices(){
+		return V;
+	}
+	public HashMap<Integer, ArrayList<Arc>> getAdj(){
+		return A;
+	}
 	public void initLog(){
 		try{
 			log = new PrintWriter("DijkstraBinaryHeap-log.txt");

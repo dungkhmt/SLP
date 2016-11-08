@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.print.attribute.standard.Destination;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kse.slp.controller.BaseWeb;
@@ -36,6 +40,10 @@ import com.kse.slp.modules.utilities.gismap.Approximation;
 import com.kse.slp.modules.utilities.gismap.Line;
 import com.kse.slp.modules.utilities.gismap.Point;
 import com.kse.slp.modules.utilities.gismap.TWO_SEGMENTS_RELATION;
+import com.kse.slp.modules.utilities.gismap.googlemaps.GoogleMapsQuery;
+import com.kse.slp.modules.utilities.shortestpathalgorithms.Arc;
+import com.kse.slp.modules.utilities.shortestpathalgorithms.DijkstraBinaryHeap;
+import com.kse.slp.modules.utilities.shortestpathalgorithms.Itinerary;
 import com.kse.slp.modules.mapstreetmanipulation.service.ProvinceService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadPointsService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadSegmentsService;
@@ -58,6 +66,182 @@ public class MapStreetManipulationControler extends BaseWeb {
 	RoadPointsService roadPointsService;
 	@Autowired
 	RoadSegmentsService roadSegmentsService;
+	
+	
+	public static DijkstraBinaryHeap dijkstra = null;
+	public static HashMap<Integer, RoadPoint> mID2Point = null;
+	
+	public static List<RoadPoint> points = null;
+	public static List<RoadSegment> segments = null;
+	public static List<Road> roads = null;
+	public static HashMap<String, Road> mCode2Road = null;
+	
+	private void initDijkstra(){
+		if(dijkstra == null){
+			GoogleMapsQuery G = new GoogleMapsQuery();
+			mID2Point = new HashMap<Integer, RoadPoint>();
+			mCode2Road = new HashMap<String, Road>();
+			
+			points = roadPointsService.getList();
+			segments = roadSegmentsService.getList();
+			roads = RoadsService.getList();
+			
+			for(Road r: roads){
+				mCode2Road.put(r.getRoadCode(), r);
+			}
+			ArrayList<Integer> V = new ArrayList<Integer>();
+			
+			for(RoadPoint p: points){
+				System.out.println(name() + "::initDojkstra, point " + p.getRP_LatLng());
+				V.add(p.getRP_ID());
+				mID2Point.put(p.getRP_ID(), p);
+			}
+			ArrayList<Arc> Arcs = new ArrayList<Arc>();
+			for(RoadSegment s: segments){
+				Road r = mCode2Road.get(s.getRSEG_RoadCode());
+				
+				int u = s.getRSEG_FromPoint();
+				int v = s.getRSEG_ToPoint();
+				RoadPoint pu = mID2Point.get(u);
+				RoadPoint pv = mID2Point.get(v);
+				String[] s_latlng = pu.getRP_LatLng().split(",");
+				double lat1 = Double.valueOf(s_latlng[0]);
+				double lng1 = Double.valueOf(s_latlng[1]);
+				
+				s_latlng = pv.getRP_LatLng().split(",");
+				double lat2 = Double.valueOf(s_latlng[0]);
+				double lng2 = Double.valueOf(s_latlng[1]);
+				
+				double w = G.computeDistanceHaversine(lat1, lng1, lat2, lng2);
+				Arc a = new Arc(u,v,w);
+				Arcs.add(a);
+				
+				System.out.println(name() + "::initDijkstra " + r.getRoadBidirectional());
+				
+				if(r.getRoadBidirectional().equals("BIDIRECTIONAL")){
+					System.out.println(name() + "::initDijkstra, BIDIRECTIONAL");
+					a = new Arc(v,u,w);
+					Arcs.add(a);
+				}
+			}
+			HashMap<Integer, ArrayList<Arc>> A = new HashMap<Integer, ArrayList<Arc>>();
+			for(int v: V){
+				A.put(v, new ArrayList<Arc>());
+			}
+		
+			for(Arc a: Arcs){
+				int u = a.begin;
+				ArrayList<Arc> Au = A.get(u);
+				//if(Au == null) Au = new ArrayList<Arc>();
+				Au.add(a);
+				//A.put(u, Au);
+			}
+			dijkstra = new DijkstraBinaryHeap(V, A);
+			
+		}
+	}
+	private String jsonPoint(String latlng){
+		String[] s = latlng.split(",");
+		double lat = Double.valueOf(s[0]);
+		double lng = Double.valueOf(s[1]);
+		return "{\"lat\":" + lat + ",\"lng\":" + lng + "}";
+	}
+	//public String findPath(double lat_start, double lng_start, double lat_end, double lng_end){
+	public String findPath(String latlng_start, String latlng_end){
+		RoadPoint s = null;
+		RoadPoint t = null;
+		double minDisS = Integer.MAX_VALUE;
+		double minDisT = Integer.MAX_VALUE;
+		for(RoadPoint v: points){
+			double d = GoogleMapsQuery.distanceHaversine(latlng_start,v.getRP_LatLng());
+			if(minDisS > d){
+				minDisS = d; s =v;// v.getRP_ID();
+			}
+			
+			d = GoogleMapsQuery.distanceHaversine(latlng_end,v.getRP_LatLng());
+			if(minDisT > d){
+				minDisT = d; t = v;//v.getRP_ID();
+			}
+		}
+		System.out.println(name() + "::findPath, found s= " + s.getRP_ID() + ", t = " + t.getRP_ID());
+		Itinerary p = dijkstra.solve(s.getRP_ID(), t.getRP_ID());
+		String[] st = s.getRP_LatLng().split(",");
+		double s_lat = Double.valueOf(st[0]);
+		double s_lng = Double.valueOf(st[1]);
+		st = t.getRP_LatLng().split(",");
+		double t_lat = Double.valueOf(st[0]);
+		double t_lng = Double.valueOf(st[1]);
+		
+		if(p == null){
+			System.out.println(name() + "::findPath, found s= " + s.getRP_ID() + ", t = " + t.getRP_ID() + ", p = null");
+			String json = "{";
+			
+			json += "\"source\":{\"lat\":" + s_lat + ",\"lng\":" + s_lng + "},\"destination\":{\"lat\":" + t_lat + ",\"lng\":" + t_lng + "}";
+			
+			
+			json += ",\"points\":[]}";
+			System.out.println("return json = " + json);
+			return json;
+		}
+		System.out.println(name() + "::findPath, found s= " + s + ", t = " + t + ", path = " + p.toString());
+		String json = "{";
+		
+		json += "\"source\":\"" + s.getRP_LatLng() + "\"" + ",\"destination\":\"" + t.getRP_LatLng() + "\"";
+		
+		
+		json += ",\"points\":[";
+		for(int i = 0; i < p.size(); i++){
+			int x = p.get(i);
+			RoadPoint px = mID2Point.get(x);
+			json += jsonPoint(px.getRP_LatLng());// px.getRP_LatLng();
+			if(i < p.size()-1) json += ",";
+		}
+		json += "]}";
+		System.out.println(name() + "::findPath, json = " + json);
+		return json;
+	}
+	private void testDijkstra(){
+		Itinerary I = null;
+		for(int i: dijkstra.getVertices()){
+			for(int j: dijkstra.getVertices())if(i != j){
+				I = dijkstra.solve(i, j);
+				if(I != null) break;
+			}
+			if(I != null) break;
+		}
+		System.out.println(name() + "::testDijkstra, I = " + I.toString());
+	}
+	@RequestMapping(value="/directionhome", method = RequestMethod.GET)
+	public String directionhome(ModelMap model, HttpSession session){
+		
+		User u = (User)session.getAttribute("currentUser");
+		log.info("directionhome, user = " + u.getUsername());
+		return "mapstreetmanipulation.directionhome";
+	}
+	@ResponseBody
+	@RequestMapping(value="/direction", method = RequestMethod.POST)
+	public String direction(HttpSession session,
+			@RequestParam(value="info", defaultValue="0")String info){
+		
+		initDijkstra();
+		
+		JSONParser parser = new JSONParser();
+		try{
+			JSONObject obj = (JSONObject) parser.parse(info);
+			String src = (String)obj.get("source");
+			String dest = (String)obj.get("destination");
+			src = src.trim();
+			src = src.substring(1,src.length()-1);
+			dest = dest.trim();
+			dest = dest.substring(1,dest.length()-1);
+			System.out.println(name() + "::direction, source = " + src + ", destination = " + dest);
+			return findPath(src, dest);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return "{}";
+	}
 	
 	@RequestMapping(value="",method=RequestMethod.GET)
 	public String listPickupDelivery(ModelMap model,HttpSession session){
@@ -127,6 +311,9 @@ public class MapStreetManipulationControler extends BaseWeb {
 	
 	@RequestMapping(value = "/viewStreets")
 	public String viewStreets(ModelMap model){
+		initDijkstra();
+		testDijkstra();
+		
 		List<Province> lstProvinces = ProvinceService.getListProvince();
 		model.put("lstProvinces", lstProvinces);
 		
@@ -160,7 +347,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 	@RequestMapping(value="/findAndSaveIntersectionPoints")
 	public @ResponseBody String findAndSaveIntersectionPoints(@RequestBody String roadsCode){
 		count++;
-		System.out.println(name()+"findAndSaveIntersectionPoints, roadsCode = " + roadsCode + ", count = " + count + ", dijkstra = " + dijkstra.solve(1, 9).toString());
+		//System.out.println(name()+"findAndSaveIntersectionPoints, roadsCode = " + roadsCode + ", count = " + count + ", dijkstra = " + dijkstra.solve(1, 9).toString());
 		
 		if(roadsCode == null || roadsCode.equals("")) return "400";
 		String roadCodes[] = roadsCode.split(";");

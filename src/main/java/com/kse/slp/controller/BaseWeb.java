@@ -2,6 +2,7 @@ package com.kse.slp.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.kse.slp.modules.mapstreetmanipulation.model.RoadPoint;
+import com.kse.slp.modules.mapstreetmanipulation.service.RoadPointsService;
+import com.kse.slp.modules.mapstreetmanipulation.service.RoadPointsServiceImpl;
 import com.kse.slp.modules.utilities.shortestpathalgorithms.Arc;
 import com.kse.slp.modules.utilities.shortestpathalgorithms.DijkstraBinaryHeap;
 import com.kse.slp.modules.utilities.shortestpathalgorithms.Itinerary;
@@ -20,13 +24,19 @@ public class BaseWeb {
     protected String baseUrl;
     protected String assetsUrl;
     
-    public static DijkstraBinaryHeap dijkstra = null;
+    //public static DijkstraBinaryHeap dijkstra = null;
     public static int count = 0;
     
     public BaseWeb() {
 		// TODO Auto-generated constructor stub
+    	/*
     	if(dijkstra == null){
     		// load map from database
+    		//RoadPointsService roadPointService = new RoadPointsServiceImpl();
+    		//List<RoadPoint> points = roadPointService.getList();
+    		//for(RoadPoint p:  points){
+    		//	System.out.println(p.getRP_LatLng());
+    		//}
     		ArrayList<Integer> V = new ArrayList<Integer>();
     		HashMap<Integer, ArrayList<Arc>> A = new HashMap<Integer, ArrayList<Arc>>();
     		
@@ -71,6 +81,8 @@ public class BaseWeb {
     		}
 
     	}
+    	*/
+    	
 	}
     
     @ModelAttribute

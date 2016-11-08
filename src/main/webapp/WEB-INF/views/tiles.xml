@@ -189,4 +189,9 @@
     	<put-attribute name="title" value="Chức năng chỉnh sửa điểm nút bản đồ"/>
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/EditRoadPoints.jsp"></put-attribute>
     </definition>
+    <definition name="mapstreetmanipulation.directionhome" extends="layout5">
+    	<put-attribute name="title" value="Tìm đường ngắn nhất"/>
+    	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/direction.jsp"></put-attribute>
+    </definition>
+    
 </tiles-definitions>

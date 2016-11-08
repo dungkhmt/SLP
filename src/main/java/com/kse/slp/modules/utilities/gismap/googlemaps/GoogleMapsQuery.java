@@ -53,6 +53,15 @@ public class GoogleMapsQuery {
 		t = t*RATIO;
 		return t;
 	}
+	public static double distanceHaversine(String latlng1, String latlng2){
+		String[] s = latlng1.split(",");
+		double lat1 = Double.valueOf(s[0]);
+		double lng1 = Double.valueOf(s[1]);
+		s = latlng2.split(",");
+		double lat2 = Double.valueOf(s[0]);
+		double lng2 = Double.valueOf(s[1]);
+		return computeDistanceHaversineStatic(lat1, lng1, lat2, lng2);
+	}
 	
 	public double computeDistanceHaversine(double lat1, double long1, double lat2, double long2){
 		double SCALE = 1;

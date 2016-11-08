@@ -61,6 +61,8 @@ var roads = ${jsonRoads};
 var segments = ${jsonRoadSegments};
 var points = ${jsonRoadPoints};
 
+var start = null;
+var end = null;
 function initialize(){
 	var mapProp = {
 		center : {lat:21.03333, lng: 105.849998},
@@ -68,6 +70,86 @@ function initialize(){
 		mapTypeIDd : google.maps.MapTypeId.ROADMAP
 	}
 	map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	google.maps.event.addListener(map,'click',function(event){
+		//alert("click");
+		var img = new google.maps.MarkerImage('ccmarker.png');
+		var marker = new google.maps.Marker({
+			'map':map,
+			'position': event.latLng,
+			//'icon': img,
+			'visible': true,
+			
+		});
+		google.maps.event.addListener(marker,'click',function(event){
+			if(start == marker)
+				start = null;
+			else if(end == marker) end = null;
+			
+			marker.setMap(null);
+		});
+		
+		if(start == null){
+			start = marker;
+		}else{
+			end = marker;
+			
+			json = "{\"source\":\"" + start.position + "\","  +
+				"\"destination\":\"" + end.position + "\"}";
+			
+				//alert("json = " + json);
+			// ajax for direction here
+			$.ajax({
+				type : 'POST',
+				url : baseUrl + '/mapstreetmanipulation/direction',
+				data : "info="+json,
+				cache: false,
+				//contentType : 'application/text',
+				success: function(response){
+					//alert("response = " + response);
+					//window.location = baseUrl + "/mapstreetmanipulation/direction";
+					var obj = jQuery.parseJSON(response);
+					var src_lat = obj.source.lat;
+					var src_lng = obj.source.lng;
+					var dest_lat = obj.destination.lat;
+					var dest_lng = obj.destination.lng;
+					
+					//alert(response + ":" + src + "----" + dest);
+					var marker_src = new google.maps.Marker({
+						'map':map,
+						'position': new google.maps.LatLng(src_lat,src_lng),
+						//'icon': img,
+						'visible': false,
+					});
+					var marker_dest = new google.maps.Marker({
+						'map':map,
+						'position': new google.maps.LatLng(dest_lat, dest_lng),
+						//'icon': img,
+						'visible': false,
+						
+					});
+					
+					alert("path.length = " + obj.points.length);
+					
+					var coordinate = new Array();
+					for(i = 0; i < obj.points.length; i++){
+						coordinate.push(new google.maps.LatLng(obj.points[i].lat,obj.points[i].lng));
+					}
+					var polyline = new google.maps.Polyline({
+						path: coordinate,
+						strokeColor: '#FFFF00',
+					    strokeOpacity: 1.0,
+					    strokeWeight: 6,
+					    //'ID': allPolylines.length
+					});
+					polyline.setMap(map);	
+				}
+			});
+		}
+	});
+
+	
+	
+	
 	var checkIntersectPoint = [];
 	for(var i=0; i<points.length; i++){
 		checkIntersectPoint[i] = 0;
