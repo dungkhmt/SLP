@@ -149,10 +149,12 @@ public class DiChungControler extends BaseWeb {
 				String  rEQDC_ChunkName=row.getCell(2).getStringCellValue();
 				String  rEQDC_PickupAddress=row.getCell(3).getStringCellValue();
 				String  rEQDC_DeliveryAddress=row.getCell(4).getStringCellValue();
-				int rEQDC_NumberPassengers=(int) row.getCell(5).getNumericCellValue();
+				String rEQDC_PickupPos=row.getCell(5).getStringCellValue();
+				String rEQDC_DeliveryPos=row.getCell(6).getStringCellValue();
+				int rEQDC_NumberPassengers=(int) row.getCell(7).getNumericCellValue();
 						
 				System.out.println(name()+" "+rEQDC_TicketCode+" "+rEQDC_DepartTime+" "+rEQDC_ChunkName+" "+rEQDC_PickupAddress+" "+rEQDC_DeliveryAddress+" "+rEQDC_NumberPassengers);
-				requestDiChungService.saveARequest(rEQDC_TicketCode, rEQDC_DepartTime, rEQDC_ChunkName, rEQDC_PickupAddress, rEQDC_DeliveryAddress, rEQDC_NumberPassengers,batchCode);
+				requestDiChungService.saveARequest(rEQDC_TicketCode, rEQDC_DepartTime, rEQDC_ChunkName, rEQDC_PickupAddress, rEQDC_DeliveryAddress,rEQDC_PickupPos,rEQDC_DeliveryPos, rEQDC_NumberPassengers,batchCode);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -201,6 +203,8 @@ public class DiChungControler extends BaseWeb {
 			str.setDepartTime(r.getREQDC_DepartTime());
 			str.setNumberPassengers(r.getREQDC_NumberPassengers());
 			str.setPickupAddress(r.getREQDC_PickupAddress());
+			str.setPickupPos(r.getREQDC_PickupPos());
+			str.setDeliveryPos(r.getREQDC_DeliveryPos());
 			str.setTicketCode(r.getREQDC_TicketCode());
 			lstr[i]=str;
 		}
