@@ -166,6 +166,7 @@ public class DiChungControler extends BaseWeb {
 	public String createRouteAuto(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
+		System.out.println(session.getAttribute("CustomerCode"));
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
 		List<RequestBatchDiChung> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
@@ -177,6 +178,8 @@ public class DiChungControler extends BaseWeb {
 		log.info(u.getUsername());
 		SharedTaxiInput stinpu= new SharedTaxiInput();
 		int tmp[]= {4,6};
+		stinpu.setAirportAddress("Noi Bai International Airport, Phú Cường, Hanoi, Vietnam");
+		stinpu.setAirportPos("21.213018,105.802752");
 		stinpu.setVehicleCapacities(tmp);
 		stinpu.setMaxWaitTime(900);
 		stinpu.setForbidenStraightDistance(10000);
@@ -216,7 +219,7 @@ public class DiChungControler extends BaseWeb {
 		try {
 		    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 			//HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung-airport");
 		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
