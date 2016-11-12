@@ -25,7 +25,7 @@ public class RoadsServiceImpl implements RoadsService {
 	public int saveARoad(String roadCode, String roadName, String roadProvince,
 			String roadInterProvince, String roadPoints, String roadTypeCode,
 			String roadBidirectional, int roadMaxSpeed,
-			String roadCreateUserID, String roadCreateDateTime) {
+			String roadCreateUserID, String roadCreateDateTime,String roadStatus) {
 		// TODO Auto-generated method stub
 		Road r= new Road();
 		r.setRoadName(roadName);
@@ -38,6 +38,7 @@ public class RoadsServiceImpl implements RoadsService {
 		r.setRoadMaxSpeed(roadMaxSpeed);
 		r.setRoadCreateUserID(roadCreateUserID);
 		r.setRoadCreateDateTime(roadCreateDateTime);
+		r.setRoadStatus(roadStatus);
 		return RoadsDAO.saveARoad(r);
 	}
 
@@ -62,6 +63,22 @@ public class RoadsServiceImpl implements RoadsService {
 	public List<Road> getList() {
 		// TODO Auto-generated method stub
 		return RoadsDAO.getList();
+	}
+
+	@Override
+	public List<Road> getListNotProccessed() {
+		// TODO Auto-generated method stub
+		return RoadsDAO.getListNotProccessed();
+	}
+
+	@Override
+	public void updateStatusRoad(String roadCode, String status) {
+		// TODO Auto-generated method stub
+		Road road = RoadsDAO.loadARoadByRoadCode(roadCode);
+		if(road != null){
+			road.setRoadStatus(status);
+			RoadsDAO.updateARoad(road);
+		}
 	}
 
 }

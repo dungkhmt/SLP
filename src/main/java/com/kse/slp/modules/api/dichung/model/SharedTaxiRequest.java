@@ -3,12 +3,15 @@ package com.kse.slp.modules.api.dichung.model;
 public class SharedTaxiRequest {
 	private String ticketCode;
 	private String departTime;
-	private String chungName;// tên sai
+	private String chungName;
 	private String pickupAddress;
 	private String deliveryAddress;
+	private String pickupPos;
+	private String deliveryPos;
 	private int numberPassengers;
 	public SharedTaxiRequest(String ticketCode, String departTime,
 			String chungName, String pickupAddress, String deliveryAddress,
+			String pickupPos, String deliveryPos,
 			int numberPassengers) {
 		super();
 		this.ticketCode = ticketCode;
@@ -16,8 +19,32 @@ public class SharedTaxiRequest {
 		this.chungName = chungName;
 		this.pickupAddress = pickupAddress;
 		this.deliveryAddress = deliveryAddress;
+		this.pickupPos = pickupPos;
+		this.deliveryPos = deliveryPos;
 		this.numberPassengers = numberPassengers;
 	}
+	
+	
+	public String getPickupPos() {
+		return pickupPos;
+	}
+
+
+	public void setPickupPos(String pickupPos) {
+		this.pickupPos = pickupPos;
+	}
+
+
+	public String getDeliveryPos() {
+		return deliveryPos;
+	}
+
+
+	public void setDeliveryPos(String deliveryPos) {
+		this.deliveryPos = deliveryPos;
+	}
+
+
 	public String getTicketCode() {
 		return ticketCode;
 	}
@@ -58,6 +85,5 @@ public class SharedTaxiRequest {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
 	
 }

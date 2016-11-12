@@ -31,6 +31,7 @@
  
 <script src="<c:url value="/assets/libs/fileinput/js/fileinput.min.js"/>"></script>
 <script>
+
 $(document).ready(function(){
 	 $("#input-file").fileinput();
  });

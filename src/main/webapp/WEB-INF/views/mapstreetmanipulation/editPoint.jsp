@@ -4,6 +4,13 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <div id="page-wrapper">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">Sửa tuyến đường đã tạo</h1>
+		</div>
+		<!-- /.col-lg-12 -->
+	</div>
+	<!-- /.row -->
 	<div id="googleMap" style="width:100%;height:100%;margin-bottom:10px;"></div>
 	
 	<div class="row">
@@ -62,42 +69,48 @@ function initialize() {
 			icon:"https://www.google.com/mapfiles/marker_green.png"
 		});
 		var path = road.getPath();
-		console.log("path: "+JSON.stringify(path));
-		//console.log("path length: "+path.length);
-		var indexMax=0;
-		var max = -10000000;
-		for(var i=0; i<path.length-1; i++){
-			var latlngA = path.getAt(i);
-			var latlngB = path.getAt(i+1);
-			//console.log("latlngA["+i+"]: "+JSON.stringify(latlngA));
-			//console.log("latlngB["+i+"]: "+JSON.stringify(latlngB));
-			var tmp = angleABC(latlngA.lat(), latlngA.lng(), pos.lat(), pos.lng(), latlngB.lat(), latlngB.lng());
-			//console.log("goc giua "+i+" va "+(i+1)+": "+tmp);
-			if(tmp > max ){
-				max = tmp;
-				indexMax = i+1;
-			}
-			//console.log("latlng["+i+"]:"+JSON.stringify(latlng));
-		}
-		if(max < (Math.PI)/2){
-			//console.log("max < pi/2 --- max="+max+" ---- index="+indexMax);
-			var latlng0 = path.getAt(0);
-			var latlngN = path.getAt(path.length-1);
-			var distancePosTo0 = distance(latlng0.lat(),latlng0.lng(),pos.lat(),pos.lng());
-			var distancePosToN = distance(latlngN.lat(),latlngN.lng(),pos.lat(),pos.lng());
-			if(distancePosTo0 > distancePosToN){
-				path.push(pos);
-				listMarker.push(markerPoint);
-			}else{
-				path.insertAt(0,pos);
-				listMarker.splice(0,0,markerPoint);
-			}
+		if(path.length == 0){
+			console.log("path length == 0");
+			road.getPath().push(pos);
+			listMarker.push(markerPoint);
 		}else{
-			//console.log("index of point insert: "+ indexMax);
-			path.insertAt(indexMax,pos);
-			listMarker.splice(indexMax,0,markerPoint);
-			//console.log("path : "+JSON.stringify(path));
-				
+			console.log("path: "+JSON.stringify(path));
+			//console.log("path length: "+path.length);
+			var indexMax=0;
+			var max = -10000000;
+			for(var i=0; i<path.length-1; i++){
+				var latlngA = path.getAt(i);
+				var latlngB = path.getAt(i+1);
+				//console.log("latlngA["+i+"]: "+JSON.stringify(latlngA));
+				//console.log("latlngB["+i+"]: "+JSON.stringify(latlngB));
+				var tmp = angleABC(latlngA.lat(), latlngA.lng(), pos.lat(), pos.lng(), latlngB.lat(), latlngB.lng());
+				//console.log("goc giua "+i+" va "+(i+1)+": "+tmp);
+				if(tmp > max ){
+					max = tmp;
+					indexMax = i+1;
+				}
+				//console.log("latlng["+i+"]:"+JSON.stringify(latlng));
+			}
+			if(max < (Math.PI)/2){
+				//console.log("max < pi/2 --- max="+max+" ---- index="+indexMax);
+				var latlng0 = path.getAt(0);
+				var latlngN = path.getAt(path.length-1);
+				var distancePosTo0 = distance(latlng0.lat(),latlng0.lng(),pos.lat(),pos.lng());
+				var distancePosToN = distance(latlngN.lat(),latlngN.lng(),pos.lat(),pos.lng());
+				if(distancePosTo0 > distancePosToN){
+					path.push(pos);
+					listMarker.push(markerPoint);
+				}else{
+					path.insertAt(0,pos);
+					listMarker.splice(0,0,markerPoint);
+				}
+			}else{
+				//console.log("index of point insert: "+ indexMax);
+				path.insertAt(indexMax,pos);
+				listMarker.splice(indexMax,0,markerPoint);
+				//console.log("path : "+JSON.stringify(path));
+					
+			}
 		}
 		//road.getPath().push(event.latLng);
 		markerPoint.addListener('click',function(){
@@ -151,8 +164,12 @@ $(document).ready(function(){
 			if(dataResponse[i].roadCode==street){
 				//roadCodeSelected = dataResponse[i].RoadCode;
 				var roadPoints = dataResponse[i].roadPoints;
+				console.log("roadPoints length = "+roadPoints.length);
+				if(roadPoints.length == 0){
+					break;
+				}
 				var roadPointLatLngs = roadPoints.split(":");
-				//console.log("roadPointLatLngs"+roadPointLatLngs)
+				console.log("roadPointLatLngs"+roadPointLatLngs+" length="+roadPointLatLngs.length);
 				for(var j=0; j<roadPointLatLngs.length; j++){
 					//console.log("roadPointLatLngs["+j+"]"+roadPointLatLngs[j]);
 					var index = roadPointLatLngs[j].indexOf(",");
@@ -201,7 +218,7 @@ $(document).ready(function(){
 			contentType: 'application/text',
 			success: function(response){
 				alert("ok");
-				window.location = baseUrl + "/mapstreetmanipulation/editPoint"
+				window.location = baseUrl + "/mapstreetmanipulation/editPoint";
 			}
 		})
 	});

@@ -12,14 +12,14 @@ import com.kse.slp.modules.dichung.controller.DiChungControler;
 import com.kse.slp.modules.usermanagement.model.User;
 
 @Controller("ManagerControler")
-@RequestMapping(value = {"/manager"})
+@RequestMapping(value = {"/manage"})
 public class ManagerController {
 	private static final Logger log = Logger.getLogger(ManagerController.class);
 	@RequestMapping(value="",method=RequestMethod.GET)
 	public String home(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
-		return "manager.home";
+		return "manage.home";
 	}
 
 }

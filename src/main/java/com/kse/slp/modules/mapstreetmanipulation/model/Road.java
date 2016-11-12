@@ -21,6 +21,7 @@ public class Road {
 	int RoadMaxSpeed;
 	String RoadCreateUserID;
 	String RoadCreateDateTime;
+	String RoadStatus;
 	public int getRoadID() {
 		return RoadID;
 	}
@@ -86,6 +87,23 @@ public class Road {
 	}
 	public void setRoadCreateDateTime(String roadCreateDateTime) {
 		RoadCreateDateTime = roadCreateDateTime;
+	}
+	public String getRoadStatus() {
+		return RoadStatus;
+	}
+	public void setRoadStatus(String roadStatus) {
+		RoadStatus = roadStatus;
+	}
+	@Override
+	public String toString() {
+		return "Road [RoadID=" + RoadID + ", RoadCode=" + RoadCode
+				+ ", RoadName=" + RoadName + ", RoadProvince=" + RoadProvince
+				+ ", RoadInterProvince=" + RoadInterProvince + ", RoadPoints="
+				+ RoadPoints + ", RoadTypeCode=" + RoadTypeCode
+				+ ", RoadBidirectional=" + RoadBidirectional
+				+ ", RoadMaxSpeed=" + RoadMaxSpeed + ", RoadCreateUserID="
+				+ RoadCreateUserID + ", RoadCreateDateTime="
+				+ RoadCreateDateTime + ", RoadStatus=" + RoadStatus + "]";
 	}
 	
 }

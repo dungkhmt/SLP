@@ -155,9 +155,9 @@
     	<put-attribute name="content" value="/WEB-INF/views/dichung/viewRouteDiChung.jsp" /> 
     </definition>
     <!-- Manager -->
-    <definition name="manager.home" extends="layout4">
+    <definition name="manage.home" extends="layout4">
     	<put-attribute name="title" value="Chức năng quản lý danh mục" />
-    	<put-attribute name="content" value="/WEB-INF/views/home/managerhome.jsp" />                
+    	<put-attribute name="content" value="/WEB-INF/views/home/managehome.jsp" />                
     </definition> 
     
     <definition name="usermanagement.home" extends="layout4">
@@ -190,4 +190,17 @@
     	<put-attribute name="title" value="Chức năng xem các tuyến đường" />
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/viewStreets.jsp" />              
     </definition>
+    <definition name="mapstreetmanipulation.findIntersectionPoints" extends="layout5">
+    	<put-attribute name="title" value="Chức năng tìm điểm giao cắt"/>
+    	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/findIntersectionPoints.jsp"></put-attribute>
+    </definition>
+    <definition name="mapstreetmanipulation.editroadpoints" extends="layout5">
+    	<put-attribute name="title" value="Chức năng chỉnh sửa điểm nút bản đồ"/>
+    	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/EditRoadPoints.jsp"></put-attribute>
+    </definition>
+    <definition name="mapstreetmanipulation.directionhome" extends="layout5">
+    	<put-attribute name="title" value="Tìm đường ngắn nhất"/>
+    	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/direction.jsp"></put-attribute>
+    </definition>
+    
 </tiles-definitions>

@@ -15,6 +15,7 @@
 
 <div id="page-wrapper">
     <div class="row">
+<<<<<<< HEAD
     	<div class="col-lg-12 center">
             <h1 class="page-header">Chức năng quản lý user</h1>
             

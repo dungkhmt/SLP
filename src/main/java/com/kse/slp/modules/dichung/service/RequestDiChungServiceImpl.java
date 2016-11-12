@@ -14,7 +14,7 @@ public class RequestDiChungServiceImpl implements RequestDiChungService{
 	@Override
 	public int saveARequest(String rEQDC_TicketCode, String rEQDC_DepartTime,
 			String rEQDC_ChunkName, String rEQDC_PickupAddress,
-			String rEQDC_DeliveryAddress, int rEQDC_NumberPassengers,String rEQDC_BatchCode) {
+			String rEQDC_DeliveryAddress,String rEQDC_PickupPos,String rEQDC_DeliveryPos, int rEQDC_NumberPassengers,String rEQDC_BatchCode) {
 		// TODO Auto-generated method stub
 		RequestDiChung r= new RequestDiChung();
 		r.setREQDC_TicketCode(rEQDC_TicketCode);
@@ -24,6 +24,8 @@ public class RequestDiChungServiceImpl implements RequestDiChungService{
 		r.setREQDC_DeliveryAddress(rEQDC_DeliveryAddress);
 		r.setREQDC_NumberPassengers(rEQDC_NumberPassengers);
 		r.setREQDC_BatchCode(rEQDC_BatchCode);
+		r.setREQDC_PickupPos(rEQDC_PickupPos);
+		r.setREQDC_DeliveryPos(rEQDC_DeliveryPos);
 		return requestDiChungDAO.saveARequest(r);
 	}
 	@Override

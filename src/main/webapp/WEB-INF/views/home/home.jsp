@@ -123,7 +123,7 @@ body{
 		     <!-- /.col-sm-6(/mapstreetmanipulation) -->
 		     
 	     	<div class="col-sm-4">
-	    		<a href="<c:url value = "/manager"/>">
+	    		<a href="<c:url value = "/manage"/>">
 		     		<div class="card">
 		     			<div class="card-block">
 		     				<h4 class="card-title"><b>Quản lý danh mục</b></h4>
@@ -139,5 +139,6 @@ body{
 		<!-- /.row -->
 	</div>
 	<!-- /.container -->
+
 </body>
 </html>

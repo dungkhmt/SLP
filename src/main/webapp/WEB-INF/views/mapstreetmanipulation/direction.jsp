@@ -6,7 +6,7 @@
 <link href="<c:url value="/assets/libs/fileinput/css/fileinput.min.css" />" media="all" rel="stylesheet" type="text/css">
 	
 <div id="page-wrapper">
-    <form:form action="${baseUrl}/dichung/upload-file-request-dichung" method="POST" commandName="formAdd" enctype="multipart/form-data" role="form">
+    <form:form action="${baseUrl}/mapstreetmanipulation/uploadexcel" method="POST" commandName="formAdd" enctype="multipart/form-data" role="form">
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">Upload danh sách hóa đơn</h1>
@@ -15,9 +15,8 @@
 			<div class="form-group">
 				<form:select path="batchCode" name="batchCode" class="form-control">
 					
-					<c:forEach items="${listBatch}" var="reBatch">
-						<option value="${reBatch.REQBAT_Code}"><c:out value="${reBatch.REQBAT_Code}"/></option>
-					</c:forEach>
+					<option value="abc">abc</option>
+					
 				</form:select>
 			</div>
 		</div>
@@ -31,6 +30,7 @@
  
 <script src="<c:url value="/assets/libs/fileinput/js/fileinput.min.js"/>"></script>
 <script>
+
 $(document).ready(function(){
 	 $("#input-file").fileinput();
  });
