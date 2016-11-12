@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.dichung.model.FormAddFileExcel;
 import com.kse.slp.modules.mapstreetmanipulation.model.Province;
 import com.kse.slp.modules.mapstreetmanipulation.model.Road;
 import com.google.gson.Gson;
@@ -216,8 +217,29 @@ public class MapStreetManipulationControler extends BaseWeb {
 		
 		User u = (User)session.getAttribute("currentUser");
 		log.info("directionhome, user = " + u.getUsername());
+		try{
+			System.out.println("run command");
+			Runtime.getRuntime().exec("C:/Program Files/R/R-3.3.2/bin/Rscript.exe C:/DungPQ/Projects/EVN/example.r");
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		model.put("formAdd", new FormAddFileExcel());
 		return "mapstreetmanipulation.directionhome";
 	}
+	@RequestMapping(value="/uploadexcel", method = RequestMethod.GET)
+	public String uploadexcel(ModelMap model, HttpSession session){
+		
+		User u = (User)session.getAttribute("currentUser");
+		log.info("directionhome, user = " + u.getUsername());
+		try{
+			System.out.println("upload excel");
+			//Runtime.getRuntime().exec("C:/Program Files/R/R-3.3.2/bin/Rscript.exe C:/DungPQ/Projects/EVN/example.r");
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return "mapstreetmanipulation.directionhome";
+	}
+	
 	@ResponseBody
 	@RequestMapping(value="/direction", method = RequestMethod.POST)
 	public String direction(HttpSession session,
