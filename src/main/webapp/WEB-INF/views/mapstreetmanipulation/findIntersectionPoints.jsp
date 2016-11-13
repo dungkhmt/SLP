@@ -60,6 +60,12 @@ var roadSelected = [];
 var roads = ${jsonRoads};
 var segments = ${jsonRoadSegments};
 var points = ${jsonRoadPoints};
+var listMarker = [];
+var listSegment = [];
+var mapPoint2Segment = {};
+var mapID2SegmentCode = {};
+var mapID2PointCode ={};
+var markerClicked;
 
 var start = null;
 var end = null;
@@ -146,16 +152,12 @@ function initialize(){
 			});
 		}
 	});
-
-	
 	
 	
 	var checkIntersectPoint = [];
 	for(var i=0; i<points.length; i++){
 		checkIntersectPoint[i] = 0;
 	}
-	var listMarker = [];
-	
 	for(var i=0; i<segments.length; i++){
 		var fromPointCode = segments[i].RSEG_FromPoint;
 		var toPointCode = segments[i].RSEG_ToPoint;
@@ -185,17 +187,45 @@ function initialize(){
 		var toPointLat = toPointLatLng.substring(0,indexCutToPoint);
 		var toPointLng = toPointLatLng.substring(indexCutToPoint+1,toPointLatLng.length);
 		
-		var polyLine = new google.maps.Polyline({
-			strokeColor: '#FF0000',
-			strokeOpacity : 1.0,
-			strokeWeight :3,
-			path : [new google.maps.LatLng(fromPointLat,fromPointLng), new google.maps.LatLng(toPointLat,toPointLng)]
-		})
+		var polyLine;
+		if(segments[i].RSEG_Bidirectional == "DIRECTIONAL"){
+			var lineSymbol = {
+				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+				strokeOpacity: 2,
+				scale: 1.5
+			}
+			
+			polyLine = new google.maps.Polyline({
+				strokeColor: '#FF0000',
+				strokeOpacity : 1.0,
+				strokeWeight :3,
+				path : [new google.maps.LatLng(fromPointLat,fromPointLng), new google.maps.LatLng(toPointLat,toPointLng)],
+				icons: [{
+					icon: lineSymbol,
+					offset: '100%',
+					repeat: '200px'
+				}]
+			});
+			
+		}else{
+			polyLine = new google.maps.Polyline({
+				strokeColor: '#FF0000',
+				strokeOpacity : 1.0,
+				strokeWeight :3,
+				path : [new google.maps.LatLng(fromPointLat,fromPointLng), new google.maps.LatLng(toPointLat,toPointLng)]
+			})
+		}
 		polyLine.setMap(map);
+		listSegment.push(polyLine);
+		mapID2SegmentCode[i]=segments[i].RSEG_Code;
+		//mapPoint2Segment[new google.maps.LatLng(fromPointLat,fromPointLng)]=segments[i].RSEG_Code;
+		//mapPoint2Segment[new google.maps.LatLng(toPointLat,toPointLng)]=segments[i].RSEG_Code;
 		
 		/*
 		 * check intersect point to set color to marker of point	
 		*/
+		mapPoint2Segment[indexFromPoint] = i;
+		mapPoint2Segment[indexToPoint] = i;
 		if(listMarker[indexFromPoint] && listMarker[indexFromPoint].setMap){
 			listMarker[indexFromPoint].setMap(null);
 		}
@@ -203,34 +233,122 @@ function initialize(){
 			listMarker[indexToPoint].setMap(null);
 		}
 		
+		var markerFromPoint;
 		if(checkIntersectPoint[indexFromPoint] >=3 ){
-			listMarker[indexFromPoint] = new google.maps.Marker({
+			markerFromPoint = new google.maps.Marker({
 				map : map,
 				position : new google.maps.LatLng(fromPointLat,fromPointLng),
-				icon : baseUrl + "/assets/icon/oval_green.png"
+				icon : baseUrl + "/assets/icon/oval_green.png",
+				//draggable: true
 			});
-		}else{
-			listMarker[indexFromPoint] = new google.maps.Marker({
+			//listMarker[indexFromPoint].addListener('dragend',handleEventDrag);
+		}else if(checkIntersectPoint[indexFromPoint] == 1){
+			markerFromPoint = new google.maps.Marker({
 				map : map,
 				position : new google.maps.LatLng(fromPointLat,fromPointLng),
-				icon : baseUrl + "/assets/icon/oval_blue.png"
+				icon : baseUrl + "/assets/icon/oval_blue.png",
+				draggable: true
+			});
+			markerFromPoint.addListener('dragend',handleEventDrag);
+		}else{
+			markerFromPoint = new google.maps.Marker({
+				map : map,
+				position : new google.maps.LatLng(fromPointLat,fromPointLng),
+				icon : baseUrl + "/assets/icon/oval_blue.png",
+				//draggable: true
 			});
 		}
+		mapID2PointCode[indexFromPoint] = fromPointCode;
+		listMarker[indexFromPoint] = markerFromPoint;
+		//mapPoint2Segment[markerFromPoint] = segments[i].RSEG_Code;
+		/*listMarker[indexFromPoint].addListener('click',function(){
+			markerClicked = this;
+		});*/
 		
+		var markerToPoint;
 		if(checkIntersectPoint[indexToPoint] >=3 ){
-			listMarker[indexToPoint] = new google.maps.Marker({
+			markerToPoint = new google.maps.Marker({
 				map : map,
 				position : new google.maps.LatLng(toPointLat,toPointLat),
-				icon : baseUrl + "/assets/icon/oval_green.png"
+				icon : baseUrl + "/assets/icon/oval_green.png",
+				//draggable: true
 			});
-		}else{
-			listMarker[indexToPoint] = new google.maps.Marker({
+		}else if(checkIntersectPoint[indexToPoint] == 1){
+			markerToPoint = new google.maps.Marker({
 				map : map,
 				position : new google.maps.LatLng(toPointLat,toPointLng),
-				icon : baseUrl + "/assets/icon/oval_blue.png"
+				icon : baseUrl + "/assets/icon/oval_blue.png",
+				draggable: true
+			});
+			markerToPoint.addListener('dragend',handleEventDrag);
+		}else{
+			markerToPoint = new google.maps.Marker({
+				map : map,
+				position : new google.maps.LatLng(toPointLat,toPointLat),
+				icon : baseUrl + "/assets/icon/oval_blue.png",
+				//draggable: true
 			});
 		}
+		listMarker[indexToPoint] = markerToPoint;
+		mapPoint2Segment[markerToPoint] = segments[i].RSEG_Code;
+		mapID2PointCode[indexFromPoint] = fromPointCode;
+		
+		//listMarker[indexToPoint].addListener('dragstart',handleDragStart);
+		/*listMarker[indexToPoint].addListener('click',function(){
+			markerClicked = this;
+		});*/
+		//listMarker[indexToPoint].addListener('click',handleEventDrag);
 	}
+}
+
+function handleEventDrag(event){
+	//var segmentCode = mapPoint2Segment[this];
+	var indexMarker = listMarker.indexOf(this);
+	var originPos = listMarker[indexMarker].getPosition();
+	var segmentID = mapPoint2Segment[indexMarker];
+	var pointCode = mapID2PointCode[indexMarker];
+	//console.log("this "+this);
+	var segment = listSegment[segmentID];
+	//console.log("segment "+segment);
+	var segmentCode = mapID2SegmentCode[segmentID];
+	console.log("segment code"+segmentCode, "  point Code"+pointCode);
+	var dis0 = distanceE(segment.getPath().getAt(0),originPos);
+	var dis1 = distanceE(segment.getPath().getAt(1),originPos);
+	if(dis0 < dis1){
+		segment.getPath().removeAt(0);
+		segment.getPath().insertAt(0,this.getPosition());
+	}else{
+		segment.getPath().removeAt(1);
+		segment.getPath().insertAt(1,this.getPosition());
+	}
+	console.log("this.getPosition = "+JSON.stringify(this.getPosition()));
+	console.log("lat: "+event.latLng.lat()+"  lng: "+event.latLng.lng())
+	
+	var infowindow = new google.maps.InfoWindow({
+	    content: '<button class="btn btn-primary" onclick="findintersectsegment('+segmentCode+','+pointCode+','+event.latLng.lat()+','+event.latLng.lng()+')">Tìm</button>'
+	});
+	infowindow.open(map,this);
+	//console.log("segment path "+JSON.stringify(segment.getPath()));
+	//segment.getPath().removeAt(1);
+	//segment.getPath().insertAt(1,this.getPosition);
+}
+
+function findintersectsegment(segmentCode,pointCode,pointLat,pointLng){
+	var dataSend = segmentCode + "; "+pointCode+"; "+(pointLat+", "+pointLng);
+	$.ajax({
+		type : 'POST',
+		url : baseUrl + '/mapstreetmanipulation/findIntersectionSegment',
+		data : dataSend,
+		contentType : 'application/text',
+		success: function(response){
+			alert("ok");
+			window.location = baseUrl + "/mapstreetmanipulation/findIntersectionPoints";
+		}
+	});
+}
+
+function distanceE(x,y){
+	return Math.sqrt(Math.pow(x.lat()-y.lat(),2)+Math.pow(x.lng()-y.lng(),2));
 }
 
 function addStreets(roadCode,elem){

@@ -91,6 +91,7 @@ public class RoadPointsDAOImpl extends BaseDao implements RoadPointsDAO {
 		try{
 			
 			begin();
+			//System.out.println(name()+"update: point save="+point);
 			getSession().update(point);
 			commit();
 		}catch(HibernateException e){
