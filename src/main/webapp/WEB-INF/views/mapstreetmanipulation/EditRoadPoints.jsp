@@ -60,6 +60,7 @@ function initialize() {
 	infoWindow=new google.maps.InfoWindow();
 	map.addListener('rightclick', function(){
 		rectangle.setMap(null);
+		infoWindow.setMap(null);
 	});
 	map.addListener('dblclick', function(){
 		
