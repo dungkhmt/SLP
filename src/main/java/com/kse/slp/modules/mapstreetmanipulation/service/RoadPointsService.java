@@ -8,4 +8,5 @@ public interface RoadPointsService {
 	List<RoadPoint> getList();
 	public int saveARoadPoint(int rpCode, String rpLatLng, String provinceCode);
 	void removePointbyCode(int code);
+	RoadPoint getRoadPointbyCode(int Code);
 }

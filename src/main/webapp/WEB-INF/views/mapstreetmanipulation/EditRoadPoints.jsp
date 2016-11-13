@@ -51,7 +51,7 @@ function initialize() {
 	          east: 106.3,
 	          west: 105.0
 	        };
-	
+	getListAll();
 	rectangle = new google.maps.Rectangle({
       bounds: bounds,
       editable: true,
@@ -63,7 +63,7 @@ function initialize() {
 	});
 	map.addListener('dblclick', function(){
 		
-		getListInRectangle();
+		
 	});
 	rectangle.addListener('bounds_changed', showInfoBox);
 	map.addListener('click', function(){
@@ -78,7 +78,7 @@ function initialize() {
 		rectangle.setBounds(bounds);
 		map.fitBounds(rectangle.getBounds());
 		rectangle.setMap(map);
-		getListInRectangle();
+		
 	});
 	console.log(rectangle);
 }
@@ -92,19 +92,20 @@ function showInfoBox(event) {
 }
 function mergePoints(){
 	console.log("merge Point")
+	
 	var ne = rectangle.getBounds().getNorthEast();
     var sw = rectangle.getBounds().getSouthWest();
     var lRPM=[];
     console.log(ne.lat()+" "+ne.lng());
 	console.log(sw.lat()+" "+sw.lng());
     for(i=0;i<lRP.length;i++){
-    	console.log("index"+i);
+    	
     	var latlng=lRP[i].rp_LatLng;
     	var p=latlng.split(', ');
-    	console.log(lRP[i].rp_LatLng);
-    	if(p[0]>ne.lat() || p[1]<sw.lat() || p[0]>ne.lng()|| p[1]<sw.lng()){
+    	if(p[0]>ne.lat() || p[0]<sw.lat() || p[1]>ne.lng()|| p[1]<sw.lng()){
     		continue;
     	}
+    	console.log("index"+i);
     	var ob={
     			ProvinceCode:lRP[i].provinceCode ,
     			RP_Code:lRP[i].rp_Code,
@@ -124,8 +125,7 @@ function mergePoints(){
 		dataType: "json",
 		success: function(response){
 			if (response==true){
-				getListInRectangle();
-				
+				getListAll();
 			}
 		}
 	});
@@ -176,7 +176,22 @@ function viewMap(){
 	}
 }
 
-
+function getListAll(){
+	$.ajax({
+		type: 'POST',
+		url: baseUrl+'/mapstreetmanipulation/get-point-segment-all',
+		data: "",
+		contentType: 'application/json; charset=utf-8',
+		dataType: "json",
+		success: function(response){
+			console.log("ok");
+			console.log(response);
+			lRP=response.listRoadPoint;
+			lRS=response.listRoadSegment;
+			viewMap();
+		}
+	});
+}
 function getListInRectangle(){
 	console.log("is here");
 	var ne = rectangle.getBounds().getNorthEast();

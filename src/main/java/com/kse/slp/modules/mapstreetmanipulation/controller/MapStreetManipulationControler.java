@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.print.attribute.standard.Destination;
@@ -623,23 +624,63 @@ public class MapStreetManipulationControler extends BaseWeb {
 		System.out.println(name()+ePJR);
 		return ePJR;
 	}
-	
+	@RequestMapping(value="/get-point-segment-all",method=RequestMethod.POST)
+	public  @ResponseBody EditPointSegmentJsonRespone getPointSegmentAll(@RequestBody String jsonData,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		Gson gson= new Gson();
+		EditPointSegmentJsonRespone ePJR = new EditPointSegmentJsonRespone();
+		
+		List<RoadSegment> lSg= roadSegmentsService.getList();
+		HashSet<Integer> set = new HashSet<Integer>();
+		HashMap<Integer, Integer> mapRP=new HashMap<Integer, Integer>();
+		List<RoadPoint> lRP= new ArrayList<RoadPoint>();
+		for(int i=0;i<lSg.size();i++){
+			RoadPoint rP= roadPointsService.getRoadPointbyCode(lSg.get(i).getRSEG_FromPoint());
+			RoadSegment rS=lSg.get(i);
+			if(set.contains(rP.getRP_Code())){
+				
+				rS.setRSEG_FromPoint(mapRP.get(rP.getRP_Code()));
+			} else {
+				set.add(rP.getRP_Code());
+				lRP.add(rP);
+				mapRP.put(rP.getRP_Code(), lRP.size()-1);
+				rS.setRSEG_FromPoint(lRP.size()-1);
+			}
+			
+			rP= roadPointsService.getRoadPointbyCode(lSg.get(i).getRSEG_ToPoint());
+			
+			if(set.contains(rP.getRP_Code())){
+				rS.setRSEG_ToPoint(mapRP.get(rP.getRP_Code()));
+				
+			} else {
+				set.add(rP.getRP_Code());
+				lRP.add(rP);
+				mapRP.put(rP.getRP_Code(), lRP.size()-1);
+				rS.setRSEG_ToPoint(lRP.size()-1);
+			}
+			
+		}
+		ePJR.setListRoadSegment(lSg);
+		ePJR.setListRoadPoint(lRP);
+		
+		return ePJR;
+	}
 	@RequestMapping(value ="/merge-points")
 	public @ResponseBody boolean mergePoints(@RequestBody String jsonData,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		Gson gson= new Gson();
 		ArrayList<RoadPoint> lRP = (ArrayList<RoadPoint>) gson.fromJson(jsonData,new TypeToken<ArrayList<RoadPoint>>() {}.getType());
-		System.out.println(name()+ lRP);
+		System.out.println(name()+"mergePoints::"+ lRP);
 		int pM=lRP.get(0).getRP_Code();
-		System.out.println(name()+"pM"+pM);
+		System.out.println(name()+"mergePoints::"+"pM"+pM);
 		for(int i=1;i<lRP.size();i++){
-			System.out.println(name()+"zzz"+lRP.get(i).getRP_Code());
+			System.out.println(name()+"mergePoints::"+lRP.get(i).getRP_Code());
 			List<RoadSegment> lRS= roadSegmentsService.getListbyPoint(lRP.get(i).getRP_Code());
-			System.out.println(name()+"getListbyPoint size"+lRS.size());
+			System.out.println(name()+"mergePoints::"+lRS.size());
 			for(int j=0;j<lRS.size();j++){
 				RoadSegment rS=lRS.get(j);
-				System.out.println(name()+" rS "+rS);
 				if(rS.getRSEG_FromPoint()==lRP.get(i).getRP_Code())  {
 					rS.setRSEG_FromPoint(pM);
 				} else  {
