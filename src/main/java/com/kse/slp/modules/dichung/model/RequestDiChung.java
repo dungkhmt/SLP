@@ -18,6 +18,8 @@ public class RequestDiChung implements Serializable {
 	String REQDC_ChunkName;
 	String REQDC_PickupAddress;
 	String REQDC_DeliveryAddress;
+	String REQDC_PickupPos;
+	String REQDC_DeliveryPos;
 	int 	REQDC_NumberPassengers;
 	String REQDC_BatchCode;
 	
@@ -69,6 +71,19 @@ public class RequestDiChung implements Serializable {
 	public void setREQDC_NumberPassengers(int rEQDC_NumberPassengers) {
 		REQDC_NumberPassengers = rEQDC_NumberPassengers;
 	}
+	
+	public String getREQDC_PickupPos() {
+		return REQDC_PickupPos;
+	}
+	public void setREQDC_PickupPos(String rEQDC_PickupPos) {
+		REQDC_PickupPos = rEQDC_PickupPos;
+	}
+	public String getREQDC_DeliveryPos() {
+		return REQDC_DeliveryPos;
+	}
+	public void setREQDC_DeliveryPos(String rEQDC_DeliveryPos) {
+		REQDC_DeliveryPos = rEQDC_DeliveryPos;
+	}
 	@Override
 	public String toString() {
 		return "RequestDiChung [REQDC_ID=" + REQDC_ID + ", REQDC_TicketCode="
@@ -76,8 +91,11 @@ public class RequestDiChung implements Serializable {
 				+ ", REQDC_ChunkName=" + REQDC_ChunkName
 				+ ", REQDC_PickupAddress=" + REQDC_PickupAddress
 				+ ", REQDC_DeliveryAddress=" + REQDC_DeliveryAddress
+				+ ", REQDC_PickupPos=" + REQDC_PickupPos
+				+ ", REQDC_DeliveryPos=" + REQDC_DeliveryPos
 				+ ", REQDC_NumberPassengers=" + REQDC_NumberPassengers
 				+ ", REQDC_BatchCode=" + REQDC_BatchCode + "]";
 	}
+	
 	
 }

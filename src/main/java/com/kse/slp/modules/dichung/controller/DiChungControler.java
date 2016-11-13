@@ -149,10 +149,12 @@ public class DiChungControler extends BaseWeb {
 				String  rEQDC_ChunkName=row.getCell(2).getStringCellValue();
 				String  rEQDC_PickupAddress=row.getCell(3).getStringCellValue();
 				String  rEQDC_DeliveryAddress=row.getCell(4).getStringCellValue();
-				int rEQDC_NumberPassengers=(int) row.getCell(5).getNumericCellValue();
+				String rEQDC_PickupPos=row.getCell(5).getStringCellValue();
+				String rEQDC_DeliveryPos=row.getCell(6).getStringCellValue();
+				int rEQDC_NumberPassengers=(int) row.getCell(7).getNumericCellValue();
 						
 				System.out.println(name()+" "+rEQDC_TicketCode+" "+rEQDC_DepartTime+" "+rEQDC_ChunkName+" "+rEQDC_PickupAddress+" "+rEQDC_DeliveryAddress+" "+rEQDC_NumberPassengers);
-				requestDiChungService.saveARequest(rEQDC_TicketCode, rEQDC_DepartTime, rEQDC_ChunkName, rEQDC_PickupAddress, rEQDC_DeliveryAddress, rEQDC_NumberPassengers,batchCode);
+				requestDiChungService.saveARequest(rEQDC_TicketCode, rEQDC_DepartTime, rEQDC_ChunkName, rEQDC_PickupAddress, rEQDC_DeliveryAddress,rEQDC_PickupPos,rEQDC_DeliveryPos, rEQDC_NumberPassengers,batchCode);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -164,6 +166,7 @@ public class DiChungControler extends BaseWeb {
 	public String createRouteAuto(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
+		System.out.println(session.getAttribute("CustomerCode"));
 		StaffCustomer sc = staffCustomerService.getCusCodeByUserName(u.getUsername());
 		List<RequestBatchDiChung> listBatch= requestBatchService.getList(sc.getSTFCUS_CustomerCode());
 		model.put("listBatch", listBatch);
@@ -175,6 +178,8 @@ public class DiChungControler extends BaseWeb {
 		log.info(u.getUsername());
 		SharedTaxiInput stinpu= new SharedTaxiInput();
 		int tmp[]= {4,6};
+		stinpu.setAirportAddress("Noi Bai International Airport, Phú Cường, Hanoi, Vietnam");
+		stinpu.setAirportPos("21.213018,105.802752");
 		stinpu.setVehicleCapacities(tmp);
 		stinpu.setMaxWaitTime(900);
 		stinpu.setForbidenStraightDistance(10000);
@@ -201,6 +206,8 @@ public class DiChungControler extends BaseWeb {
 			str.setDepartTime(r.getREQDC_DepartTime());
 			str.setNumberPassengers(r.getREQDC_NumberPassengers());
 			str.setPickupAddress(r.getREQDC_PickupAddress());
+			str.setPickupPos(r.getREQDC_PickupPos());
+			str.setDeliveryPos(r.getREQDC_DeliveryPos());
 			str.setTicketCode(r.getREQDC_TicketCode());
 			lstr[i]=str;
 		}
@@ -212,7 +219,7 @@ public class DiChungControler extends BaseWeb {
 		try {
 		    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 			//HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+			HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-taxi-plan-dichung-airport");
 		    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);

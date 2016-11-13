@@ -70,7 +70,6 @@ public class RoadPointsDAOImpl extends BaseDao implements RoadPointsDAO {
 			criteria.add(Restrictions.eq("RP_Code", Code));
 			List<RoadPoint> list = criteria.list();
 			commit();
-			System.out.print(name()+list);
 			if(list.size()<=0) return null;
 			return list.get(0);
 		}catch(HibernateException e){

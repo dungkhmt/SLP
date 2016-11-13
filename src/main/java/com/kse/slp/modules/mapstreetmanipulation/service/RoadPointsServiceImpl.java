@@ -42,5 +42,10 @@ public class RoadPointsServiceImpl implements RoadPointsService {
 		roadPointDAO.update(p);
 		return p.getProvinceCode();
 	}
+	@Override
+	public RoadPoint getRoadPointbyCode(int Code) {
+		// TODO Auto-generated method stub
+		return roadPointDAO.getRoadPointbyCode(Code);
+	}
 
 }
