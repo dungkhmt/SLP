@@ -101,7 +101,6 @@ public class BaseWeb {
         }       
        
         
-        
         assetsUrl = baseUrl + "/assets";
         map.put("baseUrl", baseUrl);
         map.put("assetsUrl", assetsUrl);

@@ -14,7 +14,7 @@
 		<div class="col-sm-4">
 			<div class="form-group">
 				<form:select path="batchCode" name="batchCode" class="form-control">
-					<option>Chọn Batch</option>
+					
 					<c:forEach items="${listBatch}" var="reBatch">
 						<option value="${reBatch.REQBAT_Code}"><c:out value="${reBatch.REQBAT_Code}"/></option>
 					</c:forEach>

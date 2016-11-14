@@ -69,12 +69,12 @@ function initialize() {
 			icon:"https://www.google.com/mapfiles/marker_green.png"
 		});
 		var path = road.getPath();
-		if(path.length == 0){
-			console.log("path length == 0");
+		if(path.length <= 1){
+			//console.log("path length == 0");
 			road.getPath().push(pos);
 			listMarker.push(markerPoint);
 		}else{
-			console.log("path: "+JSON.stringify(path));
+			//console.log("path: "+JSON.stringify(path));
 			//console.log("path length: "+path.length);
 			var indexMax=0;
 			var max = -10000000;
@@ -126,7 +126,7 @@ function initialize() {
 }
 
 function handleEventDrag(event){
-	console.log("start dragEnd function");
+	//console.log("start dragEnd function");
 	var indexMarker = listMarker.indexOf(this);
 	road.getPath().removeAt(indexMarker);
 	road.getPath().insertAt(indexMarker,this.getPosition());
@@ -169,7 +169,7 @@ $(document).ready(function(){
 					break;
 				}
 				var roadPointLatLngs = roadPoints.split(":");
-				console.log("roadPointLatLngs"+roadPointLatLngs+" length="+roadPointLatLngs.length);
+				//console.log("roadPointLatLngs"+roadPointLatLngs+" length="+roadPointLatLngs.length);
 				for(var j=0; j<roadPointLatLngs.length; j++){
 					//console.log("roadPointLatLngs["+j+"]"+roadPointLatLngs[j]);
 					var index = roadPointLatLngs[j].indexOf(",");
@@ -204,11 +204,13 @@ $(document).ready(function(){
 		var roadCodeSelected = $('#select-listStreet').val();
 		var path = road.getPath();
 		var dataPreSend=[];
+		console.log("path pre send: "+JSON.stringify(path));
 		for(var i=0; i<path.length; i++){
 			var latlng = path.getAt(i);
 			var tmp = latlng.lat()+", "+latlng.lng();
 			dataPreSend.push(tmp);
 		}
+		console.log("dataPreSend: "+dataPreSend);
 		dataSend = dataPreSend.join(":");
 		console.log("dataSend when click button: "+dataSend);
 		$.ajax({

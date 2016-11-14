@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.print.attribute.standard.Destination;
@@ -98,7 +99,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 			ArrayList<Integer> V = new ArrayList<Integer>();
 			
 			for(RoadPoint p: points){
-				System.out.println(name() + "::initDojkstra, point " + p.getRP_LatLng());
+				//System.out.println(name() + "::initDojkstra, point " + p.getRP_LatLng());
 				V.add(p.getRP_ID());
 				mID2Point.put(p.getRP_ID(), p);
 			}
@@ -122,10 +123,10 @@ public class MapStreetManipulationControler extends BaseWeb {
 				Arc a = new Arc(u,v,w);
 				Arcs.add(a);
 				
-				System.out.println(name() + "::initDijkstra " + r.getRoadBidirectional());
+				//System.out.println(name() + "::initDijkstra " + r.getRoadBidirectional());
 				
 				if(r.getRoadBidirectional().equals("BIDIRECTIONAL")){
-					System.out.println(name() + "::initDijkstra, BIDIRECTIONAL");
+					//System.out.println(name() + "::initDijkstra, BIDIRECTIONAL");
 					a = new Arc(v,u,w);
 					Arcs.add(a);
 				}
@@ -169,7 +170,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 				minDisT = d; t = v;//v.getRP_ID();
 			}
 		}
-		System.out.println(name() + "::findPath, found s= " + s.getRP_ID() + ", t = " + t.getRP_ID());
+		//System.out.println(name() + "::findPath, found s= " + s.getRP_ID() + ", t = " + t.getRP_ID());
 		Itinerary p = dijkstra.solve(s.getRP_ID(), t.getRP_ID());
 		String[] st = s.getRP_LatLng().split(",");
 		double s_lat = Double.valueOf(st[0]);
@@ -179,17 +180,17 @@ public class MapStreetManipulationControler extends BaseWeb {
 		double t_lng = Double.valueOf(st[1]);
 		
 		if(p == null){
-			System.out.println(name() + "::findPath, found s= " + s.getRP_ID() + ", t = " + t.getRP_ID() + ", p = null");
+			//System.out.println(name() + "::findPath, found s= " + s.getRP_ID() + ", t = " + t.getRP_ID() + ", p = null");
 			String json = "{";
 			
 			json += "\"source\":{\"lat\":" + s_lat + ",\"lng\":" + s_lng + "},\"destination\":{\"lat\":" + t_lat + ",\"lng\":" + t_lng + "}";
 			
 			
 			json += ",\"points\":[]}";
-			System.out.println("return json = " + json);
+			//System.out.println("return json = " + json);
 			return json;
 		}
-		System.out.println(name() + "::findPath, found s= " + s + ", t = " + t + ", path = " + p.toString());
+		//System.out.println(name() + "::findPath, found s= " + s + ", t = " + t + ", path = " + p.toString());
 		String json = "{";
 		
 		json += "\"source\":\"" + s.getRP_LatLng() + "\"" + ",\"destination\":\"" + t.getRP_LatLng() + "\"";
@@ -203,7 +204,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 			if(i < p.size()-1) json += ",";
 		}
 		json += "]}";
-		System.out.println(name() + "::findPath, json = " + json);
+		//System.out.println(name() + "::findPath, json = " + json);
 		return json;
 	}
 	private void testDijkstra(){
@@ -215,7 +216,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 			}
 			if(I != null) break;
 		}
-		System.out.println(name() + "::testDijkstra, I = " + I.toString());
+		//System.out.println(name() + "::testDijkstra, I = " + I.toString());
 	}
 	@RequestMapping(value="/directionhome", method = RequestMethod.GET)
 	public String directionhome(ModelMap model, HttpSession session){
@@ -223,7 +224,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 		User u = (User)session.getAttribute("currentUser");
 		log.info("directionhome, user = " + u.getUsername());
 		try{
-			System.out.println("run command");
+			//System.out.println("run command");
 			Runtime.getRuntime().exec("C:/Program Files/R/R-3.3.2/bin/Rscript.exe C:/DungPQ/Projects/EVN/example.r");
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -242,6 +243,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("C:/DungPQ/Projects/EVN/copy-data.csv")));
 			stream.write(bytes);
 			stream.close();
+			//System.out.println("upload excel");
 			//Runtime.getRuntime().exec("C:/Program Files/R/R-3.3.2/bin/Rscript.exe C:/DungPQ/Projects/EVN/example.r");
 			
 		}catch(Exception ex){
@@ -266,7 +268,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 			src = src.substring(1,src.length()-1);
 			dest = dest.trim();
 			dest = dest.substring(1,dest.length()-1);
-			System.out.println(name() + "::direction, source = " + src + ", destination = " + dest);
+			//System.out.println(name() + "::direction, source = " + src + ", destination = " + dest);
 			return findPath(src, dest);
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -336,7 +338,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 	
 	@RequestMapping(value="/updateRoad/{code}")
 	public @ResponseBody String updateRoad(@PathVariable("code") String roadCode, @RequestBody String roadPoints){
-		System.out.println(name()+"updateRoad---roadPoints"+roadPoints);
+		//System.out.println(name()+"updateRoad---roadPoints"+roadPoints);
 		RoadsService.updateARoad(roadCode, roadPoints);
 		return "400";
 	}	
@@ -378,20 +380,22 @@ public class MapStreetManipulationControler extends BaseWeb {
 	
 	@RequestMapping(value="/findAndSaveIntersectionPoints")
 	public @ResponseBody String findAndSaveIntersectionPoints(@RequestBody String roadsCode){
-		count++;
+		//count++;
 		//System.out.println(name()+"findAndSaveIntersectionPoints, roadsCode = " + roadsCode + ", count = " + count + ", dijkstra = " + dijkstra.solve(1, 9).toString());
 		
 		if(roadsCode == null || roadsCode.equals("")) return "400";
 		String roadCodes[] = roadsCode.split(";");
+		//System.out.println(name()+"findAndSaveIntersectionPoints:: number of road find interect: "+roadCodes.length);
 		for(int i=0; i<roadCodes.length; i++){
 			Road road = RoadsService.loadARoadByRoadCode(roadCodes[i]);
 			RoadsService.updateStatusRoad(roadCodes[i], "PROCCESSED");
 			String[] points = road.getRoadPoints().split(":");
-			System.out.print("roadPoitns: ");
-			for(int j = 0; j < points.length; j++){
-				System.out.println(points[j]+", ");
-			}
-
+			//System.out.println(roadCodes[i]+"  total point in road: "+points.length);
+			//System.out.println();
+			//System.out.print("roadPoints: ");
+			//for(int j = 0; j < points.length; j++){
+				//System.out.print(points[j]+", ");
+			//}
 			//for(int j=0; j < points.length; j++){
 				
 			//}
@@ -405,30 +409,30 @@ public class MapStreetManipulationControler extends BaseWeb {
 			}
 			for(RoadSegment s: roadSegments){
 				if(mID2Point.get(s.getRSEG_FromPoint()) == null || mID2Point.get(s.getRSEG_ToPoint())==null){
-					System.out.println(name() + "::findAndSaveIntersectionPoints, BUG at segment " + s.getRSEG_Code());
+					//System.out.println(name() + "::findAndSaveIntersectionPoints, BUG at segment " + s.getRSEG_Code());
 					System.exit(-1);
 				}
 			}
 			
 			if(roadPoints.size() == 0 || roadSegments.size() == 0){
-				System.out.println("Map null insert roadCode="+roadCodes[i]+" save to tables");
-				int idFrom = roadPointsService.saveARoadPoint(0, points[0], road.getRoadProvince());
-				System.out.println(" idPoint[0]="+idFrom);
+				//System.out.println("Map null insert roadCode="+roadCodes[i]+" save to tables");
+				int idFrom = roadPointsService.saveARoadPoint(0, points[0].trim(), road.getRoadProvince());
+				//System.out.println(" idPoint[0]="+idFrom);
 				for(int j=1; j< points.length; j++){
 					if(points[j]== null || points[j].trim().equals("")) continue;
 					
-					int idTo = roadPointsService.saveARoadPoint(0, points[j], road.getRoadProvince());
-					System.out.println("idPoint["+j+"]="+idTo);
-					int index1 = points[j-1].indexOf(",");
-					int index2 = points[j].indexOf(",");
-					System.out.println("points["+(j-1)+"]="+points[j-1]+"  points["+j+"]="+points[j]);
+					int idTo = roadPointsService.saveARoadPoint(0, points[j].trim(), road.getRoadProvince());
+					//System.out.println("idPoint["+j+"]="+idTo);
+					//int index1 = points[j-1].indexOf(",");
+					//int index2 = points[j].indexOf(",");
+					//System.out.println("points["+(j-1)+"]="+points[j-1]+"  points["+j+"]="+points[j]);
 					String[] s = points[j-1].split(",");
 					
-					double lat1 = Double.valueOf(s[0]);//Double.parseDouble(points[j-1].substring(0, index1));
-					double long1 = Double.valueOf(s[1]);//Double.parseDouble(points[j-1].substring(index1+1,points[j-1].length()));
+					double lat1 = Double.valueOf(s[0].trim());//Double.parseDouble(points[j-1].substring(0, index1));
+					double long1 = Double.valueOf(s[1].trim());//Double.parseDouble(points[j-1].substring(index1+1,points[j-1].length()));
 					s = points[j].split(",");
-					double lat2 = Double.valueOf(s[0]);//Double.parseDouble(points[j].substring(0, index2));
-					double long2 = Double.valueOf(s[1]);//Double.parseDouble(points[j].substring(index2+1, points[j].length()));
+					double lat2 = Double.valueOf(s[0].trim());//Double.parseDouble(points[j].substring(0, index2));
+					double long2 = Double.valueOf(s[1].trim());//Double.parseDouble(points[j].substring(index2+1, points[j].length()));
 					
 					Approximation ap = new Approximation();
 					double distance = ap.computeDistanceHav(long1, lat1, long2, lat2);
@@ -436,13 +440,13 @@ public class MapStreetManipulationControler extends BaseWeb {
 					idFrom = idTo;
 				}
 			}else{
-				System.out.println("Map != null insert roadCode="+roadCodes[i]+" save to tables");
+				//System.out.println("Map != null insert roadCode="+roadCodes[i]+" save to tables");
 
-				System.out.println("road points[0]="+points[0]);
+				//System.out.println("road points[0]="+points[0]);
 
 				int idFrom = roadPointsService.saveARoadPoint(0, points[0], road.getRoadProvince());
-				System.out.println(" roadPoint idPoint[0]="+idFrom);
-				String pointFromLatLng = points[0];
+				//System.out.println(" roadPoint idPoint[0]="+idFrom);
+				String pointFromLatLng = points[0].trim();
 				for(int in = 1; in < points.length; in++){
 					if(points[in]== null || points[in].trim().equals("")) continue;
 					int indexCut = pointFromLatLng.indexOf(",");
@@ -450,14 +454,14 @@ public class MapStreetManipulationControler extends BaseWeb {
 					double lng = Double.parseDouble(pointFromLatLng.substring(indexCut+1, pointFromLatLng.length()));
 					Point first = new Point(lat,lng);
 					
-					System.out.println("road points["+in+"]="+points[in]);
+					//System.out.println("road points["+in+"]="+points[in]);
 
 					if(points[in-1].trim().equals(points[in].trim())){
-						System.out.println("BUG at line roadCode" + roadCodes[i]);
+						//System.out.println("BUG at line roadCode" + roadCodes[i]);
 						System.exit(-1);
 					}
-					int idTo = roadPointsService.saveARoadPoint(0, points[in], road.getRoadProvince());
-					System.out.println(" roadPoint idPoint["+in+"]="+idTo);
+					int idTo = roadPointsService.saveARoadPoint(0, points[in].trim(), road.getRoadProvince());
+					//System.out.println(" roadPoint idPoint["+in+"]="+idTo);
 					int index1 = points[in-1].indexOf(",");
 					int index2 = points[in].indexOf(",");
 					
@@ -516,15 +520,15 @@ public class MapStreetManipulationControler extends BaseWeb {
 						TWO_SEGMENTS_RELATION r = l1.intersectSegment(l2, p);
 						if(r == TWO_SEGMENTS_RELATION.SEGMENT_INTERSECTIONAL){
 							String pointLng = p.getdLat()+", "+p.getdLong();
-							System.out.println("intersection Point = "+pointLng);
+							//System.out.println("intersection Point = "+pointLng);
 							int idPoint = roadPointsService.saveARoadPoint(0, pointLng , road.getRoadProvince());
-							System.out.println(" intersectPoint idPoint="+idPoint);
+							//System.out.println(" intersectPoint idPoint="+idPoint);
 							
 							intersectPoints.add(new Pair(p, p.computeDistanceE(first), idPoint));
 							
 							Approximation ap = new Approximation();
 							
-							System.out.println("segment intersect "+segment.getRSEG_Code());
+							//System.out.println("segment intersect "+segment.getRSEG_Code());
 							roadSegmentsService.deleteASegmentByCode(segment.getRSEG_Code());
 							
 							double distance1 = ap.computeDistanceHav(fromPointLng, fromPointLat, p.getdLong(), p.getdLat()); 
@@ -549,7 +553,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 						double distance = ap.computeDistanceHav(p0.p.getdLong(), p0.p.getdLat(), lng, lat);
 						roadSegmentsService.saveARoadSegment(0, idFrom, p0.id, distance, road.getRoadMaxSpeed(), road.getRoadBidirectional(), roadCodes[i]);
 						for(int indexPoint = 1; indexPoint < intersectPoints.size(); indexPoint++){
-							System.out.println("distance intersection point[" +indexPoint+"]: "+intersectPoints.get(indexPoint).distanceFromFirst);
+							//System.out.println("distance intersection point[" +indexPoint+"]: "+intersectPoints.get(indexPoint).distanceFromFirst);
 							Pair pi = intersectPoints.get(indexPoint);
 							double distancei = ap.computeDistanceHav(p0.p.getdLong(), p0.p.getdLat(), pi.p.getdLong(), pi.p.getdLat());
 							roadSegmentsService.saveARoadSegment(0, p0.id, pi.id,distancei , road.getRoadMaxSpeed(), road.getRoadBidirectional(), roadCodes[i]);
@@ -568,6 +572,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 				}
 			}
 		}
+		System.out.println(name()+"findAndSaveIntersectionPoints--done");
 		return "400";	
 	}
 	
@@ -587,6 +592,119 @@ public class MapStreetManipulationControler extends BaseWeb {
 		}
 	}
 	
+	@RequestMapping(value = "/findIntersectionSegment",method = RequestMethod.POST)
+	public @ResponseBody String findeIntersectionSegment(@RequestBody String data){
+		System.out.println(name()+"findIntersectionSegment:: data recive"+data);
+		String[] codes = data.split(";");
+		
+		int segmentEditedCode = Integer.parseInt(codes[0].trim());
+		int pointEditedCode = Integer.parseInt(codes[1].trim());
+		
+		String proviceCode = roadPointsService.updateRoadPointByCode(pointEditedCode, codes[2]);
+		
+		RoadSegment segmentEdited = roadSegmentsService.getSegmentByCode(segmentEditedCode);
+		roadSegmentsService.deleteASegmentByCode(segmentEditedCode);
+		
+		List<RoadPoint>  listPoints = roadPointsService.getList();
+		HashMap<Integer, RoadPoint> mapID2Point = new HashMap<Integer, RoadPoint>();
+		for(RoadPoint p : listPoints){
+			mapID2Point.put(p.getRP_Code(), p);
+		}
+		
+		int fromPointCode;
+		int toPointCode;
+		if(segmentEdited.getRSEG_FromPoint() == pointEditedCode){
+			fromPointCode = segmentEdited.getRSEG_ToPoint();
+			toPointCode = segmentEdited.getRSEG_FromPoint();
+		}else{
+			fromPointCode = segmentEdited.getRSEG_FromPoint();
+			toPointCode = segmentEdited.getRSEG_ToPoint();
+		}
+		
+		List<RoadSegment> listSegments = roadSegmentsService.getList();
+		
+		String fromPointLatLng = mapID2Point.get(fromPointCode).getRP_LatLng();
+		String s[] = fromPointLatLng.split(",");
+		double lat1 = Double.parseDouble(s[0]);
+		double lng1 = Double.parseDouble(s[1]);
+		Point first = new Point(lat1, lng1);
+		
+		String toPointLatLng = mapID2Point.get(toPointCode).getRP_LatLng();
+		s = toPointLatLng.split(",");
+		double lat2 = Double.parseDouble(s[0]);
+		double lng2 = Double.parseDouble(s[1]);
+		
+		Line l1 = new Line(lng1, lat1, lng2, lat2);
+		List<Pair> intersectPoints = new ArrayList<Pair>();
+		
+		for(RoadSegment segment : listSegments){
+			int fromPointOfSegment = segment.getRSEG_FromPoint();
+			int toPointOfSegment = segment.getRSEG_ToPoint();
+			
+			String fromPointLatLng1 = mapID2Point.get(fromPointOfSegment).getRP_LatLng();
+			String s1[] = fromPointLatLng1.split(",");
+			double fromPointLat = Double.parseDouble(s1[0]);
+			double fromPointLng = Double.parseDouble(s1[1]);
+			
+			String toPointLatLng1 = mapID2Point.get(toPointOfSegment).getRP_LatLng();
+			s1 = toPointLatLng1.split(",");
+			double toPointLat = Double.parseDouble(s1[0]);
+			double toPointLng = Double.parseDouble(s1[1]);
+			
+			Line l2 = new Line(fromPointLng, fromPointLat, toPointLng, toPointLat);
+			Point p = new Point(1, 1);
+			TWO_SEGMENTS_RELATION r = l1.intersectSegment(l2, p);
+			if(r == TWO_SEGMENTS_RELATION.SEGMENT_INTERSECTIONAL){
+				String pointLng = p.getdLat()+", "+p.getdLong();
+				//System.out.println("intersection Point = "+pointLng);
+				int idPoint = roadPointsService.saveARoadPoint(0, pointLng , proviceCode);
+				//System.out.println(" intersectPoint idPoint="+idPoint);
+				
+				intersectPoints.add(new Pair(p, p.computeDistanceE(first), idPoint));
+				
+				Approximation ap = new Approximation();
+				
+				//System.out.println("segment intersect "+segment.getRSEG_Code());
+				roadSegmentsService.deleteASegmentByCode(segment.getRSEG_Code());
+				
+				double distance1 = ap.computeDistanceHav(fromPointLng, fromPointLat, p.getdLong(), p.getdLat()); 
+				roadSegmentsService.saveARoadSegment(0, fromPointOfSegment, idPoint, distance1,segment.getRSEG_Speed(), segment.getRSEG_Bidirectional(), segment.getRSEG_RoadCode());
+				
+				double distance2 = ap.computeDistanceHav(p.getdLong(), p.getdLat(), toPointLng, toPointLat);
+				roadSegmentsService.saveARoadSegment(0, idPoint, toPointOfSegment, distance2, segment.getRSEG_Speed(), segment.getRSEG_Bidirectional(), segment.getRSEG_RoadCode());
+			}
+			
+		}
+		
+		if(intersectPoints.size() != 0){
+			Collections.sort(intersectPoints, new Comparator<Pair>() {
+				@Override
+				public int compare(Pair p1, Pair p2){
+					return p1.distanceFromFirst.compareTo(p2.distanceFromFirst);
+				}
+			});
+			
+			Pair p0 = intersectPoints.get(0);
+			Approximation ap = new Approximation();
+			double distance = ap.computeDistanceHav(p0.p.getdLong(), p0.p.getdLat(), lng1,lat1);
+			roadSegmentsService.saveARoadSegment(0, fromPointCode, p0.id, distance, segmentEdited.getRSEG_Speed(), segmentEdited.getRSEG_Bidirectional(), segmentEdited.getRSEG_RoadCode());
+			for(int indexPoint = 1; indexPoint < intersectPoints.size(); indexPoint++){
+				//System.out.println("distance intersection point[" +indexPoint+"]: "+intersectPoints.get(indexPoint).distanceFromFirst);
+				Pair pi = intersectPoints.get(indexPoint);
+				double distancei = ap.computeDistanceHav(p0.p.getdLong(), p0.p.getdLat(), pi.p.getdLong(), pi.p.getdLat());
+				roadSegmentsService.saveARoadSegment(0, p0.id, pi.id,distancei , segmentEdited.getRSEG_Speed(), segmentEdited.getRSEG_Bidirectional(), segmentEdited.getRSEG_RoadCode());
+				p0 = pi;
+			}
+			double distanceE = ap.computeDistanceHav(p0.p.getdLong(), p0.p.getdLat(), lng2, lat2);
+			roadSegmentsService.saveARoadSegment(0, p0.id, toPointCode, distanceE,  segmentEdited.getRSEG_Speed(), segmentEdited.getRSEG_Bidirectional(), segmentEdited.getRSEG_RoadCode());
+		}else{
+			Approximation ap = new Approximation();
+			double distance = ap.computeDistanceHav(lng1, lat1, lng2, lat2);
+			roadSegmentsService.saveARoadSegment(0, fromPointCode, toPointCode, distance,segmentEdited.getRSEG_Speed(), segmentEdited.getRSEG_Bidirectional(), segmentEdited.getRSEG_RoadCode());
+		}
+		return "400";
+	}
+	
 	@RequestMapping(value="/edit-road-points",method=RequestMethod.GET)
 	public String editroadpoints(ModelMap model,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
@@ -595,7 +713,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 	}
 	String corectString(String s){
 		String lS[]= s.split(":");
-		String re="";
+		/*String re="";
 		String last = "";
 		for(int i=0;i<lS.length;i++){
 			System.out.println(name()+re+"-- "+last+" "+lS[i]);
@@ -609,8 +727,12 @@ public class MapStreetManipulationControler extends BaseWeb {
 			System.out.println(name()+"add");
 			re=re+":"+lS[i];
 			last = lS[i];
+		}*/
+		String re = "";
+		for(int i=lS.length-1; i>0; i--){
+			re += (lS[i]+":");
 		}
-		
+		re += lS[0];
 		return re;
 	}
 	
@@ -633,23 +755,63 @@ public class MapStreetManipulationControler extends BaseWeb {
 		System.out.println(name()+ePJR);
 		return ePJR;
 	}
-	
+	@RequestMapping(value="/get-point-segment-all",method=RequestMethod.POST)
+	public  @ResponseBody EditPointSegmentJsonRespone getPointSegmentAll(@RequestBody String jsonData,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		Gson gson= new Gson();
+		EditPointSegmentJsonRespone ePJR = new EditPointSegmentJsonRespone();
+		
+		List<RoadSegment> lSg= roadSegmentsService.getList();
+		HashSet<Integer> set = new HashSet<Integer>();
+		HashMap<Integer, Integer> mapRP=new HashMap<Integer, Integer>();
+		List<RoadPoint> lRP= new ArrayList<RoadPoint>();
+		for(int i=0;i<lSg.size();i++){
+			RoadPoint rP= roadPointsService.getRoadPointbyCode(lSg.get(i).getRSEG_FromPoint());
+			RoadSegment rS=lSg.get(i);
+			if(set.contains(rP.getRP_Code())){
+				
+				rS.setRSEG_FromPoint(mapRP.get(rP.getRP_Code()));
+			} else {
+				set.add(rP.getRP_Code());
+				lRP.add(rP);
+				mapRP.put(rP.getRP_Code(), lRP.size()-1);
+				rS.setRSEG_FromPoint(lRP.size()-1);
+			}
+			
+			rP= roadPointsService.getRoadPointbyCode(lSg.get(i).getRSEG_ToPoint());
+			
+			if(set.contains(rP.getRP_Code())){
+				rS.setRSEG_ToPoint(mapRP.get(rP.getRP_Code()));
+				
+			} else {
+				set.add(rP.getRP_Code());
+				lRP.add(rP);
+				mapRP.put(rP.getRP_Code(), lRP.size()-1);
+				rS.setRSEG_ToPoint(lRP.size()-1);
+			}
+			
+		}
+		ePJR.setListRoadSegment(lSg);
+		ePJR.setListRoadPoint(lRP);
+		
+		return ePJR;
+	}
 	@RequestMapping(value ="/merge-points")
 	public @ResponseBody boolean mergePoints(@RequestBody String jsonData,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		Gson gson= new Gson();
 		ArrayList<RoadPoint> lRP = (ArrayList<RoadPoint>) gson.fromJson(jsonData,new TypeToken<ArrayList<RoadPoint>>() {}.getType());
-		System.out.println(name()+ lRP);
+		System.out.println(name()+"mergePoints::"+ lRP);
 		int pM=lRP.get(0).getRP_Code();
-		System.out.println(name()+"pM"+pM);
+		System.out.println(name()+"mergePoints::"+"pM"+pM);
 		for(int i=1;i<lRP.size();i++){
-			System.out.println(name()+"zzz"+lRP.get(i).getRP_Code());
+			System.out.println(name()+"mergePoints::"+lRP.get(i).getRP_Code());
 			List<RoadSegment> lRS= roadSegmentsService.getListbyPoint(lRP.get(i).getRP_Code());
-			System.out.println(name()+"getListbyPoint size"+lRS.size());
+			System.out.println(name()+"mergePoints::"+lRS.size());
 			for(int j=0;j<lRS.size();j++){
 				RoadSegment rS=lRS.get(j);
-				System.out.println(name()+" rS "+rS);
 				if(rS.getRSEG_FromPoint()==lRP.get(i).getRP_Code())  {
 					rS.setRSEG_FromPoint(pM);
 				} else  {
@@ -664,6 +826,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 		}
 		return true;
 	}
+	
 	String name(){
 		return "mapstreetmanipulation::";
 	}

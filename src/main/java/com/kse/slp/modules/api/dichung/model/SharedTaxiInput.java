@@ -1,7 +1,8 @@
 package com.kse.slp.modules.api.dichung.model;
 
-
 public class SharedTaxiInput {
+	private String airportAddress;
+	private String airportPos;
 	private SharedTaxiRequest[] requests;
 	private int[] vehicleCapacities;
 
@@ -53,32 +54,68 @@ public class SharedTaxiInput {
 		// TODO Auto-generated constructor stub
 	}
 
-	public SharedTaxiInput(SharedTaxiRequest[] requests,
-			int[] vehicleCapacities, int maxWaitTime,
-			int forbidenStraightDistance, int forbidenTimeDistance,
-			int maxStandardSharingDistance, int maxHighTrafficSharingDistance,
-			int maxWaitTimeAirport, int minWaitTimeAirport, int maxTime,
-			double approximationDistanceFactor, double eps, double stdSpeed,
-			double highTrafficSpeed, double speedToAirport,
-			int deltaRequestTime) {
-		super();
-		this.requests = requests;
-		this.vehicleCapacities = vehicleCapacities;
-		this.maxWaitTime = maxWaitTime;
-		this.forbidenStraightDistance = forbidenStraightDistance;
-		this.forbidenTimeDistance = forbidenTimeDistance;
-		this.maxStandardSharingDistance = maxStandardSharingDistance;
-		this.maxHighTrafficSharingDistance = maxHighTrafficSharingDistance;
-		this.maxWaitTimeAirport = maxWaitTimeAirport;
-		this.minWaitTimeAirport = minWaitTimeAirport;
-		this.maxTime = maxTime;
-		this.approximationDistanceFactor = approximationDistanceFactor;
-		this.eps = eps;
-		this.stdSpeed = stdSpeed;
-		this.highTrafficSpeed = highTrafficSpeed;
-		this.speedToAirport = speedToAirport;
-		this.deltaRequestTime = deltaRequestTime;
+
+	public SharedTaxiInput(
+													String airportAddress,
+													String airportPos,
+													SharedTaxiRequest[] requests,
+													int[] vehicleCapacities,
+													int maxWaitTime,
+													int forbidenStraightDistance,
+													int forbidenTimeDistance,
+													int maxStandardSharingDistance,
+													int maxHighTrafficSharingDistance,
+													int maxWaitTimeAirport,
+													int minWaitTimeAirport,
+													int maxTime,
+													double approximationDistanceFactor,
+													double eps,
+													double stdSpeed,
+													double highTrafficSpeed,
+													double speedToAirport,
+													int deltaRequestTime) {
+												super();
+												this.airportAddress = airportAddress;
+												this.airportPos = airportPos;
+												this.requests = requests;
+												this.vehicleCapacities = vehicleCapacities;
+												this.maxWaitTime = maxWaitTime;
+												this.forbidenStraightDistance = forbidenStraightDistance;
+												this.forbidenTimeDistance = forbidenTimeDistance;
+												this.maxStandardSharingDistance = maxStandardSharingDistance;
+												this.maxHighTrafficSharingDistance = maxHighTrafficSharingDistance;
+												this.maxWaitTimeAirport = maxWaitTimeAirport;
+												this.minWaitTimeAirport = minWaitTimeAirport;
+												this.maxTime = maxTime;
+												this.approximationDistanceFactor = approximationDistanceFactor;
+												this.eps = eps;
+												this.stdSpeed = stdSpeed;
+												this.highTrafficSpeed = highTrafficSpeed;
+												this.speedToAirport = speedToAirport;
+												this.deltaRequestTime = deltaRequestTime;
+											}
+
+
+	
+	public String getAirportAddress() {
+		return airportAddress;
 	}
+
+
+	public void setAirportAddress(String airportAddress) {
+		this.airportAddress = airportAddress;
+	}
+
+
+	public String getAirportPos() {
+		return airportPos;
+	}
+
+
+	public void setAirportPos(String airportPos) {
+		this.airportPos = airportPos;
+	}
+
 
 	public double getApproximationDistanceFactor() {
 		return approximationDistanceFactor;

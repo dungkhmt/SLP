@@ -12,5 +12,6 @@ public interface RoadSegmentsDAO {
 	public int saveASegment(RoadSegment segment);
 	public void updateASegment(RoadSegment segment);
 	public void deleteSegmentByCode(int code);
+	public RoadSegment getSegmentByCode(int code);
 
 }
