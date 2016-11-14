@@ -1,5 +1,8 @@
 package com.kse.slp.modules.mapstreetmanipulation.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,12 +18,14 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.dichung.model.FormAddFileExcel;
@@ -226,14 +231,19 @@ public class MapStreetManipulationControler extends BaseWeb {
 		model.put("formAdd", new FormAddFileExcel());
 		return "mapstreetmanipulation.directionhome";
 	}
-	@RequestMapping(value="/uploadexcel", method = RequestMethod.GET)
-	public String uploadexcel(ModelMap model, HttpSession session){
-		
+	@RequestMapping(value="/uploadexcel", method = RequestMethod.POST)
+	public String uploadexcel(ModelMap model, HttpSession session,@ModelAttribute("formAdd") FormAddFileExcel request){
+		MultipartFile file = request.getOrdersFile();
 		User u = (User)session.getAttribute("currentUser");
 		log.info("directionhome, user = " + u.getUsername());
 		try{
 			System.out.println("upload excel");
+			byte[] bytes = file.getBytes();
+			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("C:/DungPQ/Projects/EVN/copy-data.csv")));
+			stream.write(bytes);
+			stream.close();
 			//Runtime.getRuntime().exec("C:/Program Files/R/R-3.3.2/bin/Rscript.exe C:/DungPQ/Projects/EVN/example.r");
+			
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}

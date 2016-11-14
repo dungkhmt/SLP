@@ -191,7 +191,7 @@
     </definition>
     <definition name="mapstreetmanipulation.directionhome" extends="layout5">
     	<put-attribute name="title" value="Tìm đường ngắn nhất"/>
-    	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/direction.jsp"></put-attribute>
+    	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/upload-time-series.jsp"></put-attribute>
     </definition>
     
 </tiles-definitions>

@@ -9,7 +9,7 @@
     <form:form action="${baseUrl}/mapstreetmanipulation/uploadexcel" method="POST" commandName="formAdd" enctype="multipart/form-data" role="form">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Upload danh sách hóa đơn</h1>
+            <h1 class="page-header">Upload file</h1>
 		</div>
 		<div class="col-sm-4">
 			<div class="form-group">
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div class="col-lg-12">
-				<form:input id="input-file" path="ordersFile" name="ordersFile" type="file" class="file file-loading" data-allowed-file-extensions='["xlsx"]'></form:input>
+				<form:input id="input-file" path="ordersFile" name="ordersFile" type="file" class="file file-loading"></form:input>
 		</div>
 		<!-- /.col-lg-12 -->
     </div>
