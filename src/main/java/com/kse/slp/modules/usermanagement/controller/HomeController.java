@@ -37,8 +37,8 @@ public class HomeController extends BaseWeb {
 		if (!username.equals("anonymousUser")){
 		    User user = userService.getByUsername(username);
 		    session.setAttribute("currentUser", user);		
-		    StaffCustomer cusCode=staffCustomerService.getCusCodeByUserName(username);
-		    session.setAttribute("CustomerCode", cusCode.getSTFCUS_CustomerCode());
+		    //StaffCustomer cusCode=staffCustomerService.getCusCodeByUserName(username);
+		    //session.setAttribute("CustomerCode", cusCode.getSTFCUS_CustomerCode());
 		}
 		//model.addAttribute("redirect", "member.html");
 		return "home";

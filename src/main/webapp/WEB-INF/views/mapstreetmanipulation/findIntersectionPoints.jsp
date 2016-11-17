@@ -290,23 +290,18 @@ function initialize(){
 			});
 		}
 		listMarker[indexToPoint] = markerToPoint;
-		mapPoint2Segment[markerToPoint] = segments[i].RSEG_Code;
-		mapID2PointCode[indexFromPoint] = fromPointCode;
-		
-		//listMarker[indexToPoint].addListener('dragstart',handleDragStart);
-		/*listMarker[indexToPoint].addListener('click',function(){
-			markerClicked = this;
-		});*/
-		//listMarker[indexToPoint].addListener('click',handleEventDrag);
+		mapID2PointCode[indexToPoint] = toPointCode;
 	}
 }
 
 function handleEventDrag(event){
 	//var segmentCode = mapPoint2Segment[this];
 	var indexMarker = listMarker.indexOf(this);
+	console.log("handleEventDrag::indexMarker "+indexMarker);
 	var originPos = listMarker[indexMarker].getPosition();
 	var segmentID = mapPoint2Segment[indexMarker];
 	var pointCode = mapID2PointCode[indexMarker];
+	console.log("handleEventDrag::pointCode "+pointCode);
 	//console.log("this "+this);
 	var segment = listSegment[segmentID];
 	//console.log("segment "+segment);
@@ -334,7 +329,7 @@ function handleEventDrag(event){
 }
 
 function findintersectsegment(segmentCode,pointCode,pointLat,pointLng){
-	var dataSend = segmentCode + "; "+pointCode+"; "+(pointLat+", "+pointLng);
+	var dataSend = segmentCode + "; "+pointCode+"; "+ pointLat+", "+pointLng;
 	$.ajax({
 		type : 'POST',
 		url : baseUrl + '/mapstreetmanipulation/findIntersectionSegment',
