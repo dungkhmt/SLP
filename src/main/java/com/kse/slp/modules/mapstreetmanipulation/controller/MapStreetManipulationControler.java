@@ -153,16 +153,41 @@ public class MapStreetManipulationControler extends BaseWeb {
 		double lng = Double.valueOf(s[1]);
 		return "{\"lat\":" + lat + ",\"lng\":" + lng + "}";
 	}
+	public RoadPoint[] getKNearestPoint(String latlng, List<RoadPoint> points, int K){
+		RoadPoint[] a = new RoadPoint[points.size()];
+		double[] d = new double[points.size()];
+		int n = a.length;
+		for(int i = 0;i < points.size(); i++){
+			a[i] = points.get(i);
+			d[i] = GoogleMapsQuery.distanceHaversine(a[i].getRP_LatLng(), latlng);
+		}
+		// sort
+		for(int i = 0; i < n-1; i++){
+			for(int j = i+1; j < n; j++){
+				if(d[i] > d[j]){
+					double tmpd = d[i]; d[i] = d[j]; d[j] = tmpd;
+					RoadPoint tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+				}
+			}
+		}
+		RoadPoint[] sa = new RoadPoint[K];
+		for(int i = 0;i < K; i++)
+			sa[i] = a[i];
+		return sa;
+	}
 	//public String findPath(double lat_start, double lng_start, double lat_end, double lng_end){
 	public String findPath(String latlng_start, String latlng_end){
+		
 		RoadPoint s = null;
 		RoadPoint t = null;
+		Itinerary p = null;
+		/*
 		double minDisS = Integer.MAX_VALUE;
 		double minDisT = Integer.MAX_VALUE;
 		for(RoadPoint v: points){
 			double d = GoogleMapsQuery.distanceHaversine(latlng_start,v.getRP_LatLng());
 			if(minDisS > d){
-				minDisS = d; s =v;// v.getRP_ID();
+				minDisS = d; s = v;// v.getRP_ID();
 			}
 			
 			d = GoogleMapsQuery.distanceHaversine(latlng_end,v.getRP_LatLng());
@@ -170,8 +195,30 @@ public class MapStreetManipulationControler extends BaseWeb {
 				minDisT = d; t = v;//v.getRP_ID();
 			}
 		}
+		
 		//System.out.println(name() + "::findPath, found s= " + s.getRP_ID() + ", t = " + t.getRP_ID());
-		Itinerary p = dijkstra.solve(s.getRP_ID(), t.getRP_ID());
+		p = dijkstra.solve(s.getRP_ID(), t.getRP_ID());
+		*/
+		RoadPoint[] S = getKNearestPoint(latlng_start, points, 100);
+		RoadPoint[] T = getKNearestPoint(latlng_end, points, 100);
+		
+		for(int i = 0; i < S.length; i++){
+			for(int j = 0; j < T.length; j++){
+				s = S[i];
+				t = T[j];
+				p = dijkstra.solve(s.getRP_ID(), t.getRP_ID());
+				System.out.print(name() + "::findPath points.sz = " + points.size() + ", s = " + s.getRP_ID() + ", t = " + t.getRP_ID());
+				if(p == null) System.out.println(" path = null"); else System.out.println(" path = " + p.size());
+					
+				if(p != null && p.size() > 0){
+					break;
+				}
+			}
+			if(p != null && p.size() > 0){
+				break;
+			}
+		}
+		
 		String[] st = s.getRP_LatLng().split(",");
 		double s_lat = Double.valueOf(st[0]);
 		double s_lng = Double.valueOf(st[1]);
