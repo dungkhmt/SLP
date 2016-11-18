@@ -212,7 +212,7 @@ function viewMap(data){
 				position:point,
 				map: map,
 				label:null,
-				icon: baseUrl+"/assets/icon/marker_black16.png",
+				icon: baseUrl+"/assets/icon/oval_green.png",
 				path: pathList.indexOf(route),
 				infowindow: infowindow
 			});
@@ -238,7 +238,7 @@ function viewMap(data){
 				position:point,
 				map: map,
 				label:null,
-				icon: baseUrl+"/assets/icon/marker_black16.png",
+				icon: baseUrl+"/assets/icon/oval_blue.png",
 				path: -1,
 				infowindow: infowindow
 			});

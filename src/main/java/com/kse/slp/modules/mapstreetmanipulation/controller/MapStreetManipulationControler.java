@@ -361,7 +361,9 @@ public class MapStreetManipulationControler extends BaseWeb {
 		for(int i=0;i< r.getListPoint().size()-1;i++){
 			roadPoints+=r.getListPoint().get(i).getLat()+", "+r.getListPoint().get(i).getLng()+" : ";
 		}
-		roadPoints+=r.getListPoint().get(r.getListPoint().size()-1).getLat()+", "+r.getListPoint().get(r.getListPoint().size()-1).getLng();
+		String str=r.getListPoint().get(r.getListPoint().size()-1).getLat()+", "+r.getListPoint().get(r.getListPoint().size()-1).getLng();
+		roadPoints+=str;
+		session.setAttribute("addLastPoint", str);
 		}
 		
 		String RoadBidirectional=r.getOptionRoad();

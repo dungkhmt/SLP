@@ -89,8 +89,15 @@ function initialize() {
 	    strokeWeight: 3,
 	    map:map
 	});
-	
+	var lastlatlng='${addLastPoint}';
+	var p=lastlatlng.split(', ');
+	console.log(p);
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	map.setCenter({
+		lat: parseFloat(p[0]),
+		lng: parseFloat(p[1])
+	})
+	map.setZoom(14);
 	map.addListener('click', function(event){
 		console.log(event.latLng.lat());
 		marker=new google.maps.Marker({
