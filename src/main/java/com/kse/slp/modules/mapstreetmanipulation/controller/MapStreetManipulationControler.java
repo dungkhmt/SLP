@@ -374,7 +374,9 @@ public class MapStreetManipulationControler extends BaseWeb {
 	@RequestMapping(value="/editPoint",method=RequestMethod.GET)
 	public String editPoint(ModelMap model){
 		List<Province> lstProvinces = ProvinceService.getListProvince();
+		List<RoadType> lstRoadType = roadTypeService.getListRoadType();
 		model.put("lstProvinces", lstProvinces);
+		model.put("lstRoadType",lstRoadType);
 		
 		return "mapstreetmanipulation.editPoint";
 	}
@@ -385,10 +387,14 @@ public class MapStreetManipulationControler extends BaseWeb {
 		return roads;
 	}
 	
-	@RequestMapping(value="/updateRoad/{code}")
-	public @ResponseBody String updateRoad(@PathVariable("code") String roadCode, @RequestBody String roadPoints){
-		//System.out.println(name()+"updateRoad---roadPoints"+roadPoints);
-		RoadsService.updateARoad(roadCode, roadPoints);
+	@RequestMapping(value="/updateRoad")
+	public @ResponseBody String updateRoad(@RequestBody String road){
+		System.out.println(name()+"updateRoad---road Recive"+road);
+		Gson gson= new Gson();
+		//System.out.print(name()+road);
+		Road r= gson.fromJson(road,Road.class);
+		System.out.println(name()+"updateRoad---road convert"+road.toString());
+		RoadsService.updateARoad(r.getRoadCode(), r);
 		return "400";
 	}	
 	

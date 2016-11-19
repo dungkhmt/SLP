@@ -8,6 +8,7 @@ public interface RoadsService {
 	public List<Road> getListByProvince(String proCode);
 	public int saveARoad(String roadCode,String roadName,String RoadProvince,String RoadInterProvince,String RoadPoints, String RoadTypeCode,String RoadBidirectional,int RoadMaxSpeed,String RoadCreateUserID,String RoadCreateDateTime,String roadStatus );
 	public Road loadARoadByRoadCode(String roadCode);
+	public void updateARoad(String roadCode,Road road);
 	public void updateARoad(String roadCode,String RoadPoints);
 	public List<Road> getList();
 	public List<Road> getListNotProccessed();

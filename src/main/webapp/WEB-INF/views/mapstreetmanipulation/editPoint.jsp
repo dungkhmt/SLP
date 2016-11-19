@@ -35,6 +35,50 @@
 			<button class="btn btn-primary" id="btn-saveRoad">Lưu</button>
 		</div>
 	</div>
+	<div class="row">
+		<!--  <div class="col-sm-6">-->
+			<div class="form-group">
+				<label class="control-label col-sm-2">Tên đường</label>
+				<div class="col-sm-4">
+					<input id="roadName" class="form-control"/>
+				</div>
+			</div>
+		<!--  </div> -->
+		<!--  <div class="col-sm-6"> -->
+			<div class="form-group">
+				<label class="control-label col-sm-2">Kiểu đường</label>
+				<div class="col-sm-4">
+					<select class="form-control" id="sel-roadType">
+						<c:forEach items="${lstRoadType}" var="roadType">
+							<option value="${roadType.roadTypeCode}">${roadType.roadTypeName}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+		<!--  </div> -->
+		<!-- ./col-sm-6 -->
+		<!-- <div class="col-sm-6">-->
+			<div class="form-group">
+				<label class="control-label col-sm-2">Hai chiều/Một chiều</label>
+				<div class="col-sm-4">
+					<select class="form-control" id="sel-direction">
+						<option value="DIRECTIONAL">Một chiều</option>
+						<option value="BIDIRECTIONAL">Hai chiều</option>
+					</select>
+				</div>
+			</div>
+		<!--  </div> -->
+		<!-- /.col-sm-6 -->
+		<!-- <div class="col-sm-6"> -->
+			<div class="form-group">
+				<label class="control-label col-sm-2"> Vận tốc</label>
+				<div class="col-sm-4">
+					<input id="maxSpeed" class="form-control"/>
+				</div>
+			</div>
+		<!-- </div> -->
+		<!-- /.col-sm-6 -->
+	</div>
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruL-HLFSNh6G2MLhjS-eBTea7r7EFa5A&libraries=places&callback=initialize" async defer></script>
@@ -163,6 +207,14 @@ $(document).ready(function(){
 		for(var i=0; i < dataResponse.length; i++){
 			if(dataResponse[i].roadCode==street){
 				//roadCodeSelected = dataResponse[i].RoadCode;
+				var roadName = dataResponse[i].roadName;
+				var roadTypeCode = dataResponse[i].roadTypeCode;
+				var roadDirection = dataResponse[i].roadBidirectional;
+				var roadMaxSpeed = dataResponse[i].roadMaxSpeed;
+				$('#roadName').val(roadName);
+				$('#sel-roadType').val(roadTypeCode);
+				$('#sel-direction').val(roadDirection);
+				$('#maxSpeed').val(roadMaxSpeed);
 				var roadPoints = dataResponse[i].roadPoints;
 				console.log("roadPoints length = "+roadPoints.length);
 				if(roadPoints.length == 0){
@@ -213,11 +265,26 @@ $(document).ready(function(){
 		console.log("dataPreSend: "+dataPreSend);
 		dataSend = dataPreSend.join(":");
 		console.log("dataSend when click button: "+dataSend);
+		var data = {
+				"RoadID" : 1,
+				"RoadCode" : roadCodeSelected ,
+				"RoadName" : $('#roadName').val(),
+				"RoadProvince" : "",
+				"RoadInterProvince" : "",
+				"RoadPoints" : dataSend,
+				"RoadTypeCode" : $('#sel-roadType').val(),
+				"RoadBidirectional" : $('#sel-direction').val(),
+				"RoadMaxSpeed" : $('#maxSpeed').val(),
+				"RoadCreateUserID" : "",
+				"RoadCreateDateTime" : "",
+				"RoadStatus" : ""
+		}
+		data = JSON.stringify(data);
 		$.ajax({
 			type: 'POST',
-			url : baseUrl + "/mapstreetmanipulation/updateRoad/" + roadCodeSelected,
-			data: dataSend,
-			contentType: 'application/text',
+			url : baseUrl + "/mapstreetmanipulation/updateRoad",
+			data: data,
+			contentType: 'application/json',
 			success: function(response){
 				alert("ok");
 				window.location = baseUrl + "/mapstreetmanipulation/editPoint";

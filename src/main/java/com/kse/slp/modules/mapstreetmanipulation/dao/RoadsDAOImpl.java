@@ -28,6 +28,7 @@ public class RoadsDAOImpl extends BaseDao implements RoadsDAO {
 			begin();
 			Criteria criteria = getSession().createCriteria(Road.class);
 			criteria.add(Restrictions.eq("RoadProvince", proCode));
+			criteria.add(Restrictions.eq("RoadStatus", "NOT_PROCCESSED"));
 			List<Road> road = criteria.list();
 			commit();
 			return road;

@@ -49,11 +49,15 @@ public class RoadsServiceImpl implements RoadsService {
 	}
 
 	@Override
-	public void updateARoad(String roadCode, String RoadPoints) {
+	public void updateARoad(String roadCode, Road r) {
 		// TODO Auto-generated method stub
 		Road road = RoadsDAO.loadARoadByRoadCode(roadCode);
 		if(road != null){
-			road.setRoadPoints(RoadPoints);
+			road.setRoadPoints(r.getRoadPoints());
+			road.setRoadBidirectional(r.getRoadBidirectional());
+			road.setRoadName(r.getRoadName());
+			road.setRoadMaxSpeed(r.getRoadMaxSpeed());
+			road.setRoadTypeCode(r.getRoadTypeCode());
 			RoadsDAO.updateARoad(road);
 		}
 		
@@ -77,6 +81,16 @@ public class RoadsServiceImpl implements RoadsService {
 		Road road = RoadsDAO.loadARoadByRoadCode(roadCode);
 		if(road != null){
 			road.setRoadStatus(status);
+			RoadsDAO.updateARoad(road);
+		}
+	}
+
+	@Override
+	public void updateARoad(String roadCode, String RoadPoints) {
+		// TODO Auto-generated method stub
+		Road road = RoadsDAO.loadARoadByRoadCode(roadCode);
+		if(road != null){
+			road.setRoadPoints(RoadPoints);
 			RoadsDAO.updateARoad(road);
 		}
 	}
