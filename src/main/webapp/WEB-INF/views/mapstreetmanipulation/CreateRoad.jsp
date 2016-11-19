@@ -133,10 +133,10 @@ function initialize() {
 			var index= poliline.getPath().indexOf(this.getPosition());
 			poliline.getPath().removeAt(index);
 			this.setMap(null);
-			poliline.setMap(map);
 		});
 		listMarker.push(marker);
 		poliline.getPath().push(event.latLng);
+		poliline.setMap(map);
 	});
 	
 	var lastlatlng='${addLastPoint}';
