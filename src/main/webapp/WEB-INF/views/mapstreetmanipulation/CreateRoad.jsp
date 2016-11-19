@@ -6,6 +6,10 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<h1 class="page-header">Tạo tuyến đường</h1>
+			<div class="col-sm-offset-11 col-sm-1">
+				<button type="button" id='viewButton' class="btn btn-primary active" onclick="changeViewState()" >View</button>
+			</div>
+			
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
@@ -69,17 +73,41 @@
 	
 </div>
 <!-- /#page-wrapper -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruL-HLFSNh6G2MLhjS-eBTea7r7EFa5A&libraries=places&callback=initialize" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&libraries=places&callback=initialize" async defer></script>
 <script>
+var status=0;
 var map;
 var listPoint=[];
 var listMarker=[];
 var poliline;
+var lRPoliline=[];
+function changeViewState(){
+	status=parseInt(status)+1;
+	status=status % 2;
+	if(status==0){
+		for(i=0;i<lRPoliline.length;i++){
+			lRPoliline[i].setMap(null);
+		}
+		$("#viewButton").removeClass("btn-warning");
+		$("#viewButton").html('View');
+		
+	} 
+		
+	
+	else{
+		for(i=0;i<lRPoliline.length;i++){
+			lRPoliline[i].setMap(map);
+		}
+		$("#viewButton").addClass("btn-warning");
+		$("#viewButton").html('Hire');
+	}	
+		
+}	
 function initialize() {
 	//construct google map
 	var mapProp = {
 		center: {lat: 21.033333, lng: 105.849998},
-		zoom: 12,
+		zoom: 13,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	poliline = new google.maps.Polyline({
@@ -89,15 +117,10 @@ function initialize() {
 	    strokeWeight: 3,
 	    map:map
 	});
-	var lastlatlng='${addLastPoint}';
-	var p=lastlatlng.split(', ');
-	console.log(p);
+	
 	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
-	map.setCenter({
-		lat: parseFloat(p[0]),
-		lng: parseFloat(p[1])
-	})
-	map.setZoom(14);
+	
+	
 	map.addListener('click', function(event){
 		console.log(event.latLng.lat());
 		marker=new google.maps.Marker({
@@ -110,12 +133,51 @@ function initialize() {
 			var index= poliline.getPath().indexOf(this.getPosition());
 			poliline.getPath().removeAt(index);
 			this.setMap(null);
-			
 		});
 		listMarker.push(marker);
 		poliline.getPath().push(event.latLng);
 		poliline.setMap(map);
 	});
+	
+	var lastlatlng='${addLastPoint}';
+	
+	
+	var lRString='${lRoads}';
+	var lR=JSON.parse(lRString);
+	
+	for(var i=0;i<lR.length;i++){
+		poliline2 = new google.maps.Polyline({
+			
+			strokeColor: 'green',
+		    strokeOpacity: 1.0,
+		    strokeWeight: 3,
+		   
+		});
+		
+		var lP=lR[i].RoadPoints.split(':');
+		
+		for(j=0;j<lP.length;j++){
+			var latlng=lP[j].split(',');
+			console.log(parseFloat(latlng[0]));
+			poliline2.getPath().push(new google.maps.LatLng(
+				parseFloat(latlng[0]),
+				parseFloat(latlng[1])
+			));
+		}
+		lRPoliline.push(poliline2);
+		console.log(poliline2);
+	}
+	
+	console.log(lR);
+	var p=lastlatlng.split(', ');
+	console.log(p);
+	if(p.length>=2) {
+	map.setCenter({
+		lat: parseFloat(p[0]),
+		lng: parseFloat(p[1])
+	});
+	map.setZoom(14);
+	}
 }
 
 function saveRoad(){

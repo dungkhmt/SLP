@@ -339,6 +339,10 @@ public class MapStreetManipulationControler extends BaseWeb {
 		List<Province> lPrv=ProvinceService.getListProvince();
 		model.put("listRoadType", lRT);
 		model.put("listProvince", lPrv);
+		List<Road> lR= RoadsService.getList();
+		Gson gson= new Gson();
+		String json = gson.toJson(lR);
+		model.put("lRoads", json);
 		return "mapstreetmanipulation.createroad";
 	}
 	
