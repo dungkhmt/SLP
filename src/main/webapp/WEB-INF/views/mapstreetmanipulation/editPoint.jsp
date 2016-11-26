@@ -35,49 +35,52 @@
 			<button class="btn btn-primary" id="btn-saveRoad">Lưu</button>
 		</div>
 	</div>
-	<div class="row">
-		<!--  <div class="col-sm-6">-->
-			<div class="form-group">
-				<label class="control-label col-sm-2">Tên đường</label>
-				<div class="col-sm-4">
-					<input id="roadName" class="form-control"/>
-				</div>
+	<div class="row" style="margin-top:10px">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Tên đường</label>
+			<div class="col-sm-4">
+				<input id="roadName" class="form-control"/>
 			</div>
-		<!--  </div> -->
-		<!--  <div class="col-sm-6"> -->
-			<div class="form-group">
-				<label class="control-label col-sm-2">Kiểu đường</label>
-				<div class="col-sm-4">
-					<select class="form-control" id="sel-roadType">
-						<c:forEach items="${lstRoadType}" var="roadType">
-							<option value="${roadType.roadTypeCode}">${roadType.roadTypeName}</option>
-						</c:forEach>
-					</select>
-				</div>
+			<label class="control-label col-sm-2">Kiểu đường</label>
+			<div class="col-sm-4">
+				<select class="form-control" id="sel-roadType">
+					<c:forEach items="${lstRoadType}" var="roadType">
+						<option value="${roadType.roadTypeCode}">${roadType.roadTypeName}</option>
+					</c:forEach>
+				</select>
 			</div>
-		<!--  </div> -->
-		<!-- ./col-sm-6 -->
-		<!-- <div class="col-sm-6">-->
-			<div class="form-group">
-				<label class="control-label col-sm-2">Hai chiều/Một chiều</label>
-				<div class="col-sm-4">
-					<select class="form-control" id="sel-direction">
-						<option value="DIRECTIONAL">Một chiều</option>
-						<option value="BIDIRECTIONAL">Hai chiều</option>
-					</select>
-				</div>
+		</div>
+	</div>
+	<div class="row" style="margin-top:10px">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Hai chiều/Một chiều</label>
+			<div class="col-sm-4">
+				<select class="form-control" id="sel-direction">
+					<option value="DIRECTIONAL">Một chiều</option>
+					<option value="BIDIRECTIONAL">Hai chiều</option>
+				</select>
 			</div>
-		<!--  </div> -->
-		<!-- /.col-sm-6 -->
-		<!-- <div class="col-sm-6"> -->
-			<div class="form-group">
-				<label class="control-label col-sm-2"> Vận tốc</label>
-				<div class="col-sm-4">
-					<input id="maxSpeed" class="form-control"/>
-				</div>
+			<label class="control-label col-sm-2"> Vận tốc</label>		
+			<div class="col-sm-4">
+				<input id="maxSpeed" class="form-control"/>
 			</div>
-		<!-- </div> -->
-		<!-- /.col-sm-6 -->
+		</div>
+	</div>
+	<div class="row" style="margin-top:10px">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Tỉnh/Thành Phố</label>
+			<div class="col-sm-4">
+				<select class="form-control" id="sel-province">
+					<c:forEach items="${lstProvinces}" var="province">
+						<option value="${province.PROV_Code}"><c:out value="${province.PROV_Name}"/></option>
+					</c:forEach>
+				</select>
+			</div>
+			<label class="control-label col-sm-2">Các tỉnh đi qua</label>
+			<div class="col-sm-4">
+				<input class="form-control" id="interProvince"/>
+			</div>	
+		</div>
 	</div>
 </div>
 
@@ -211,10 +214,15 @@ $(document).ready(function(){
 				var roadTypeCode = dataResponse[i].roadTypeCode;
 				var roadDirection = dataResponse[i].roadBidirectional;
 				var roadMaxSpeed = dataResponse[i].roadMaxSpeed;
+				var provinceCode = dataResponse[i].roadProvince;
+				var interProvince = dataResponse[i].roadInterProvince;
 				$('#roadName').val(roadName);
 				$('#sel-roadType').val(roadTypeCode);
 				$('#sel-direction').val(roadDirection);
 				$('#maxSpeed').val(roadMaxSpeed);
+				$('#sel-province').val(provinceCode);
+				$('#interProvince').val(interProvince);
+				
 				var roadPoints = dataResponse[i].roadPoints;
 				console.log("roadPoints length = "+roadPoints.length);
 				if(roadPoints.length == 0){
@@ -269,8 +277,8 @@ $(document).ready(function(){
 				"RoadID" : 1,
 				"RoadCode" : roadCodeSelected ,
 				"RoadName" : $('#roadName').val(),
-				"RoadProvince" : "",
-				"RoadInterProvince" : "",
+				"RoadProvince" : $('#sel-province').val(),
+				"RoadInterProvince" : $('#interProvince').val(),
 				"RoadPoints" : dataSend,
 				"RoadTypeCode" : $('#sel-roadType').val(),
 				"RoadBidirectional" : $('#sel-direction').val(),

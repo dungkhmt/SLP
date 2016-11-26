@@ -19,52 +19,52 @@
 		<div class="panel panel-default">
 			
 			<div class="panel-body">
-				<div class="form-group">
+				<div class="row">
+					<div class="form-group">
 						<label class="control-label col-lg-2 ">Tên đường</label>
 						<div class="col-lg-4">
 							<input  id="nameroad" class="form-control"  placeholder="Tên đường"></input>
 						</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-lg-2 phoneinput">Kiểu đường</label>
-					<div class="col-lg-4">
-					<select class="form-control" id="sel-roadtype" >
-						<c:forEach items="${listRoadType}" var="roadTypes">
-							<option value="${roadTypes.roadTypeCode}">${roadTypes.roadTypeName}</option>
-						</c:forEach>
-					</select>
+						<label class="control-label col-lg-2 phoneinput">Kiểu đường</label>
+						<div class="col-lg-4">
+							<select class="form-control" id="sel-roadtype" >
+								<c:forEach items="${listRoadType}" var="roadTypes">
+									<option value="${roadTypes.roadTypeCode}">${roadTypes.roadTypeName}</option>
+								</c:forEach>
+							</select>
+						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label col-lg-2 phoneinput">Tỉnh</label>
-					<div class="col-lg-4">
-					<select class="form-control" id="sel-provice">
-						<c:forEach items="${listProvince}" var="provices">
-							<option value="${provices.PROV_Code}">${provices.PROV_Name}</option>
-						</c:forEach>
-					</select>
+				<div class="row" style="margin-top:10px">
+					<div class="form-group">
+						<label class="control-label col-lg-2 phoneinput">Tỉnh</label>
+						<div class="col-lg-4">
+							<select class="form-control" id="sel-provice">
+								<c:forEach items="${listProvince}" var="provices">
+									<option value="${provices.PROV_Code}">${provices.PROV_Name}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<label class="control-label col-lg-2 ">Hai chiều/Một chiều</label>
+						<div class="col-lg-4">
+							<select class="form-control" id="sel-option">
+								<option value="DIRECTIONAL">Một chiều</option>
+								<option value="BIDIRECTIONAL">Hai chiều</option>
+							</select>
+						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label col-lg-2 ">Hai chiều/Một chiều</label>
-					<div class="col-lg-4">
-					<select class="form-control" id="sel-option">
-						<option value="DIRECTIONAL">Một chiều</option>
-						<option value="BIDIRECTIONAL">Hai chiều</option>
-					</select>
-					</div>
-				</div>
-				<div class="form-group">
+				<div class="row" style="margin-top:10px">
+					<div class="form-group">
 						<label class="control-label col-lg-2 ">Vận tốc</label>
 						<div class="col-lg-4">
 							<input  id="maxspeed" class="form-control"  placeholder="Max Speed"></input>
 						</div>
-				</div>
-				<div class="form-group">
 						<label class="control-label col-lg-2 ">Các tỉnh đi qua</label>
 						<div class="col-lg-4">
 							<input  id="provicespass" class="form-control"  placeholder="Các tỉnh đi qua"></input>
 						</div>
+					</div>
 				</div>
 				<button type="button" class="btn btn-primary active" onclick="saveRoad()" >Save</button>
 			</div>
@@ -176,7 +176,7 @@ function initialize() {
 		lat: parseFloat(p[0]),
 		lng: parseFloat(p[1])
 	});
-	map.setZoom(14);
+	map.setZoom(16);
 	}
 }
 

@@ -58,6 +58,8 @@ public class RoadsServiceImpl implements RoadsService {
 			road.setRoadName(r.getRoadName());
 			road.setRoadMaxSpeed(r.getRoadMaxSpeed());
 			road.setRoadTypeCode(r.getRoadTypeCode());
+			road.setRoadInterProvince(r.getRoadInterProvince());
+			road.setRoadProvince(r.getRoadProvince());
 			RoadsDAO.updateARoad(road);
 		}
 		
