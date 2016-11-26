@@ -894,6 +894,16 @@ public class MapStreetManipulationControler extends BaseWeb {
 		return "400";
 	}
 	
+	@RequestMapping(value ="/edit-location-road-point",method=RequestMethod.POST)
+	public @ResponseBody boolean editLocationRoadPoint(@RequestBody String jsonData,HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		Gson gson= new Gson();
+		ArrayList<String> lS = (ArrayList<String>) gson.fromJson(jsonData,new TypeToken<ArrayList<String>>() {}.getType());
+		roadPointsService.updateRoadPointByCode(Integer.parseInt(lS.get(0)) , lS.get(1));
+		return true;
+	}
+
 	String name(){
 		return "mapstreetmanipulation::";
 	}
