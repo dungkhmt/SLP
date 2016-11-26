@@ -886,6 +886,14 @@ public class MapStreetManipulationControler extends BaseWeb {
 		return true;
 	}
 	
+	@RequestMapping(value="/removeRoad")
+	public @ResponseBody String removeRoad(@RequestBody String roadCode){
+		System.out.println(name()+"::removeRoad--roadCode: "+roadCode);
+		RoadsService.removeARoad(roadCode);
+		roadSegmentsService.removeSegmentByRoadCode(roadCode);
+		return "400";
+	}
+	
 	String name(){
 		return "mapstreetmanipulation::";
 	}

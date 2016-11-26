@@ -14,4 +14,5 @@ public interface RoadSegmentsService {
 	public void saveARoadSegment(int code, int fromPoint, int toPoint, double distance, int speed, String bidi,String roadCode ); 
 	public void deleteASegmentByCode(int code);
 	public RoadSegment getSegmentByCode(int code);
+	public void removeSegmentByRoadCode(String roadCode);
 }

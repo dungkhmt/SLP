@@ -225,5 +225,27 @@ public class RoadSegmentsDAOImpl extends BaseDao implements RoadSegmentsDAO {
 			close();
 		}
 	}
+	@Override
+	public void removeSegmentByRoadCode(String roadCode) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			List<RoadSegment> lstseg = getSession().createCriteria(RoadSegment.class).add(Restrictions.eq("RSEG_RoadCode", roadCode)).list();
+			for(RoadSegment seg : lstseg){
+				getSession().delete(seg);
+			}
+			
+			commit();
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+	}
 
 }

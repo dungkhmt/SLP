@@ -13,5 +13,6 @@ public interface RoadSegmentsDAO {
 	public void updateASegment(RoadSegment segment);
 	public void deleteSegmentByCode(int code);
 	public RoadSegment getSegmentByCode(int code);
+	public void removeSegmentByRoadCode(String roadCode);
 
 }

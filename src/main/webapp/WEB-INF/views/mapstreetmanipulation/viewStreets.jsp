@@ -60,7 +60,8 @@
 								<td><c:out value="${road.roadName}"/></td>
 								<td><c:out value="${road.roadTypeCode}"/></td>
 								<td><c:out value="${road.roadMaxSpeed}"/></td>
-								<td><input type="checkbox" name="checkStreet" onchange="addStreets('${road.roadCode}',this)"/></td>
+								<td><input type="checkbox" name="checkStreet" onchange="addStreets('${road.roadCode}',this)"/>
+										<button class="btn btn-warning btn-xs" onclick="removeRoad('${road.roadCode}')">Xóa</button></td>
 								<td><c:out value="${road.roadProvince}"/></td>
 							</tr>
 						</c:forEach>
@@ -89,6 +90,20 @@ function initialize(){
 		mapTypeIDd : google.maps.MapTypeId.ROADMAP
 	}
 	map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+}
+
+function removeRoad(roadCode){
+	console.log(roadCode);
+	$.ajax({
+		type : 'POST',
+		url : baseUrl + "/mapstreetmanipulation/removeRoad",
+		data : roadCode,
+		contentType : 'application/text',
+		success : function (response){
+			alert("ok");
+			window.location = baseUrl + "/mapstreetmanipulation/viewStreets";
+		}
+	});
 }
 
 function addStreets(roadCode,elem){
