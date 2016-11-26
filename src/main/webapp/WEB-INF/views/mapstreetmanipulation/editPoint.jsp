@@ -243,7 +243,14 @@ $(document).ready(function(){
 						draggable : true,
 						icon:"https://www.google.com/mapfiles/marker_green.png"
 					});
-
+					if(j==0){
+						console.log("j==0");
+						map.setCenter({
+							lat: parseFloat(lat),
+							lng: parseFloat(lng)
+						});
+						map.setZoom(15);
+					}
 					road.getPath().push(point);
 					listMarker.push(markerPoint);
 					markerPoint.addListener('click',function(){
