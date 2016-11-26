@@ -159,24 +159,70 @@ function viewMap(){
 			label:null,
 			icon: baseUrl+"/assets/icon/oval_green.png",
 			path: -1,
-			index: i
+			index: i,
+			draggable: true,
+			roadPointIndex:i
 		});
+		marker.addListener('dragend',handleEventDrag);
 		lMarker.push(marker);
 		lRP[i]['marker']=marker;
 	}
 	for(i=0;i<lRS.length;i++){
-		var seg = new google.maps.Polyline({
-			path: [lRP[lRS[i].rseg_FromPoint].marker.getPosition(),lRP[lRS[i].rseg_ToPoint].marker.getPosition()],
-			strokeColor: randomColor(),
-		    strokeOpacity: 1.0,
-		    strokeWeight: 3,
-		    map:map
-		});
+		var lineSymbol = {
+				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+				strokeOpacity: 2,
+				scale: 1.5
+			}
+		if (lRS[i].rseg_Bidirectional=="BIDIRECTIONAL")
+			var seg = new google.maps.Polyline({
+				path: [lRP[lRS[i].rseg_FromPoint].marker.getPosition(),lRP[lRS[i].rseg_ToPoint].marker.getPosition()],
+				strokeColor: randomColor(),
+		    	strokeOpacity: 1.0,
+		    	strokeWeight: 3,
+		    	map:map
+			});
+		else 
+			var seg = new google.maps.Polyline({
+				path: [lRP[lRS[i].rseg_FromPoint].marker.getPosition(),lRP[lRS[i].rseg_ToPoint].marker.getPosition()],
+				strokeColor: randomColor(),
+		    	strokeOpacity: 1.0,
+		    	strokeWeight: 3,
+		    	map:map,
+		    	icons: [{
+					icon: lineSymbol,
+					offset: '100%',
+					repeat: '200px'
+				}]
+			});
 		lPoliline.push(seg);
 		
 	}
 }
-
+function handleEventDrag(event ){
+	console.log("handleEventDrag");
+	var index=this.roadPointIndex;
+	var pointCode= lRP[index].rp_Code;
+	var infowindow = new google.maps.InfoWindow({
+	    content: '<button class="btn btn-primary" onclick="changeRoadPoint('+pointCode+','+event.latLng.lat()+','+event.latLng.lng()+','+index+')">Save</button>'
+	});
+	infowindow.open(map,this);
+}
+function changeRoadPoint(pointCode,lat,lng,index){
+	console.log(pointCode);
+	console.log(lat);
+	var data=[pointCode,lat+", "+lng];
+	$.ajax({
+		type: 'POST',
+		url: baseUrl+'/mapstreetmanipulation//edit-location-road-point',
+		data: JSON.stringify(data),
+		contentType: 'application/json; charset=utf-8',
+		dataType: "json",
+		success: function(response){
+			if(response==true) lRP[index].rp_LatLng=lat+", "+lng;
+			viewMap();
+		}
+	});
+}
 function getListAll(){
 	$.ajax({
 		type: 'POST',
