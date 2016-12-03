@@ -26,6 +26,7 @@
 				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/viewStreets" />">Xem các tuyến đường</a></li>
 				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/findIntersectionPoints" />">Tìm điểm giao cắt</a></li>
 				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/edit-road-points" />">Chỉnh sửa điểm nút bản đồ</a></li>
+				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/demoChart" />">Demo</a></li>
 				<%-- <li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/directionhome" />">Upload file</a></li> --%>
 			</ul>
 		</div>

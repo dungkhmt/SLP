@@ -903,6 +903,31 @@ public class MapStreetManipulationControler extends BaseWeb {
 		roadPointsService.updateRoadPointByCode(Integer.parseInt(lS.get(0)) , lS.get(1));
 		return true;
 	}
+	
+	@RequestMapping(value = "/demoChart")
+	public String demoChart(ModelMap model){
+		//System.out.println(name()+"demoChart");
+		
+		int[] x = {1,2,3,4,5,6,7,8,9,10};
+		int[] y = {1,2,5,9,1,10,3,4,7,9};
+		
+		PointTest[] data = new PointTest[10];
+		for(int i=0; i<10; i++){
+			PointTest tmp = new PointTest();
+			tmp.x = x[i];
+			tmp.y = y[i];
+			data[i] =  tmp;
+		}
+		Gson gson=new Gson();
+		String json=gson.toJson(data);
+		System.out.println(name()+"demoChart--response Data: "+json);
+		model.put("data", json);
+		return "mapstreetmanipulation.demoChart";
+	}
+	class PointTest{
+		int x;
+		int y;
+	}
 
 	String name(){
 		return "mapstreetmanipulation::";
