@@ -55,6 +55,7 @@ import com.kse.slp.modules.dichung.model.FormAddFileExcel;
 import com.kse.slp.modules.dichung.model.RouteDiChungJson;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
+import com.kse.slp.modules.onlinestores.modules.clientmanagment.service.mClientsService;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -62,8 +63,10 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrders
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteContainerDetailExtension;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.ShipperBatch;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRoutes;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mShippers;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.ShipperBatchService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailContainerService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
@@ -90,6 +93,10 @@ public class PickupDeliveryController extends BaseWeb{
 	mRequestBatchContainerDeliveryService requestBatchService;
 	@Autowired
 	StaffCustomerServiceImpl staffCustomerService;
+	@Autowired
+	mClientsService clientService;
+	@Autowired
+	ShipperBatchService shipperBatchService;
 	/*future fix
 	 * reset route ->save vào csdl (null có lưu không) -> tăng increment id rất nhanh
 	 * 
@@ -158,21 +165,36 @@ public class PickupDeliveryController extends BaseWeb{
 				System.out.println(name()+"::readFile"+"--row "+i);
 				row = sheet.getRow(i);
 				String oPD_ClientCode=row.getCell(1).getStringCellValue();
-				String oPD_PickupAddress=row.getCell(2).getStringCellValue();
-				String latlng= row.getCell(3).getStringCellValue();
+				String nameClient=row.getCell(2).getStringCellValue();
+				System.out.println(name()+clientService.loadClientbyPhoneTag(oPD_ClientCode));
+				if (clientService.loadClientbyPhoneTag(oPD_ClientCode).size()==0)  clientService.saveAClient(oPD_ClientCode, nameClient, null, null, null);
+				String oPD_PickupAddress=row.getCell(3).getStringCellValue();
+				String latlng= row.getCell(4).getStringCellValue();
 				float oPD_PickupLat =Float.parseFloat(latlng.substring(0, latlng.indexOf(',')));
 				float oPD_PickupLng =Float.parseFloat(latlng.substring(latlng.indexOf(',')+2));
-				String oPD_EarlyPickupDateTime = row.getCell(4).getStringCellValue();
-				String oPD_LatePickupDateTime = row.getCell(5).getStringCellValue();
-				String oPD_DeliveryAddress=row.getCell(6).getStringCellValue();
-				latlng= row.getCell(7).getStringCellValue();
+				String oPD_EarlyPickupDateTime = row.getCell(5).getStringCellValue();
+				String oPD_LatePickupDateTime = row.getCell(6).getStringCellValue();
+				String oPD_DeliveryAddress=row.getCell(7).getStringCellValue();
+				latlng= row.getCell(8).getStringCellValue();
 				float oPD_DeliveryLat =Float.parseFloat(latlng.substring(0, latlng.indexOf(',')));
 				float oPD_DeliveryLng =Float.parseFloat(latlng.substring(latlng.indexOf(',')+2));
-				String oPD_EarlyDeliveryDateTime = row.getCell(8).getStringCellValue();
-				String oPD_LateDeliveryDateTime = row.getCell(9).getStringCellValue();
-				int oPD_Volumn=(int) row.getCell(10).getNumericCellValue();
+				String oPD_EarlyDeliveryDateTime = row.getCell(9).getStringCellValue();
+				String oPD_LateDeliveryDateTime = row.getCell(10).getStringCellValue();
+				int oPD_Volumn=(int) row.getCell(11).getNumericCellValue();
 				System.out.println(name()+" "+oPD_ClientCode+" "+oPD_PickupAddress+" "+oPD_PickupLat+" "+oPD_PickupLng+" "+oPD_EarlyPickupDateTime+" "+oPD_LatePickupDateTime+" "+oPD_DeliveryAddress+" "+oPD_DeliveryLat+" "+oPD_DeliveryLng+" "+oPD_EarlyDeliveryDateTime+" "+oPD_LateDeliveryDateTime+" "+oPD_Volumn);
 				pickupDeliveryOrders.saveAPickupDeliveryOrders(oPD_ClientCode, GenerationDateTimeFormat.genDateTimeFormatStandardCurrently(), oPD_PickupAddress, oPD_PickupLat, oPD_PickupLng, oPD_EarlyPickupDateTime, oPD_LatePickupDateTime, oPD_DeliveryAddress, oPD_DeliveryLat, oPD_DeliveryLng, oPD_EarlyDeliveryDateTime, oPD_LateDeliveryDateTime, oPD_Volumn, batchCode);
+			}
+			sheet = wb.getSheetAt(1);
+			rows = sheet.getPhysicalNumberOfRows();
+			if(rows>=2){
+				shipperBatchService.deleteShipperBatch(batchCode);
+			for(int i=1;i<rows;i++){
+				System.out.println(name()+"::readFile"+"--row "+i);
+				row = sheet.getRow(i);
+				String shipper=row.getCell(1).getStringCellValue();
+				if(shipperService.loadShiperByUserName(shipper)==null) System.out.println(name()+"Shipper not found:: "+ shipper);
+				else shipperBatchService.saveAShipperBatch(shipper, batchCode);
+			}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -239,11 +261,12 @@ public class PickupDeliveryController extends BaseWeb{
 		List<RouteContainerDeliveryJson> res= new ArrayList<>();
 		for(int i=0;i< lr.size();i++){
 			List<RouteContainerDetailExtension> lRDC= routeDetailContainerService.loadRouteContainerDetailExtension(lr.get(i).getRoute_Code());
+			System.out.println(name()+lRDC);
 			mRoutes mr= lr.get(i);
 			RouteContainerDeliveryJson r= new RouteContainerDeliveryJson(mr.getRoute_Code(), mr.getRoute_Shipper_Code(), mr.getRoute_Start_DateTime(), mr.getRoute_BatchCode(), lRDC);
 			res.add(r);
 		}
-		System.out.println(res);
+		
 		return res;
 		
 	}
@@ -262,10 +285,11 @@ public class PickupDeliveryController extends BaseWeb{
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		System.out.println(name()+batchCode);
-		List<mShippers> lshp= shipperService.getList();
+		List<String> lshp= shipperBatchService.getShipperInBatch(batchCode);
 		Truck trck[]= new Truck[lshp.size()];
 		for(int i=0;i<lshp.size();i++){
-			Truck t= new Truck("30A-0987"+i, 2, lshp.get(i).getSHP_Code(), lshp.get(i).getSHP_CurrentLocation(), "-");
+			mShippers sh= shipperService.loadShiperByUserName(lshp.get(i));
+			Truck t= new Truck("30A-0987"+i, 2, lshp.get(i), sh.getSHP_CurrentLocation(), "-");
 			trck[i]=t;
 		}
 		List<mPickupDeliveryOrders> lPDO= pickupDeliveryOrders.getListOrderPickupDelivery(batchCode);

@@ -1,5 +1,7 @@
 package com.kse.slp.modules.onlinestores.modules.shippingmanagement.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,12 @@ public class ShipperBatchServiceImpl implements ShipperBatchService {
 	public void deleteShipperBatch(String batchCode) {
 		// TODO Auto-generated method stub
 		ShipperBatchDAO.removeShipperBatch(batchCode);
+	}
+
+	@Override
+	public List<String> getShipperInBatch(String batchCode) {
+		// TODO Auto-generated method stub
+		return ShipperBatchDAO.getShippersInBatch(batchCode);
 	}
 
 }
