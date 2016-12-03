@@ -103,5 +103,10 @@ public class RoadSegmentsServiceImpl implements RoadSegmentsService {
 		// TODO Auto-generated method stub
 		return roadSegmentDAO.getSegmentByCode(code);
 	}
+	@Override
+	public void removeSegmentByRoadCode(String roadCode) {
+		// TODO Auto-generated method stub
+		roadSegmentDAO.removeSegmentByRoadCode(roadCode);
+	}
 	
 }

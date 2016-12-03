@@ -150,4 +150,24 @@ public class RoadsDAOImpl extends BaseDao implements RoadsDAO {
 		}
 	}
 
+	@Override
+	public void removeARoad(String roadCode) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			Road r = (Road) getSession().createCriteria(Road.class).add(Restrictions.eq("RoadCode",roadCode)).uniqueResult();
+			getSession().delete(r);
+			commit();
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+	}
+
 }

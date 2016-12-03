@@ -11,4 +11,5 @@ public interface RoadsDAO {
 	public Road loadARoadByRoadCode(String roadCode);
 	public List<Road> getList();
 	public List<Road> getListNotProccessed();
+	public void removeARoad(String roadCode);
 }

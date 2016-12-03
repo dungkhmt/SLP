@@ -885,6 +885,15 @@ public class MapStreetManipulationControler extends BaseWeb {
 		}
 		return true;
 	}
+	
+	@RequestMapping(value="/removeRoad")
+	public @ResponseBody String removeRoad(@RequestBody String roadCode){
+		System.out.println(name()+"::removeRoad--roadCode: "+roadCode);
+		RoadsService.removeARoad(roadCode);
+		roadSegmentsService.removeSegmentByRoadCode(roadCode);
+		return "400";
+	}
+	
 	@RequestMapping(value ="/edit-location-road-point",method=RequestMethod.POST)
 	public @ResponseBody boolean editLocationRoadPoint(@RequestBody String jsonData,HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
@@ -894,6 +903,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 		roadPointsService.updateRoadPointByCode(Integer.parseInt(lS.get(0)) , lS.get(1));
 		return true;
 	}
+
 	String name(){
 		return "mapstreetmanipulation::";
 	}

@@ -97,4 +97,10 @@ public class RoadsServiceImpl implements RoadsService {
 		}
 	}
 
+	@Override
+	public void removeARoad(String roadCode) {
+		// TODO Auto-generated method stub
+		RoadsDAO.removeARoad(roadCode);
+	}
+
 }
