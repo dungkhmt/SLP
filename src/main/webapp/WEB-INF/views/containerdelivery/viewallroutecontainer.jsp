@@ -308,6 +308,11 @@ function randomColor(){
 function viewMap(data){
 	console.log("viewMap");
 	var route;
+	var lineSymbol = {
+			path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+			strokeOpacity: 2,
+			scale: 1.5
+		}
 	
 	var xd=false;
 	for(var i=0;i<data.length;i++){
@@ -319,6 +324,11 @@ function viewMap(data){
 			strokeColor: randomColor(),
 		    strokeOpacity: 1.0,
 		    strokeWeight: 3,
+		    icons: [{
+				icon: lineSymbol,
+				offset: '100%',
+				repeat: '200px'
+			}]
 		});
 		var listicon=["pickupmarker.png","deliverymarker.png"];
 		pathList.push(route);
