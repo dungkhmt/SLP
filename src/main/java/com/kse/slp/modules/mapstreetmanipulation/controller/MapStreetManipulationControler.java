@@ -908,11 +908,13 @@ public class MapStreetManipulationControler extends BaseWeb {
 	public String demoChart(ModelMap model){
 		//System.out.println(name()+"demoChart");
 		
-		int[] x = {1,2,3,4,5,6,7,8,9,10};
-		int[] y = {1,2,5,9,1,10,3,4,7,9};
+		//int[] x = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,};
+		int[] y = {1,2,5,9,1,10,3,4,7,9,2,4,3,6,8,7,9,2,5,34,5,2,5,3,4,3,5,4,2,4,6,3,6,3,4,5,3,6,7,9,8,2,4,2,3};
+		int[] x = new int[y.length];
+		for(int i = 0; i < x.length; i++) x[i] = i;
 		
-		PointTest[] data = new PointTest[10];
-		for(int i=0; i<10; i++){
+		PointTest[] data = new PointTest[x.length];
+		for(int i=0; i<x.length; i++){
 			PointTest tmp = new PointTest();
 			tmp.x = x[i];
 			tmp.y = y[i];
@@ -920,7 +922,7 @@ public class MapStreetManipulationControler extends BaseWeb {
 		}
 		Gson gson=new Gson();
 		String json=gson.toJson(data);
-		System.out.println(name()+"demoChart--response Data: "+json);
+		System.out.println(name()+"::demoChart--response Data: "+json);
 		model.put("data", json);
 		return "mapstreetmanipulation.demoChart";
 	}

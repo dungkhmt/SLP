@@ -1,7 +1,9 @@
 package com.kse.slp.modules.dichung.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -21,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.common.IOUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,10 +51,12 @@ import com.kse.slp.modules.containerdelivery.model.RequestBatchDiChung;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchDiChungService;
 import com.kse.slp.modules.dichung.dao.RouteDetailDiChungDAO;
+import com.kse.slp.modules.dichung.model.FormInterCityRequest;
 import com.kse.slp.modules.dichung.model.RequestDiChung;
 import com.kse.slp.modules.dichung.model.RouteDetailDiChung;
 import com.kse.slp.modules.dichung.model.FormAddFileExcel;
 import com.kse.slp.modules.dichung.model.RouteDiChungJson;
+import com.kse.slp.modules.dichung.model.SharedLongTripSolution;
 import com.kse.slp.modules.dichung.service.RequestDiChungService;
 import com.kse.slp.modules.dichung.service.RouteDetailDiChungService;
 import com.kse.slp.modules.onlinestores.common.Constants;
@@ -86,6 +92,51 @@ public class DiChungControler extends BaseWeb {
 		User u=(User) session.getAttribute("currentUser");
 		log.info(u.getUsername());
 		return "dichung.home";
+	}
+
+	@RequestMapping(value = "/upload-dichung-longtrip-request", method = RequestMethod.GET)
+	public String uploadLongTripRequests(ModelMap model, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		log.info(u.getUsername());
+		model.put("formLongTripRequest", new FormInterCityRequest());
+		return "dichung.uploadLongTripRequest";
+		
+	}
+	
+	@RequestMapping(value="/solve-long-trip-requests", method=RequestMethod.POST)
+	public String solveLongTripRequests(@ModelAttribute("formLongTripRequest") FormInterCityRequest requests){
+		System.out.println(name() + "::solveLongTripRequest");
+		MultipartFile mfile = requests.getLongTripRequests();
+		try{
+			InputStream file = mfile.getInputStream();
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(file,writer,"UTF-8");
+			String json = writer.toString();
+			System.out.println(json);
+			Gson gson = new Gson();
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			try {
+			    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+				//HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
+				HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/shared-long-trip-plan-dichung");
+			    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
+			    request.addHeader("content-type", "application/json");
+			    request.setEntity(params);
+			    System.out.println(request.getEntity());
+			    HttpResponse response = httpClient.execute(request);
+			    HttpEntity  res= response.getEntity();
+			    String responseString = EntityUtils.toString(res, "UTF-8");
+			    System.out.println(name() + "::solveLongTripRequests, responseString = " + responseString);
+			    SharedLongTripSolution sts= gson.fromJson(responseString, SharedLongTripSolution.class);
+			    System.out.println(sts);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			file.close();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return "dichung.viewLongTripSolution";
 	}
 	@RequestMapping(value="/add-dichungrequests-by-xls",method=RequestMethod.GET)
 	public String addDiChungRequestsXls(ModelMap model,HttpSession session){

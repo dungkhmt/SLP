@@ -24,6 +24,7 @@
 				<li><a href="<c:url value="${baseUrl}/dichung/add-dichungrequests-by-xls"/>">Upload request</a></li>
 				<li><a href="<c:url value="${baseUrl}/dichung/create-route-auto"/>">Lập kế hoạch tự động</a></li>
 				<li><a href="<c:url value="${baseUrl}/dichung/view-route"/>">Hiển thị tuyến theo lô</a></li>
+				<li><a href="<c:url value="${baseUrl}/dichung/upload-dichung-longtrip-request"/>">Lộ trình xe đường dài</a></li>
 			</ul>
 		</div>
 	</div>

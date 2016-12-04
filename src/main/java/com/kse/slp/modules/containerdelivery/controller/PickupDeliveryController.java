@@ -320,6 +320,8 @@ public class PickupDeliveryController extends BaseWeb{
 		//HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/pickup-delivery-containers-plan");
 		HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/pickup-delivery-containers-plan");
 		StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
+		
+		
 	    request.addHeader("content-type", "application/json");
 	    request.setEntity(params);
 	    System.out.println(request.getEntity());
