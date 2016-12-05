@@ -104,7 +104,7 @@ public class DiChungControler extends BaseWeb {
 	}
 	
 	@RequestMapping(value="/solve-long-trip-requests", method=RequestMethod.POST)
-	public String solveLongTripRequests(@ModelAttribute("formLongTripRequest") FormInterCityRequest requests){
+	public String solveLongTripRequests(ModelMap model, @ModelAttribute("formLongTripRequest") FormInterCityRequest requests){
 		System.out.println(name() + "::solveLongTripRequest");
 		MultipartFile mfile = requests.getLongTripRequests();
 		try{
@@ -128,6 +128,9 @@ public class DiChungControler extends BaseWeb {
 			    String responseString = EntityUtils.toString(res, "UTF-8");
 			    System.out.println(name() + "::solveLongTripRequests, responseString = " + responseString);
 			    SharedLongTripSolution sts= gson.fromJson(responseString, SharedLongTripSolution.class);
+			    
+			    model.put("sharedLongTripSolution", sts);
+			    
 			    System.out.println(sts);
 			}catch(Exception ex){
 				ex.printStackTrace();

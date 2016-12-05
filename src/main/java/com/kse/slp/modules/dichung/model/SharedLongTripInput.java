@@ -1,6 +1,6 @@
 package com.kse.slp.modules.dichung.model;
 
-import com.kse.ezRoutingAPI.dichung.model.SharedTaxiRequest;
+
 
 public class SharedLongTripInput {
 	private SharedLongTripRequest[] requests;
