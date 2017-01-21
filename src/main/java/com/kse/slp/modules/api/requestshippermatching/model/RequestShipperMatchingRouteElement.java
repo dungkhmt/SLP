@@ -2,12 +2,10 @@ package com.kse.slp.modules.api.requestshippermatching.model;
 
 public class RequestShipperMatchingRouteElement {
 	private String code;
+	private String latlng;
 	private String action;//PICKUP or DELIVERY
-	@Override
-	public String toString() {
-		return "RequestShipperMatchingRouteElement [code=" + code + ", action="
-				+ action + "]";
-	}
+	
+
 	public String getCode() {
 		return code;
 	}
@@ -20,10 +18,22 @@ public class RequestShipperMatchingRouteElement {
 	public void setAction(String action) {
 		this.action = action;
 	}
-	public RequestShipperMatchingRouteElement(String code, String action) {
+	public String getLatlng() {
+		return latlng;
+	}
+	public void setLatlng(String latlng) {
+		this.latlng = latlng;
+	}
+	public RequestShipperMatchingRouteElement(String code, String latlng,
+			String action) {
 		super();
 		this.code = code;
+		this.latlng = latlng;
 		this.action = action;
 	}
-	
+	@Override
+	public String toString() {
+		return "RequestShipperMatchingRouteElement [code=" + code + ", latlng="
+				+ latlng + ", action=" + action + "]";
+	}
 }

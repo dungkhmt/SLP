@@ -77,7 +77,7 @@ public class RequestShipperMatchingController extends BaseWeb {
 			    System.out.println(name() + "::solveLongTripRequests, responseString = " + responseString);
 			    RequestShipperMatchingSolution sts= gson.fromJson(responseString, RequestShipperMatchingSolution.class);
 			    
-			    model.put("sharedLongTripSolution", sts);
+			    model.put("sol", responseString);
 			    
 			    System.out.println(sts);
 			}catch(Exception ex){
@@ -87,7 +87,7 @@ public class RequestShipperMatchingController extends BaseWeb {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		return "";
+		return "requestshippermatching.viewsolutionshippermatching";
 	}
 	String name(){
 		return "RequestShipperMatchingController::";
