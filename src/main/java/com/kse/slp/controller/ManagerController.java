@@ -21,5 +21,4 @@ public class ManagerController {
 		log.info(u.getUsername());
 		return "manage.home";
 	}
-
 }
