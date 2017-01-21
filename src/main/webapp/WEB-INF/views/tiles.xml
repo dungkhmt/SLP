@@ -25,6 +25,10 @@
     	<put-attribute name="header" value="/WEB-INF/views/layout/layout5/header.jsp" />
     	<put-attribute name="footer" value="/WEB-INF/views/layout/layout5/footer.jsp" />            
     </definition>
+    <definition name="layout6" template="/WEB-INF/views/layout/layout6/base.jsp">           
+    	<put-attribute name="header" value="/WEB-INF/views/layout/layout6/header.jsp" />
+    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout6/footer.jsp" />            
+    </definition>
     <!-- Error -->
     <definition name="layout.errorBase" template="/WEB-INF/views/error/errorBase.jsp"></definition>
     <definition name="error.notFound404" extends="layout.errorBase">
@@ -180,9 +184,6 @@
     	<put-attribute name="content" value="/WEB-INF/views/usermanager/add.jsp" />                
     </definition> 
     
-    
-    
-    
     <!-- Map Street Manipulation -->
     <definition name="mapstreetmanipulation.home" extends="layout5">
     	<put-attribute name="title" value="Chức năng quản lý bản đồ" />
@@ -216,5 +217,9 @@
     	<put-attribute name="title" value="ve do thi"/>
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/demoChart.jsp"></put-attribute>
     </definition>
-    
+    <!-- Request Shipper Matching -->
+    <definition name="requestshippermatching.home" extends="layout6">
+    	<put-attribute name="title" value="View request shipper matching" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/requestshippermatchinghome.jsp" />                
+    </definition>
 </tiles-definitions>

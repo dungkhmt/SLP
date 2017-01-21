@@ -120,6 +120,19 @@ body{
 		     		<!-- /.card -->
 		     	</a>
 		     </div>   
+		     
+		     <div class="col-sm-4">
+		    	<a href="<c:url value = "/"/>">
+		     		<div class="card">
+		     			<div class="card-block">
+		     				<h4 class="card-title"><b>Request Matching</b></h4>
+		     			</div>
+		     			<!-- /.card-block -->
+		     			<img class="card-img"  style="height:200px;width:348px" src="<c:url value="/assets/img/home/slp_map.png" />"/>
+		     		</div>
+		     		<!-- /.card -->
+		     	</a>
+		     </div>   
 		     <!-- /.col-sm-6(/mapstreetmanipulation) -->
 		     
 	     	<div class="col-sm-4">
