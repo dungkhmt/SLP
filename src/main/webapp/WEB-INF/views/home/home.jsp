@@ -122,7 +122,7 @@ body{
 		     </div>   
 		     
 		     <div class="col-sm-4">
-		    	<a href="<c:url value = "/"/>">
+		    	<a href="<c:url value = "/requestshippermatching"/>">
 		     		<div class="card">
 		     			<div class="card-block">
 		     				<h4 class="card-title"><b>Request Matching</b></h4>

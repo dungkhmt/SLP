@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
 	<div class="navbar-header">
-		<a href="<c:url value="/"/>"><span class="navbar-brand">Quản lý bản đồ</span></a>
+		<a href="<c:url value="/"/>"><span class="navbar-brand">Request Shipper Matching</span></a>
 	</div>
 	
 	<ul class="nav navbar-top-links navbar-right">
@@ -21,7 +21,7 @@
 	<div class="navbar-default sidebar" id="sidebar" role="navigation">
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
-				<li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/create-road"/>">View request matching</a></li>
+				<li><a href="<c:url value="${baseUrl}/requestshippermatching//upload-shipper-matching-request"/>">View request matching</a></li>
 				<%-- <li><a href="<c:url value="${baseUrl}/mapstreetmanipulation/directionhome" />">Upload file</a></li> --%>
 			</ul>
 		</div>

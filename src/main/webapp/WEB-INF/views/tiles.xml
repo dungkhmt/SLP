@@ -222,4 +222,8 @@
     	<put-attribute name="title" value="View request shipper matching" />
     	<put-attribute name="content" value="/WEB-INF/views/home/requestshippermatchinghome.jsp" />                
     </definition>
+    <definition name="requestshippermatching.uploadshippermatchingrequest" extends="layout6">
+    	<put-attribute name="title" value="Upload shipper matching request" />
+    	<put-attribute name="content" value="/WEB-INF/views/requestshippermatching/uploadrequestshippermatching.jsp" />                
+    </definition>
 </tiles-definitions>
