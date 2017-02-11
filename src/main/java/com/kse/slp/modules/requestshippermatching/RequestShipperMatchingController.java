@@ -66,7 +66,7 @@ public class RequestShipperMatchingController extends BaseWeb {
 			try {
 			    //HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/shared-taxi-plan-dichung");
 				//HttpPost request = new HttpPost("http://192.168.76.15:8080/ezRoutingAPI/shared-taxi-plan-dichung");
-				HttpPost request = new HttpPost("http://10.11.220.1:8080/ezRoutingAPI/request-shipper-matching");
+				HttpPost request = new HttpPost("http://localhost:8088/ezRoutingAPI/request-shipper-matching");
 			    StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 			    request.addHeader("content-type", "application/json");
 			    request.setEntity(params);
