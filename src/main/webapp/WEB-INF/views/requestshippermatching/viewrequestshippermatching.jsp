@@ -33,6 +33,10 @@
 							<thead>
 								<tr>
 									<th>Mã</th>
+									<th>Địa điểm đón</th>
+									<th>Địa điểm trả</th>
+									<th>Khoảng cách đến điểm tiếp theo</th>
+									
 								</tr>
 							</thead>	
 							<tbody>
@@ -173,9 +177,15 @@ function loadTable(data){
 		indexRowTable[i]=count;
 		for(var j=0;j<list.length;j++){
 			str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
-			str+="<td>"+list[j].code+"</td>"
-			
-			
+			str+="<td>"+list[j].code+"</td>";
+			if(list[j].action=="PICKUP") {
+				str+="<td>"+list[j].address+"</td>";
+				str+="<td>"+"--"+"</td>";
+			} else {
+				str+="<td>"+"--"+"</td>";
+				str+="<td>"+list[j].address+"</td>";
+			}
+			str+="<td>"+list[j].distance2Next+"m   </td>";
 			str+="</tr>"
 			count++;
 		}
