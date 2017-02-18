@@ -21,6 +21,7 @@
 	<div class="navbar-default sidebar" id="sidebar" role="navigation">
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
+				<li><a href="<c:url value="${baseUrl}/outgoingarticles/parcel"/>">Quản lý lô giao hàng</a></li>
 				 <li><a href="<c:url value="${baseUrl}/incomingArticles/list"/>">Nhập hàng</a></li>
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/list"/>">Nhận đơn hàng đơn lẻ</a></li>
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/uploadFile"/>">Nhận đơn hàng qua Excel</a></li>

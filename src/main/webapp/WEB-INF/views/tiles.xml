@@ -43,6 +43,10 @@
     	<put-attribute name="content" value="/WEB-INF/views/home/onlinestorehome.jsp" />                
     </definition> 
   	<!-- outgoing articles -->
+  	<definition name="outgoingarticles.parcel" extends="layout1">
+    	<put-attribute name="title" value="Quản lý lô giao hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/parcel.jsp" />                
+    </definition>
     <definition name="outgoingarticles.addAOrder" extends="layout1">
     	<put-attribute name="title" value="Add an Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/add.jsp" />                
