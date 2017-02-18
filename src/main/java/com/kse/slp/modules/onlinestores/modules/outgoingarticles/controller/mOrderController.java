@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,11 +31,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,8 +58,11 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRout
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.batchOnlineStoreService;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.batchOnlineStore;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderArticlesService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.batchFormAdd;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.StoreBatch;
@@ -110,6 +117,58 @@ public class mOrderController extends BaseWeb{
 	StoreBatchService StoreBatchService;
 	@Autowired
 	StoresService StoresService;
+	@Autowired
+	batchOnlineStoreService batchOnlineStoreService;
+	
+	@RequestMapping(value="/parcel", method = RequestMethod.GET)
+	public String parcel(ModelMap model,HttpSession session){
+		return "outgoingarticles.parcel";
+	}
+	
+	
+	@RequestMapping(value="/parcel/getBatchList")
+	public @ResponseBody List<batchOnlineStore> getBatchList(ModelMap model,HttpServletRequest request, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
+		
+		List<batchOnlineStore> batchOnlineStoreData = batchOnlineStoreService.getList(staffCustomer.getSTFCUS_CustomerCode());
+		
+		return batchOnlineStoreData;
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/parcel/save-batch", method = RequestMethod.POST)
+	public @ResponseBody batchOnlineStore saveBatch(ModelMap model,HttpServletRequest request, HttpSession session, @ModelAttribute("batchFormAdd") batchFormAdd batchForm, BindingResult result){
+		//System.out.print("This is "+orderForm.getOrderAdress());
+		User u=(User) session.getAttribute("currentUser");
+		
+		batchOnlineStore newBatchOnlineStore = new batchOnlineStore(); 
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
+		newBatchOnlineStore.setREQBAT_CustomerCode(staffCustomer.getSTFCUS_CustomerCode());
+		newBatchOnlineStore.setREQBAT_Description(batchForm.getDescription());
+		Date date = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+		newBatchOnlineStore.setREQBAT_Code(dateFormat.format(date) + " " + staffCustomer.getSTFCUS_CustomerCode());
+		int id = batchOnlineStoreService.save(newBatchOnlineStore);
+		newBatchOnlineStore.setREQBAT_ID(id);
+		return newBatchOnlineStore;
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/parcel/edit/{code}", method = RequestMethod.POST)
+	public @ResponseBody void editBatch(ModelMap model,HttpServletRequest request, HttpSession session, @ModelAttribute("batchFormAdd") batchFormAdd batchForm, BindingResult result, @PathVariable("code") int id){
+
+		batchOnlineStoreService.edit(id, batchForm.getDescription());
+		
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/parcel/delete", method = RequestMethod.POST)
+	public @ResponseBody void deleteBatch(ModelMap model,HttpServletRequest request, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		batchOnlineStoreService.delete(Integer.parseInt(request.getParameter("id")));
+	}
 	
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
 	public String addAOrder(ModelMap model, HttpSession session){
