@@ -22,7 +22,11 @@
 	</div>
 	<div id="map" style="height:100%">
     </div>
-  
+    <div class="row">
+  	<div class="col-sm-1">
+					<button class="btn btn-primary" onclick="loadMap()">View Routes</button>
+	</div>
+	</div>
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
@@ -36,7 +40,7 @@
 									<th>Địa điểm đón</th>
 									<th>Địa điểm trả</th>
 									<th>Khoảng cách đến điểm tiếp theo</th>
-									
+									<th>Check</th>
 								</tr>
 							</thead>	
 							<tbody>
@@ -59,19 +63,14 @@
 var map;
 var checkedList=[];
 var directionsService;
-
+var table;
 var data;
 var pathList=[];// danh sach cac poliline
 var markerList=[]; // danh sach cac marker
 var indexRowTable=[0];
 var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"]; // mang init mau
 var serviceDistance;
-$(document).ready(function(){
-	var table = $('#table-pDL').DataTable({
-		
-	});
-	// 10/9/2016 not view a table
-});
+
 
 
 function viewRoute(){
@@ -154,10 +153,12 @@ function viewRoute(){
 			  });
 }*/
 function loadTable(data){
-	console.log("data: "+data);
-	console.log("here");
+	table = $("#table-pDL").DataTable({
+		"bSort" : false
+	});
+	//console.log("data: "+data);
 	var data=data["routes"];
-	console.log(data);
+	//console.log(table);
 	$("table#table-pDL tbody").html("");
 	gray="#F0F0F0";
 	white="#FFFFFF";
@@ -166,6 +167,7 @@ function loadTable(data){
 	str=null;
 	count=0;
 	indexRowTable[0]=count;
+	
 	for(var i=0;i<data.length;i++){
 		//console.log("i data[i].rddc_Group" +data[i].rddc_Group); 
 		
@@ -175,28 +177,56 @@ function loadTable(data){
 		var totalDistance=0;
 		var list=data[i].route;
 		indexRowTable[i]=count;
+		var pickupCount=0;
 		for(var j=0;j<list.length;j++){
 			totalDistance+=list[j].distance2Next;
-			str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
-			str+="<td>"+list[j].code+"</td>";
+			//str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
+			//str+="<td>"+list[j].code+"</td>";
+			
 			if(list[j].action=="PICKUP") {
-				str+="<td>"+list[j].address+"</td>";
-				str+="<td>"+"--"+"</td>";
+				pickupCount++;
+				pickupAddress=list[j].address;
+				deliveryAddress="--";
 			} else {
-				str+="<td>"+"--"+"</td>";
-				str+="<td>"+list[j].address+"</td>";
+				pickupAddress="--";
+				deliveryAddress=list[j].address;
 			}
+			/*
 			str+="<td>"+list[j].distance2Next+"m   </td>";
-			str+="</tr>"
+			str+="</tr>"*/
 			count++;
+			if(j==0){
+				var rowNode = table.row.add([
+			         					list[j].code,
+			         					pickupAddress,
+			         				    deliveryAddress,
+			         				   list[j].distance2Next,
+			         				    "<input type='checkbox' onchange='updateCheckList("+i+", this)'>"
+			         				]).draw().node();
+				$(rowNode).css('background-color',color[idcolor]);
+			} else {
+					var rowNode = table.row.add([
+					         					list[j].code,
+					         					pickupAddress,
+					         				    deliveryAddress,
+					         				   list[j].distance2Next,
+					         				   ""
+					         				]).draw().node();
+					$(rowNode).css('background-color',color[idcolor]);
+			}
+			
 		}
-		str+="<tr"+" style='background-color:"+"gray"+"' "+">";
-		str+="<td colspan='3'>"+"Total :" +"</td>";
-		str+="<td >"+totalDistance.toFixed(3) +"m  </td>";
-		str+="</tr>"
+		var rowNode = table.row.add([
+		         					"",
+		         					"Tổng số request",
+		         					pickupCount,
+		           				    "Tổng khoảng cách:"+totalDistance,
+			         				""
+			         				]).draw().node();
+		$(rowNode).css('background-color','gray');
 	}
-	$("table#table-pDL tbody").append(str);
-
+	//$("table#table-pDL tbody").append(str);
+	
 }
 function randomColor( len){
 	/*	p1=Math.floor((Math.random() * 85));
@@ -214,15 +244,39 @@ function randomColor( len){
 				i++;
 			}
 		}
-		console.log(colorArr);
+		//console.log(colorArr);
 		var colorThis=[];
 		for(i=0;i<len;i++){
 			colorThis.push(colorInit[colorArr[i]]);
 		}
 		return colorThis;
 	}
-function viewMap(data){
-	var data=data["routes"];
+	
+function updateCheckList(t,z){
+	if(checkedList[t]==1) checkedList[t]=0;
+	else checkedList[t]=1;
+	console.log("checkList:  "+checkedList);
+}
+function loadMap(){
+	var data2=data["routes"];
+	for(var i=0;i<data2.length;i++)
+		if(checkedList[i]==1){
+			var list= data2[i].route;
+			for(var j=0;j<list.length;j++){
+				list[j].marker.setMap(null);
+			}
+			data2[i].poliline.setMap(null);
+		} else {
+			var list= data2[i].route;
+			for(var j=0;j<list.length;j++){
+				list[j].marker.setMap(map);
+			}
+			data2[i].poliline.setMap(map);
+		}
+}
+function viewMap(){
+	
+	var data2=data["routes"];
 	console.log("viewMap");
 	var route;
 	var lineSymbol = {
@@ -230,15 +284,12 @@ function viewMap(data){
 			strokeOpacity: 2,
 			scale: 1.5
 		}
-	
 	var xd=false;
-	var colorLine=randomColor(data.length);
-	console.log(colorLine);
-	for(var i=0;i<data.length;i++){
-		console.log(i);
+	var colorLine=randomColor(data2.length);
+	for(var i=0;i<data2.length;i++)
+		if(checkedList[i]==0){
 		//console.log(JSON.stringify(response[i]));
-		var list= data[i].route;
-		
+		var list= data2[i].route;
 		route = new google.maps.Polyline({
 			strokeColor: colorLine[i],
 		    strokeOpacity: 1.0,
@@ -280,9 +331,7 @@ function viewMap(data){
 				label:null,
 				icon: baseUrl+"/assets/icon/"+listicon[icon],
 				path: pathList.indexOf(route)
-				
 			});
-			console.log(marker);
 			/*marker.addListener('click', function() {
 			    this.infowindow.open(map, this);
 			});*/
@@ -291,9 +340,8 @@ function viewMap(data){
 			markerList.push(marker);
 			route.getPath().push(point);
 			route.setMap(map);
+			data2[i].poliline=route;
 		}		
-		
-		
 	}
 	
 }
@@ -305,10 +353,12 @@ function initMap() {
         center: {lat: 21.03, lng: 105.8},
         zoom: 14
     });
-    var data=JSON.parse('${sol}');
-    //console.log(data);
+    data=JSON.parse('${sol}');
+    for(var t=0;t<data.routes.length;t++)
+    	checkedList[t]=0;
+    console.log(data);
     loadTable(data);
-    viewMap(data);
+    viewMap();
     //console.log(data);
     
 	/*console.log("start");
