@@ -108,10 +108,12 @@
     	<put-attribute name="title" value="Create pickup delivery route manual"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoutePickupDelivery.jsp"/>
     </definition>
+    
      <definition name="ship.getRoutes" extends="layout1">
     	<put-attribute name="title" value="View routes this shipper"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/viewRouteShipper.jsp"/>
     </definition>
+    
     <!-- Container Delivery Modules -->
     <definition name="containerdelivery.home" extends="layout2">
     	<put-attribute name="title" value="Chức năng quản lý chuyển hàng" />
