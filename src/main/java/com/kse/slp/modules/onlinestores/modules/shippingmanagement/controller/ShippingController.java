@@ -236,6 +236,7 @@ public class ShippingController extends BaseWeb{
 	
 	@RequestMapping(value="/getRoutes")
 	public String loadRouteShiper(ModelMap map,HttpSession session){
+		System.out.println(name()+"getRoutes");
 		User user  =(User) session.getAttribute("currentUser");
 		if(user==null) return null;
 		mShippers shipper= mShippersService.loadShiperByUserName(user.getUsername());

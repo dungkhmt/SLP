@@ -33,6 +33,10 @@
 							<thead>
 								<tr>
 									<th>Mã</th>
+									<th>Địa điểm đón</th>
+									<th>Địa điểm trả</th>
+									<th>Khoảng cách đến điểm tiếp theo</th>
+									
 								</tr>
 							</thead>	
 							<tbody>
@@ -168,27 +172,54 @@ function loadTable(data){
 		idcolor=(idcolor+1) % color.length;
 		//console.log("id"+idcolor);
 			//console.log("length "+ color.length+" "+idcolor % color.length);
-		
+		var totalDistance=0;
 		var list=data[i].route;
 		indexRowTable[i]=count;
 		for(var j=0;j<list.length;j++){
+			totalDistance+=list[j].distance2Next;
 			str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
-			str+="<td>"+list[j].code+"</td>"
-			
-			
+			str+="<td>"+list[j].code+"</td>";
+			if(list[j].action=="PICKUP") {
+				str+="<td>"+list[j].address+"</td>";
+				str+="<td>"+"--"+"</td>";
+			} else {
+				str+="<td>"+"--"+"</td>";
+				str+="<td>"+list[j].address+"</td>";
+			}
+			str+="<td>"+list[j].distance2Next+"m   </td>";
 			str+="</tr>"
 			count++;
 		}
+		str+="<tr"+" style='background-color:"+"gray"+"' "+">";
+		str+="<td colspan='3'>"+"Total :" +"</td>";
+		str+="<td >"+totalDistance.toFixed(3) +"m  </td>";
+		str+="</tr>"
 	}
 	$("table#table-pDL tbody").append(str);
 
 }
-function randomColor(){
+function randomColor( len){
 	/*	p1=Math.floor((Math.random() * 85));
 		p2=Math.floor((Math.random() * 255));
 		p3=Math.floor((Math.random() * 255));
 		return "rgb("+p1+","+p2+","+p3+ ")";*/
-		return colorInit[Math.floor((Math.random() * colorInit.length))];
+		var colorArr=[];
+		for(i=0;i<len;){
+			var ii=Math.floor((Math.random() * colorInit.length));
+			var xd=false;
+			for(j=0;j<colorArr.length;j++)
+				if(colorArr[j]==ii) xd=true;
+			if(xd==false){
+				colorArr.push(ii);
+				i++;
+			}
+		}
+		console.log(colorArr);
+		var colorThis=[];
+		for(i=0;i<len;i++){
+			colorThis.push(colorInit[colorArr[i]]);
+		}
+		return colorThis;
 	}
 function viewMap(data){
 	var data=data["routes"];
@@ -201,13 +232,15 @@ function viewMap(data){
 		}
 	
 	var xd=false;
+	var colorLine=randomColor(data.length);
+	console.log(colorLine);
 	for(var i=0;i<data.length;i++){
 		console.log(i);
 		//console.log(JSON.stringify(response[i]));
 		var list= data[i].route;
 		
 		route = new google.maps.Polyline({
-			strokeColor: randomColor(),
+			strokeColor: colorLine[i],
 		    strokeOpacity: 1.0,
 		    strokeWeight: 3,
 		    icons: [{
@@ -270,7 +303,7 @@ function initMap() {
     var mapDiv = document.getElementById('map');
     map = new google.maps.Map(mapDiv, {
         center: {lat: 21.03, lng: 105.8},
-        zoom: 8
+        zoom: 14
     });
     var data=JSON.parse('${sol}');
     //console.log(data);
