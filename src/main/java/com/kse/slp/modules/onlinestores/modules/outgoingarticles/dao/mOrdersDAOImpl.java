@@ -30,6 +30,7 @@ import org.springframework.stereotype.Repository;
 
 
 
+
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -318,18 +319,18 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 	}
 	
 	@Override
-	public List<sOrder> staticsOrders(String from, String to, String type, String status) {
+	public List<sOrder> staticsOrders(String from, String to, String type, String status, String cus_Code) {
 		Transaction tx = null;
 		try {
 			tx = getSession().beginTransaction();
 			String sQuery = "";
 			if(type.equals("day")) {
-				sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y')";
+				sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y')";
 			} else {
 				if(type.equals("month")) {
-					sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%m-%Y\') date, SUM(O_Price) total FROM slp.tblorders WHERE O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%m-%Y\')";
+					sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%m-%Y\') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%m-%Y\')";
 				} else {
-					sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%Y')";
+					sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%Y')";
 				}
 			}
 			SQLQuery query = getSession().createSQLQuery(sQuery);
@@ -337,6 +338,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			query.setParameter("status", status);
 			query.setParameter("from", from);
 			query.setParameter("to", to);
+			query.setParameter("C_Code", "%" + cus_Code + "%");
 			List data = query.list();
 			List<sOrder> lstStaticsOrder = new ArrayList<sOrder>();
 			for(int i=0; i<data.size(); i++){

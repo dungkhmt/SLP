@@ -104,8 +104,8 @@ public class mOrdersServiceImpl implements mOrdersService{
 	}
 	
 	@Override
-	public List<sOrder> getstaticsOrders(String from, String to, String type, String status) {
-		return orderDAO.staticsOrders(from, to, type, status);
+	public List<sOrder> getstaticsOrders(String from, String to, String type, String status, String cus_Code) {
+		return orderDAO.staticsOrders(from, to, type, status, cus_Code);
 	};
 	
 	

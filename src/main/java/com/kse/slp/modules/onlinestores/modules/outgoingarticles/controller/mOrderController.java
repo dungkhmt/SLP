@@ -183,8 +183,12 @@ public class mOrderController extends BaseWeb{
 		String from = request.getParameter("from");
 		String to = request.getParameter("to");
 		String type = request.getParameter("type");
+		
+		User u=(User) session.getAttribute("currentUser");
+		
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
 
-		return orderService.getstaticsOrders(from, to, type, Constants.ORDER_STATUS_DELIVERIED);
+		return orderService.getstaticsOrders(from, to, type, Constants.ORDER_STATUS_DELIVERIED, staffCustomer.getSTFCUS_CustomerCode());
 		
 	}
 	

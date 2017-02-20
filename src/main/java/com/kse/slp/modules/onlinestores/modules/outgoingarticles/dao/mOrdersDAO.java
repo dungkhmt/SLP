@@ -18,5 +18,5 @@ public interface mOrdersDAO {
 	public List<mOrders> getListOrderByBatchCode(String batchCode);
 	public void updateStatus(String order_Code,String status);
 	public void deleteOrder(String batchCode);
-	public List<sOrder> staticsOrders(String from, String to, String type, String status);
+	public List<sOrder> staticsOrders(String from, String to, String type, String status, String cus_Code);
 }

@@ -15,7 +15,7 @@ public interface mOrdersService {
 	public List<String> getListDueDate();
 	public List<mOrders> getListOrderByDueDate(String DueDate);
 	public List<mOrders> getListOrderByBatchCode(String batchCode);
-	public List<sOrder> getstaticsOrders(String from, String to, String type, String status);
+	public List<sOrder> getstaticsOrders(String from, String to, String type, String status, String cus_Code);
 	public void updateStatus(String order_Code, String status);
 	public void deleteOrder(String batchCode);
 	public void updateAnOrder(mOrders order);
