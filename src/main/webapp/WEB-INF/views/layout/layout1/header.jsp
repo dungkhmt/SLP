@@ -29,6 +29,7 @@
 				 <li><a href="<c:url value="${baseUrl}/ship/getRoutes"/>">Xem Route</a></li>
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/createAutoRoute"/>">Lập kế hoạch vận chuyển</a></li>
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/viewAutoRoute"/>">Xem kế hoạch vận chuyển</a></li>
+				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/commoditystatistics"/>">Thống kê doanh số</a></li>
 			</ul>
 		</div>
 	</div>

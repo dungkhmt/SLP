@@ -3,6 +3,7 @@ package com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao;
 import java.util.List;
 
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 
 public interface mOrdersDAO {
@@ -17,4 +18,5 @@ public interface mOrdersDAO {
 	public List<mOrders> getListOrderByBatchCode(String batchCode);
 	public void updateStatus(String order_Code,String status);
 	public void deleteOrder(String batchCode);
+	public List<sOrder> staticsOrders(String from, String to, String type, String status);
 }

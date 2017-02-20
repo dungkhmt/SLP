@@ -52,12 +52,14 @@ import com.kse.slp.modules.api.deliverygoods.model.Shipper;
 import com.kse.slp.modules.api.deliverygoods.model.Store;
 import com.kse.slp.modules.containerdelivery.model.RequestBatchOnlineStore;
 import com.kse.slp.modules.containerdelivery.service.mRequestBatchOnlineStoreService;
+import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.model.mArticlesCategory;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncomingArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteJSONResponse;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.batchOnlineStoreService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.batchOnlineStore;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderArticlesService;
@@ -168,6 +170,22 @@ public class mOrderController extends BaseWeb{
 	public @ResponseBody void deleteBatch(ModelMap model,HttpServletRequest request, HttpSession session){
 		User u=(User) session.getAttribute("currentUser");
 		batchOnlineStoreService.delete(Integer.parseInt(request.getParameter("id")));
+	}
+	
+	@RequestMapping(value="/commoditystatistics", method = RequestMethod.GET)
+	public String commodityStatistics(ModelMap model,HttpSession session){
+		return "outgoingarticles.commoditystatistics";
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/commoditystatistics/datadeliveried", method = RequestMethod.GET)
+	public @ResponseBody List<sOrder> commodityStatisticsData(ModelMap model,HttpServletRequest request, HttpSession session){
+		String from = request.getParameter("from");
+		String to = request.getParameter("to");
+		String type = request.getParameter("type");
+
+		return orderService.getstaticsOrders(from, to, type, Constants.ORDER_STATUS_DELIVERIED);
+		
 	}
 	
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
