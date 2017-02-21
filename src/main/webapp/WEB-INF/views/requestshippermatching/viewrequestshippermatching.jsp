@@ -177,7 +177,7 @@ function loadTable(data){
 		var totalDistance=0;
 		var list=data[i].route;
 		indexRowTable[i]=count;
-		var pickupCount=0;
+		var pickupCount=-1;
 		for(var j=0;j<list.length;j++){
 			totalDistance+=list[j].distance2Next;
 			//str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
@@ -201,7 +201,7 @@ function loadTable(data){
 			         					pickupAddress,
 			         				    deliveryAddress,
 			         				   list[j].distance2Next,
-			         				    "<input type='checkbox' onchange='updateCheckList("+i+", this)'>"
+			         				    "<input type='checkbox' onchange='updateCheckList("+i+", this)' checked>"
 			         				]).draw().node();
 				$(rowNode).css('background-color',color[idcolor]);
 			} else {
@@ -260,7 +260,7 @@ function updateCheckList(t,z){
 function loadMap(){
 	var data2=data["routes"];
 	for(var i=0;i<data2.length;i++)
-		if(checkedList[i]==1){
+		if(checkedList[i]==0){
 			var list= data2[i].route;
 			for(var j=0;j<list.length;j++){
 				list[j].marker.setMap(null);
@@ -287,7 +287,7 @@ function viewMap(){
 	var xd=false;
 	var colorLine=randomColor(data2.length);
 	for(var i=0;i<data2.length;i++)
-		if(checkedList[i]==0){
+		if(checkedList[i]==1){
 		//console.log(JSON.stringify(response[i]));
 		var list= data2[i].route;
 		route = new google.maps.Polyline({
@@ -355,7 +355,7 @@ function initMap() {
     });
     data=JSON.parse('${sol}');
     for(var t=0;t<data.routes.length;t++)
-    	checkedList[t]=0;
+    	checkedList[t]=1;
     console.log(data);
     loadTable(data);
     viewMap();
