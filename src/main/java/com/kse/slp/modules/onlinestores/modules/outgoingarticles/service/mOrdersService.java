@@ -3,6 +3,7 @@ package com.kse.slp.modules.onlinestores.modules.outgoingarticles.service;
 import java.util.List;
 
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 
 public interface mOrdersService {
@@ -14,6 +15,7 @@ public interface mOrdersService {
 	public List<String> getListDueDate();
 	public List<mOrders> getListOrderByDueDate(String DueDate);
 	public List<mOrders> getListOrderByBatchCode(String batchCode);
+	public List<sOrder> getstaticsOrders(String from, String to, String type, String status, String cus_Code);
 	public void updateStatus(String order_Code, String status);
 	public void deleteOrder(String batchCode);
 	public void updateAnOrder(mOrders order);

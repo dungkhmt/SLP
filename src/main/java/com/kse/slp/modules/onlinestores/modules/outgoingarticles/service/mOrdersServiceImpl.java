@@ -10,6 +10,7 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrderArtic
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrdersDAO;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.utilities.CodeGenerationUtility;
 
@@ -101,6 +102,13 @@ public class mOrdersServiceImpl implements mOrdersService{
 		// TODO Auto-generated method stub
 		return orderDAO.getListOrderByDueDate(DueDate);
 	}
+	
+	@Override
+	public List<sOrder> getstaticsOrders(String from, String to, String type, String status, String cus_Code) {
+		return orderDAO.staticsOrders(from, to, type, status, cus_Code);
+	};
+	
+	
 	@Override
 	public void updateStatus(String order_Code, String status) {
 		// TODO Auto-generated method stub
