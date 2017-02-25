@@ -40,7 +40,7 @@
 									<th>Địa điểm đón</th>
 									<th>Địa điểm trả</th>
 									<th>Khoảng cách đến điểm tiếp theo</th>
-									<th>Check</th>
+									<th>Check <br> <input type='checkbox' id="bozz" onchange='checkedAll()' checked> </th>
 								</tr>
 							</thead>	
 							<tbody>
@@ -71,7 +71,18 @@ var indexRowTable=[0];
 var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"]; // mang init mau
 var serviceDistance;
 
-
+function checkedAll(){
+	if($('#bozz').is(':checked')) {
+		for(var i=0;i<checkedList.length;i++ )
+			checkedList[i]=1;
+		$('#client').prop('checked', true);
+		console.log('here');
+	} else {
+		for(var i=0;i<checkedList.length;i++ )
+			checkedList[i]=0;
+		$('#client').prop('checked', false);
+	}
+}
 
 function viewRoute(){
 	for(var i=0;i<pathList.length;i++)
@@ -88,70 +99,7 @@ function viewRoute(){
 	}
 		
 }
-/*function getDistanceGoogleMap(p1,p2,indexOld,index){
-	serviceDistance.getDistanceMatrix(
-			  {
-			    origins: [p1],
-			    destinations: [p2],
-			    travelMode: 'DRIVING',
-			    unitSystem: google.maps.UnitSystem.METRIC,
-			    avoidHighways: false,
-			    avoidTolls: false,
-			  }, function(response,status){
-				  if(status!=='OK'){
-					  alert("Fail!");
-					  return null;
-				  }else{
-					  distanceMatrix[indexOld][index]={
-							  duration: response.rows[0].elements[0].duration.value,
-							  distance: response.rows[0].elements[0].distance.value
-					  } 
-					  resCount++;
-				  }
-			  });
-}*/
 
-/*function pushArriveTime2Table(listDuration,listType,startId,startTime){
-	var dateTime= moment(startTime,"YYYY-MM-DD HH:mm:ss");
-	for(var i=0;i<listDuration.length;i++){
-		var cellsOfShipper=document.getElementById("table-pDL").rows[startId+i+1].cells;
-		dateTime=dateTime.add(listDuration[i],"seconds");
-		var strdate=dateTime.toObject();
-		//console.log(type);
-		if(listType[i]=="PICKUP")
-		cellsOfShipper[3].innerHTML=strdate.years+"-"+strdate.months+"-"+strdate.date+" "+strdate.hours+":"+strdate.minutes+":"+strdate.seconds;
-		else 
-			cellsOfShipper[6].innerHTML=strdate.years+"-"+strdate.months+"-"+strdate.date+" "+strdate.hours+":"+strdate.minutes+":"+strdate.seconds;
-		//cellsOfShipper[3].innerHTML=moment.duration(distanceTime,'seconds').days() + "ngày "+ moment.duration(distanceTime,'seconds').hours()+" giờ "+moment.duration(distanceTime,'seconds').minutes()+"phút";
-	}
-}*/
-/*function makeArriveTimeRecursive(listPoint,listType,listDuration,startId,id,startTime){
-	serviceDistance.getDistanceMatrix(
-			  {
-			    origins: [listPoint[id-1]],
-			    destinations: [listPoint[id]],
-			    travelMode: 'DRIVING',
-			    unitSystem: google.maps.UnitSystem.METRIC,
-			    avoidHighways: false,
-			    avoidTolls: false,
-			  }, function(response,status){
-				  if(status!=='OK'){
-					  alert("Fail!");
-					  return null;
-				  }else{
-					  
-					duration= response.rows[0].elements[0].duration.value;
-					listDuration[id-1]=duration;
-					if(id>= listPoint.length-1){
-						
-						pushArriveTime2Table(listDuration,listType,startId,startTime);
-					} else {
-						
-						makeArriveTimeRecursive(listPoint,listType,listDuration,startId,id+1,startTime);
-					}
-				  }
-			  });
-}*/
 function loadTable(data){
 	table = $("#table-pDL").DataTable({
 		"bSort" : false
@@ -169,20 +117,13 @@ function loadTable(data){
 	indexRowTable[0]=count;
 	
 	for(var i=0;i<data.length;i++){
-		//console.log("i data[i].rddc_Group" +data[i].rddc_Group); 
-		
 		idcolor=(idcolor+1) % color.length;
-		//console.log("id"+idcolor);
-			//console.log("length "+ color.length+" "+idcolor % color.length);
 		var totalDistance=0;
 		var list=data[i].route;
 		indexRowTable[i]=count;
-		var pickupCount=0;
+		var pickupCount=-1;
 		for(var j=0;j<list.length;j++){
 			totalDistance+=list[j].distance2Next;
-			//str+="<tr"+" style='background-color:"+color[idcolor]+"' "+">";
-			//str+="<td>"+list[j].code+"</td>";
-			
 			if(list[j].action=="PICKUP") {
 				pickupCount++;
 				pickupAddress=list[j].address;
@@ -191,9 +132,6 @@ function loadTable(data){
 				pickupAddress="--";
 				deliveryAddress=list[j].address;
 			}
-			/*
-			str+="<td>"+list[j].distance2Next+"m   </td>";
-			str+="</tr>"*/
 			count++;
 			if(j==0){
 				var rowNode = table.row.add([
@@ -201,7 +139,7 @@ function loadTable(data){
 			         					pickupAddress,
 			         				    deliveryAddress,
 			         				   list[j].distance2Next,
-			         				    "<input type='checkbox' onchange='updateCheckList("+i+", this)'>"
+			         				    "<input type='checkbox' id='client' onchange='updateCheckList("+i+", this)' checked>"
 			         				]).draw().node();
 				$(rowNode).css('background-color',color[idcolor]);
 			} else {
@@ -214,7 +152,6 @@ function loadTable(data){
 					         				]).draw().node();
 					$(rowNode).css('background-color',color[idcolor]);
 			}
-			
 		}
 		var rowNode = table.row.add([
 		         					"",
@@ -225,14 +162,8 @@ function loadTable(data){
 			         				]).draw().node();
 		$(rowNode).css('background-color','gray');
 	}
-	//$("table#table-pDL tbody").append(str);
-	
 }
 function randomColor( len){
-	/*	p1=Math.floor((Math.random() * 85));
-		p2=Math.floor((Math.random() * 255));
-		p3=Math.floor((Math.random() * 255));
-		return "rgb("+p1+","+p2+","+p3+ ")";*/
 		var colorArr=[];
 		for(i=0;i<len;){
 			var ii=Math.floor((Math.random() * colorInit.length));
@@ -244,7 +175,6 @@ function randomColor( len){
 				i++;
 			}
 		}
-		//console.log(colorArr);
 		var colorThis=[];
 		for(i=0;i<len;i++){
 			colorThis.push(colorInit[colorArr[i]]);
@@ -255,12 +185,11 @@ function randomColor( len){
 function updateCheckList(t,z){
 	if(checkedList[t]==1) checkedList[t]=0;
 	else checkedList[t]=1;
-	console.log("checkList:  "+checkedList);
 }
 function loadMap(){
 	var data2=data["routes"];
 	for(var i=0;i<data2.length;i++)
-		if(checkedList[i]==1){
+		if(checkedList[i]==0){
 			var list= data2[i].route;
 			for(var j=0;j<list.length;j++){
 				list[j].marker.setMap(null);
@@ -287,8 +216,7 @@ function viewMap(){
 	var xd=false;
 	var colorLine=randomColor(data2.length);
 	for(var i=0;i<data2.length;i++)
-		if(checkedList[i]==0){
-		//console.log(JSON.stringify(response[i]));
+		if(checkedList[i]==1){
 		var list= data2[i].route;
 		route = new google.maps.Polyline({
 			strokeColor: colorLine[i],
@@ -311,20 +239,14 @@ function viewMap(){
 				var lat = parseFloat(ll[0]);
 				var lng = parseFloat(ll[1]);
 				icon=0;
-				//strcontent="Address: "+ list[j].pickupAdress+"<br>Pickup Date Time: " +list[j].arriveTimePickup+"<br> Expected DateTime Pickup:"+list[j].expectedTimePickup+"<br> Quantity: "+list[j].volumn;
 			} else if(list[j].action=="DELIVERY"){
 				var latlng=list[j].latlng;
 				var ll= latlng.split(", ");
 				var lat = parseFloat(ll[0]);
 				var lng = parseFloat(ll[1]);
 				icon=1;
-				//strcontent= "Address: "+ list[j].deliveryAdress+"<br>Delivery Date Time: " +list[j].arriveTimeDelivery+"<br> Expected DateTime Delivery:"+list[j].expectedTimeDelivery+"<br> Quantity: "+list[j].volumn;
 			}
 			var point = new google.maps.LatLng(lat,lng);
-			/*var infowindow = new google.maps.InfoWindow({
-			    content: strcontent
-			  });
-				*/
 			var marker = new google.maps.Marker({
 				position:point,
 				map: map,
@@ -332,10 +254,6 @@ function viewMap(){
 				icon: baseUrl+"/assets/icon/"+listicon[icon],
 				path: pathList.indexOf(route)
 			});
-			/*marker.addListener('click', function() {
-			    this.infowindow.open(map, this);
-			});*/
-			//marker.setMap(map);
 			list[j].marker=marker;
 			markerList.push(marker);
 			route.getPath().push(point);
@@ -355,40 +273,10 @@ function initMap() {
     });
     data=JSON.parse('${sol}');
     for(var t=0;t<data.routes.length;t++)
-    	checkedList[t]=0;
+    	checkedList[t]=1;
     console.log(data);
     loadTable(data);
     viewMap();
-    //console.log(data);
-    
-	/*console.log("start");
-    for(var  i=0;i< listRM.length;i++){
-    	var listDuration=[];
-    	var listPoint=[];
-    	var listType=[];
-    	for(var j=0;j < listSh.length ; j++)
-    		if(listSh[j].SHP_Code==listRM[i].shipperCode){
-    			listPoint.push({
-        			'lat' : listSh[j].SHP_DepotLat,
-        			'lng' : listSh[j].SHP_DepotLng
-        		});
-    			break;
-    		}
-    	for(var j=listRM[i].startId;j<listRM[i].startId+listRM[i].nStep;j++ ){
-    		listType.push(listRD[j].type);
-    		if(listRD[j].type=="PICKUP"){
-    		listPoint.push({
-    			'lat' : listRD[j].pickupLat,
-    			'lng' : listRD[j].pickupLng
-    		})} else {
-    			listPoint.push({
-        			'lat' : listRD[j].deliveryLat,
-        			'lng' : listRD[j].deliveryLng
-        		}) 
-    		}
-    	}
-    	makeArriveTimeRecursive(listPoint,listType,listDuration,listRM[i].startId,1,listRM[i].timeStartRoute);
-    }*/
   }
 </script>
 <script async defer
