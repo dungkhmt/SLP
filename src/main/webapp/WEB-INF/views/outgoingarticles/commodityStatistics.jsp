@@ -139,7 +139,7 @@
     		
     		$.get(window.location.href + "/datadeliveried?type="+type+"&to="+to+"&from="+from+"&status="+status, function(data) {
     			//var title = "Thống kê doanh số từ ngày " + to + " đến ngày " + from + " theo " + $("#type option:selected").text().toLowerCase() + " trạng thái " + $("#status option:selected").text().toLowerCase();
-    			var title = "Thống kê doanh số từ ngày " + to + " đến ngày " + from;
+    			var title = "Thống kê doanh số từ ngày " + from + " đến ngày " + to;
     			if(data.length>0) {
     				$("#titleChar").text(title);
     				$( "#chart-container" ).remove();
