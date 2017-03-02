@@ -183,12 +183,25 @@ public class mOrderController extends BaseWeb{
 		String from = request.getParameter("from");
 		String to = request.getParameter("to");
 		String type = request.getParameter("type");
+		String status = request.getParameter("status");
+		
+		String stt = "";
+		if(status.equals("ALL")) {
+			stt = "\""+ Constants.ORDER_STATUS_DELIVERIED + "\",\"" + Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED 
+					+ "\",\"" + Constants.ORDER_STATUS_IN_ROUTE + "\",\"" + Constants.ORDER_STATUS_NOT_IN_ROUTE + "\"";
+		} else {
+			if(status.equals("DELIVERIED")) {
+				stt = "\""+ Constants.ORDER_STATUS_DELIVERIED + "\"";
+			} else {
+				stt = "\""+ Constants.ORDER_STATUS_IN_ROUTE + "\",\"" + Constants.ORDER_STATUS_NOT_IN_ROUTE + "\"";
+			}
+		}
 		
 		User u=(User) session.getAttribute("currentUser");
 		
 		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
 
-		return orderService.getstaticsOrders(from, to, type, Constants.ORDER_STATUS_DELIVERIED, staffCustomer.getSTFCUS_CustomerCode());
+		return orderService.getstaticsOrders(from, to, type, stt, staffCustomer.getSTFCUS_CustomerCode());
 		
 	}
 	

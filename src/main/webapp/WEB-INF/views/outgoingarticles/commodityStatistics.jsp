@@ -24,16 +24,36 @@
 	        <div class="modal-body">
 	          <form>
 			    <div class="form-group">
-			      	<label>From </label>
-        			<input type="date" id="fromDate"  class="date"/>
-        			<label>To </label>
-        			<input type="date" id="toDate" class="date">
-        			<label>Type </label>
-        			<select id="type">
-					  <option value="day">Ngày</option>
-					  <option value="month">Tháng</option>
-					  <option value="year">Năm</option>
-					</select>
+		    		<div class="row form-date">
+						<div class="col-lg-6">
+			    			<label>Từ ngày </label>
+		        			<input type="date" id="fromDate"  class="date"/>
+        				</div>
+        				<div class="col-lg-6">
+		        			<label>Đến ngày </label>
+		        			<input type="date" id="toDate" class="date">
+	        			</div>
+		    		</div>
+			      	
+        			<div class="row category">
+        				<div class="col-lg-6">
+	        				<label>Thống kê theo </label>
+		        			<select id="type">
+							  <option value="day">Ngày</option>
+							  <option value="week">Tuần</option>
+							  <option value="month">Tháng</option>
+							  <option value="year">Năm</option>
+							</select>
+						</div>
+						<div class="col-lg-6">
+							<label>Tình trạng</label>
+		        			<select id="status">
+							  <option value="DELIVERIED">Đã giao</option>
+							  <option value="NOT DELIVERY">Chưa giao</option>
+							  <option value="ALL">Tất cả</option>
+							</select>
+						</div>
+        			</div>
 			    </div>
 		    	</form>
 	        </div>
@@ -42,11 +62,11 @@
 	         	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        </div>
 	      </div>
+	  </div>
 	      
 	    </div>
-	  </div>
 		<div class="col-lg-12">
-		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeDate">Thêm</button>
+	          <span class="glyphicon glyphicon-cog" style = "color: Blue; cursor: pointer; font-size: 20px" data-toggle="modal" data-target="#changeDate"></span>
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
@@ -54,12 +74,53 @@
 	<div class="row" id="chart">
 		
 	</div>
+	<div id="titleChar"></div>
 	<!-- /.row -->
 </div>
 <!-- /#page-wrapper -->
 
+<style>
+	.category{
+		margin-top: 10px;
+	}
+	
+	.date, #type, #status{
+		display: in-line;
+		float: right;	
+		width: 130px;
+		height:	40px;
+		padding: 0px;
+		overflow-y: auto;
+		font-size: 14px;
+	}
+
+	::-webkit-inner-spin-button { display: none; }
+	input::-webkit-calendar-picker-indicator {
+	  opacity:0;
+	  cursor: pointer;
+	}
+	
+	input {
+	  position:relative;
+	}
+	
+	input:before {
+	  content: "\f073";
+	  display: inline-block;
+	  font: normal normal normal 14px/1 FontAwesome;
+	  font-size: inherit;
+	  text-rendering: auto;
+	  -webkit-font-smoothing: antialiased;
+	  -moz-osx-font-smoothing: grayscale;
+	  position:absolute;
+	  right:0;
+	  top:50%;
+	  transform:translateY(-50%);
+	}
+</style>
+
 <script>
-    // This is the source data
+    $("#changeDate").modal();
     var dataStatics = {
     	source: [],
     	// These are for once the data has been extracted and split up from
@@ -72,11 +133,15 @@
     	var from = document.getElementById("fromDate").value;
     	var to = document.getElementById("toDate").value;
     	var type = document.getElementById("type").value;
+    	var status = document.getElementById("status").value;
     	if(from !== null & to !== null) {
     		
     		
-    		$.get(window.location.href + "/datadeliveried?type="+type+"&to="+to+"&from="+from, function(data) {
+    		$.get(window.location.href + "/datadeliveried?type="+type+"&to="+to+"&from="+from+"&status="+status, function(data) {
+    			//var title = "Thống kê doanh số từ ngày " + to + " đến ngày " + from + " theo " + $("#type option:selected").text().toLowerCase() + " trạng thái " + $("#status option:selected").text().toLowerCase();
+    			var title = "Thống kê doanh số từ ngày " + to + " đến ngày " + from;
     			if(data.length>0) {
+    				$("#titleChar").text(title);
     				$( "#chart-container" ).remove();
         			// Reverse the data so that the latest figure is on the right
             	    //data.total = RGraph.SVG.arrayReverse(data.total);
@@ -119,7 +184,7 @@
 	            	            yaxisDecimals: 1,
 	            	            labelsAbove: true,
 	            	            labelsAboveDecimals: 1,
-	            	            title: '',
+	            	            title: "",
 	            	            titleSize: 10,
 	            	            titleHalign: 'left',
 	            	            titleX: 50,
