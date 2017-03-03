@@ -32,6 +32,8 @@ import org.springframework.stereotype.Repository;
 
 
 
+
+
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -248,6 +250,13 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 		}
 	}
+	
+	@Override
+	public List<mOrders> getListOrderByCUSCode(String cUSCode) {
+		// TODO 
+		return null;
+	};
+	
 	@Override
 	public void updateStatus(String order_Code,String status) {
 		// TODO Auto-generated method stub
@@ -294,6 +303,29 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 		}
 	}
+	
+	@Override
+	public void updateOrderBatch( String O_Code, String O_BatchCode) {
+		try{
+			begin();
+			String hql = "UPDATE mOrders set O_BatchCode = :O_BatchCode "  + 
+		             "WHERE O_Code = :O_Code";
+			Query query = getSession().createQuery(hql);
+			query.setParameter("O_BatchCode", O_BatchCode);
+			query.setParameter("O_Code", O_Code);
+			int result = query.executeUpdate();
+			System.out.println("Order Rows affected: " + result);
+			commit();
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+	};
+	
 	@Override
 	public void deleteOrder(String batchCode) {
 		// TODO Auto-generated method stub

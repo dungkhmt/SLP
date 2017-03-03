@@ -66,7 +66,7 @@
 	      
 	    </div>
 		<div class="col-lg-12">
-	          <span class="glyphicon glyphicon-cog" style = "color: Blue; cursor: pointer; font-size: 20px" data-toggle="modal" data-target="#changeDate"></span>
+	          <span class="glyphicon glyphicon-cog" style = "color: gray; cursor: pointer; font-size: 20px" data-toggle="modal" data-target="#changeDate"></span>
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>

@@ -43,6 +43,7 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodInput;
 import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodRoute;
@@ -65,6 +66,7 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.batchOnli
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderArticlesService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.batchFormAdd;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mClusteringForm;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.StoreBatch;
@@ -121,6 +123,25 @@ public class mOrderController extends BaseWeb{
 	StoresService StoresService;
 	@Autowired
 	batchOnlineStoreService batchOnlineStoreService;
+	
+	@RequestMapping(value="/clustering", method = RequestMethod.GET)
+	public String clustering(ModelMap model,HttpSession session){
+		List<mOrders> mOrders = orderService.getList();
+		String json = new Gson().toJson(mOrders );
+		model.put("mOrders", json);
+		return "outgoingarticles.clustering";
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/clustering/save", method = RequestMethod.POST)
+	public @ResponseBody void clussteringSave(ModelMap model,HttpServletRequest request, HttpSession session, @ModelAttribute("mClusteringForm") mClusteringForm mClusteringForm, BindingResult result){
+		
+		User u=(User) session.getAttribute("currentUser");
+		
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
+		orderService.updateOrderBatch(mClusteringForm.getO_Code(), mClusteringForm.getO_BatchCode());
+		
+	}
 	
 	@RequestMapping(value="/parcel", method = RequestMethod.GET)
 	public String parcel(ModelMap model,HttpSession session){
