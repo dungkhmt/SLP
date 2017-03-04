@@ -145,11 +145,12 @@ $(document).ready(function(){
 		   			$selectize[0].selectize.setValue(data[indexData[i]].O_BatchCode);
 		   		}
 		    	   $('select.selectized,input.selectized', $wrapper).each(function(index) {
-		    			var local = indexData[index];
+		    			var local = indexData[index + iStart - 1];
 		    		   var update = function(e) {
-		    				if(data[local].O_BatchCode !== $("#selectize_batch"+local).val()) {
+		    				if(data[local].O_BatchCode != $("#selectize_batch" + local)[0].selectize.items[0]) {
 		    					$(".selectize_batch" + local).removeClass("hide");
 		    				} else {
+		    					
 		    					$(".selectize_batch" + local).addClass("hide");
 		    				}
 		    			};
