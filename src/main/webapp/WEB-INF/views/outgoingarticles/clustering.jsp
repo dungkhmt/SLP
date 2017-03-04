@@ -71,6 +71,7 @@
 
 
 <script>
+var table;
 var data = ${mOrders};
 function saveClustering(index) {
 	$.post(window.location.href + "/save",
@@ -88,9 +89,6 @@ function closeClustering(index) {
 	$("#selectize_batch" + index)[0].selectize.setValue(data[index].O_BatchCode);
 	$(".selectize_batch" + index).addClass("hide");
 }
-
-
-
 
 $(document).ready(function(){
 	for(var i = 0; i < data.length; ++i) {
@@ -117,7 +115,6 @@ $(document).ready(function(){
 		console.log(groupSelectize);
 		console.log(batchList);
 		**/
-		
 		table = $('#dataTabels-clustering').DataTable({
 		 	data: data,
 			columns: [
@@ -135,19 +132,20 @@ $(document).ready(function(){
 			             ],
 	       "bSort": false,
 	       "fnInfoCallback": function( oSettings, iStart, iEnd, iMax, iTotal, sPre ) {
+	    	   var indexData = oSettings.aiDisplay;
 		    	   for(var i = iStart - 1; i < iEnd; ++i) {
-		   			var $selectize = $("#selectize_batch"+i).selectize({
+		   			var $selectize = $("#selectize_batch"+indexData[i]).selectize({
 		   				options: batchList,
 		   				maxItems: 1,
 		   				valueField: 'reqbat_Description',
 		   				labelField: 'reqbat_Description',
 		   				searchField: ['reqbat_Description']
 		   			});
-		   			$selectize[0].selectize.setValue(data[i].O_BatchCode);
+		   			$selectize[0].selectize.setValue(data[indexData[i]].O_BatchCode);
 		   		}
 		    	   $('select.selectized,input.selectized').each(function(index) {
 		    			var update = function(e) {
-		    				var local = index + iStart -1;
+		    				var local = indexData[index + iStart -1];
 		    				if(data[local].O_BatchCode !== $("#selectize_batch"+local).val()) {
 		    					$(".selectize_batch" + local).removeClass("hide");
 		    				} else {
@@ -161,6 +159,5 @@ $(document).ready(function(){
 	   });
 		
 	});
-	
 });
 </script>
