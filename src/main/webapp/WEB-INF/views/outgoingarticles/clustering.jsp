@@ -112,9 +112,10 @@ $(document).ready(function(){
 				groupSelectize.push({"date": temp});
 			}
 		}
-		console.log(groupSelectize);
+		console.log(groupSelectize);aza
 		console.log(batchList);
 		**/
+		var $wrapper = $('#page-wrapper');
 		table = $('#dataTabels-clustering').DataTable({
 		 	data: data,
 			columns: [
@@ -143,9 +144,9 @@ $(document).ready(function(){
 		   			});
 		   			$selectize[0].selectize.setValue(data[indexData[i]].O_BatchCode);
 		   		}
-		    	   $('select.selectized,input.selectized').each(function(index) {
-		    			var update = function(e) {
-		    				var local = indexData[index + iStart -1];
+		    	   $('select.selectized,input.selectized', $wrapper).each(function(index) {
+		    			var local = indexData[index];
+		    		   var update = function(e) {
 		    				if(data[local].O_BatchCode !== $("#selectize_batch"+local).val()) {
 		    					$(".selectize_batch" + local).removeClass("hide");
 		    				} else {
