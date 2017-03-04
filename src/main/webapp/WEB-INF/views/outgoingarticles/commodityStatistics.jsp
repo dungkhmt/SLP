@@ -84,12 +84,18 @@
 		margin-top: 10px;
 	}
 	
+	label{
+		padding-left: 30px;
+		padding-top: 10px;
+	}
+	
 	.date, #type, #status{
 		display: in-line;
 		float: right;	
 		width: 130px;
 		height:	40px;
 		padding: 0px;
+		margin-right: 10px
 		overflow-y: auto;
 		font-size: 14px;
 	}
