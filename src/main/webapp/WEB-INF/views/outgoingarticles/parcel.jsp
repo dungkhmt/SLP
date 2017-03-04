@@ -19,6 +19,7 @@
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
+	<button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addNewBatch">Thêm</button>
 	<div class="row">
 		<!-- Modal -->
 	  <div class="modal fade" id="addNewBatch" role="dialog">
@@ -76,7 +77,7 @@
 	  
 	  
 		<div class="col-lg-12">
-		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewBatch">Thêm</button>
+		
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<div class="dataTable_wrapper">

@@ -24,9 +24,7 @@
 			<h1 class="page-header">Danh sách hóa đơn đã nhận</h1>
 		</div>
 		<!-- /.col-lg-12 -->
-	</div>
-	<button type="button" class="btn btn-primary addOutOrder pull-right">Thêm</button>
-		
+	</div>	
 	<!-- /.row -->
 	<div class="row">
 		<div class="col-lg-12">
