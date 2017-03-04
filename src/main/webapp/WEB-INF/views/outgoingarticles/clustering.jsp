@@ -84,13 +84,21 @@ function saveClustering(index) {
 	        });
 }
 
+function closeClustering(index) {
+	$("#selectize_batch" + index)[0].selectize.setValue(data[index].O_BatchCode);
+	$(".selectize_batch" + index).addClass("hide");
+}
+
 
 
 
 $(document).ready(function(){
 	for(var i = 0; i < data.length; ++i) {
 		data[i].O_Time = data[i].O_TimeEarly + "-" + data[i].O_TimeLate;
-		data[i].clustering = '<i class="fa fa-check hide selectize_batch'+i+'" aria-hidden="true" style="color:green; cursor:pointer; font-size: 20px" onClick="saveClustering('+i+')"></i>';
+		data[i].clustering = '<div class="selectize_batch'+i+' hide">'
+			+'<i class="fa fa-check" aria-hidden="true" style="color:green; cursor:pointer; font-size: 20px" onClick="saveClustering('+i+')"></i>'
+			+ '<i class="fa fa-times" style="color:gray; cursor:pointer;font-size: 20px" onClick="closeClustering('+i+')" aria-hidden="true"></i>'
+			+'</div>';
 		data[i].selectize_BatchCode = '<input style="width:250px" id="selectize_batch'+i+'">';
 	}
 	
@@ -110,7 +118,7 @@ $(document).ready(function(){
 		console.log(batchList);
 		**/
 		
-		table = $('#dataTabels-clustering').removeAttr('width').DataTable({
+		table = $('#dataTabels-clustering').DataTable({
 		 	data: data,
 			columns: [
 			    { "data": "O_Code" },
