@@ -5,30 +5,10 @@
 <tiles-definitions>
  
 	<!-- layout -->
-    <definition name="layout1" template="/WEB-INF/views/layout/layout1/base.jsp">           
-    	<put-attribute name="header" value="/WEB-INF/views/layout/layout1/header.jsp" />
-    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout1/footer.jsp" />            
+    <definition name="layout" template="/WEB-INF/views/layout/base.jsp">           
+    	<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
+    	<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />            
     </definition> 
-    <definition name="layout2" template="/WEB-INF/views/layout/layout2/base.jsp">           
-    	<put-attribute name="header" value="/WEB-INF/views/layout/layout2/header.jsp" />
-    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout2/footer.jsp" />            
-    </definition> 
-    <definition name="layout3" template="/WEB-INF/views/layout/layout3/base.jsp">           
-    	<put-attribute name="header" value="/WEB-INF/views/layout/layout3/header.jsp" />
-    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout3/footer.jsp" />            
-    </definition> 
-    <definition name="layout4" template="/WEB-INF/views/layout/layout4/base.jsp">           
-    	<put-attribute name="header" value="/WEB-INF/views/layout/layout4/header.jsp" />
-    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout4/footer.jsp" />            
-    </definition>
-    <definition name="layout5" template="/WEB-INF/views/layout/layout5/base.jsp">           
-    	<put-attribute name="header" value="/WEB-INF/views/layout/layout5/header.jsp" />
-    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout5/footer.jsp" />            
-    </definition>
-    <definition name="layout6" template="/WEB-INF/views/layout/layout6/base.jsp">           
-    	<put-attribute name="header" value="/WEB-INF/views/layout/layout6/header.jsp" />
-    	<put-attribute name="footer" value="/WEB-INF/views/layout/layout6/footer.jsp" />            
-    </definition>
     <!-- Error -->
     <definition name="layout.errorBase" template="/WEB-INF/views/error/errorBase.jsp"></definition>
     <definition name="error.notFound404" extends="layout.errorBase">
@@ -38,36 +18,36 @@
     	<put-attribute name="content" value="/WEB-INF/views/error/500.jsp"/>
     </definition>
     <!-- online Store -->
-    <definition name="onlinestore.home" extends="layout1">
+    <definition name="onlinestore.home" extends="layout">
     	<put-attribute name="title" value="Chức năng quản lý bán hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/home/onlinestorehome.jsp" />                
     </definition> 
   	<!-- outgoing articles -->
-  	<definition name="outgoingarticles.parcel" extends="layout1">
+  	<definition name="outgoingarticles.parcel" extends="layout">
     	<put-attribute name="title" value="Quản lý lô giao hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/parcel.jsp" />                
     </definition>
-    <definition name="outgoingarticles.commoditystatistics" extends="layout1">
+    <definition name="outgoingarticles.commoditystatistics" extends="layout">
     	<put-attribute name="title" value="Thống kê doanh thu" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/commodityStatistics.jsp" />                
     </definition>
-    <definition name="outgoingarticles.addAOrder" extends="layout1">
+    <definition name="outgoingarticles.addAOrder" extends="layout">
     	<put-attribute name="title" value="Add an Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/add.jsp" />                
     </definition>
-    <definition name="outgoingarticles.list" extends="layout1">
+    <definition name="outgoingarticles.list" extends="layout">
     	<put-attribute name="title" value="list Order" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/list.jsp" />                
     </definition>
-    <definition name="outgoingarticles.uploadFile" extends="layout1">
+    <definition name="outgoingarticles.uploadFile" extends="layout">
     	<put-attribute name="title" value="Thêm đơn hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/uploadFileExcel.jsp" />                
     </definition>
-    <definition name="outgoingarticles.createAutoRoute" extends="layout1">
+    <definition name="outgoingarticles.createAutoRoute" extends="layout">
     	<put-attribute name="title" value="Lập tuyến giao hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/createAutoRoute.jsp" />                
     </definition>
-    <definition name="outgoingarticles.viewAutoRoute" extends="layout1">
+    <definition name="outgoingarticles.viewAutoRoute" extends="layout">
     	<put-attribute name="title" value="Lập tuyến giao hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/viewAutoRoute.jsp" />                
     </definition>
@@ -79,18 +59,18 @@
     
     
     <!-- module incomingarticles -->  
-    <definition name="in.addArticles" extends="layout1">
+    <definition name="in.addArticles" extends="layout">
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/addArticles.jsp"/>
     </definition>
     
-    <definition name="in.listIncommingArticles" extends="layout1">
+    <definition name="in.listIncommingArticles" extends="layout">
     	<put-attribute name="title" value="Danh sách hàng nhập"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
     </definition>
 	
 	<!-- trash -->
-	<definition name="trash.outgoingarticles.add" extends="layout1">
+	<definition name="trash.outgoingarticles.add" extends="layout">
     	<put-attribute name="title" value="Nhập hàng"/>
     	<put-attribute name="content" value="/WEB-INF/views/trash/add.jsp"/>
     </definition>
@@ -102,141 +82,146 @@
     <definition name="register" template="/WEB-INF/views/auth/register.jsp">
      
     </definition>
-    <definition name="denied" extends="layout1">
+    <definition name="denied" extends="layout">
     	<put-attribute name="title" value="Access Denied" />
     	<put-attribute name="content" value="/WEB-INF/views/auth/denied.jsp" />                
     </definition>
     
     <!-- Shipping Modules -->
-    <definition name="ship.createRoute" extends="layout1">
+    <definition name="ship.createRoute" extends="layout">
     	<put-attribute name="title" value="Create route manual"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoute.jsp"/>
     </definition>
-    <definition name="ship.createpickupdeliveryroute" extends="layout2">
+    <definition name="ship.createpickupdeliveryroute" extends="layout">
     	<put-attribute name="title" value="Create pickup delivery route manual"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/createRoutePickupDelivery.jsp"/>
     </definition>
     
-     <definition name="ship.getRoutes" extends="layout1">
+     <definition name="ship.getRoutes" extends="layout">
     	<put-attribute name="title" value="View routes this shipper"/>
     	<put-attribute name="content" value="/WEB-INF/views/shipping/viewRouteShipper.jsp"/>
     </definition>
     
     <!-- Container Delivery Modules -->
-    <definition name="containerdelivery.home" extends="layout2">
+    <definition name="containerdelivery.home" extends="layout">
     	<put-attribute name="title" value="Chức năng quản lý chuyển hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/home/containertransportation.jsp" />                
     </definition> 
-    <definition name="containerdelivery.listpickupdeliveryorder" extends="layout2">
+    <definition name="containerdelivery.listpickupdeliveryorder" extends="layout">
     	<put-attribute name="title" value="View list Pickup Delivery Order"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/list.jsp"/>
     </definition>
     
-    <definition name="containerdelivery.addpickupdeliveryordersbyxls" extends="layout2">
+    <definition name="containerdelivery.addpickupdeliveryordersbyxls" extends="layout">
     	<put-attribute name="title" value="add pickup delivery orders by xls"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/addpickupdeliveryordersbyxls.jsp"/>
     </definition>
     
-    <definition name="containerdelivery.addapickupdeliveryorder" extends="layout2">
+    <definition name="containerdelivery.addapickupdeliveryorder" extends="layout">
     	<put-attribute name="title" value="Add a Pickup Delivery Order"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/add.jsp"/>
     </definition>
     
-    <definition name="containerdelivery.viewallroutecontainer" extends="layout2">
+    <definition name="containerdelivery.viewallroutecontainer" extends="layout">
     	<put-attribute name="title" value="View all route container"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/viewallroutecontainer.jsp"/>
     </definition>
     
-    <definition name="containerdelivery.createAutoRoute" extends="layout2">
+    <definition name="containerdelivery.createAutoRoute" extends="layout">
     	<put-attribute name="title" value="Create Auto Route Container"/>
     	<put-attribute name="content" value="/WEB-INF/views/containerdelivery/createautoroutecontainer.jsp"/>
     </definition>
     <!-- di chung modules -->
-    <definition name="dichung.createroute" extends="layout3">
+    <definition name="dichung.createroute" extends="layout">
     	<put-attribute name="title" value="Create route dichung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/createroute.jsp" /> 
     </definition>
-    <definition name="dichung.home" extends="layout3">
+    <definition name="dichung.home" extends="layout">
     	<put-attribute name="title" value="Home dichung"/>
     	<put-attribute name="content" value="/WEB-INF/views/home/dichunghome.jsp" /> 
     </definition>
-    <definition name="dichung.adddichungrequestsbyxls" extends="layout3">
+    <definition name="dichung.adddichungrequestsbyxls" extends="layout">
     	<put-attribute name="title" value="Upload xls dichung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/adddichungrequestsbyxls.jsp" /> 
     </definition>
-    <definition name="dichung.viewroute" extends="layout3">
+    <definition name="dichung.viewroute" extends="layout">
     	<put-attribute name="title" value="View Route Di Chung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/viewRouteDiChung.jsp" /> 
     </definition>
     
-    <definition name="dichung.uploadLongTripRequest" extends="layout3">
+    <definition name="dichung.uploadLongTripRequest" extends="layout">
     	<put-attribute name="title" value="View Route Di Chung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/uploadlongtriprequest.jsp" /> 
     </definition>
     
-    <definition name="dichung.viewLongTripSolution" extends="layout3">
+    <definition name="dichung.viewLongTripSolution" extends="layout">
     	<put-attribute name="title" value="View Route Di Chung"/>
     	<put-attribute name="content" value="/WEB-INF/views/dichung/viewRouteLongTripDiChung.jsp" /> 
     </definition>
     <!-- Manager -->
-    <definition name="manage.home" extends="layout4">
+    <definition name="manage.home" extends="layout">
     	<put-attribute name="title" value="Chức năng quản lý danh mục" />
     	<put-attribute name="content" value="/WEB-INF/views/home/managehome.jsp" />                
     </definition> 
     
-    <definition name="usermanagement.home" extends="layout4">
+    <definition name="usermanagement.home" extends="layout">
     	<put-attribute name="title" value="Chức năng quản lý người sử dụng" />
     	<put-attribute name="content" value="/WEB-INF/views/usermanager/list.jsp" />                
     </definition> 
     
-    <definition name="usermanagement.addUser" extends="layout4">
+    <definition name="usermanagement.addUser" extends="layout">
     	<put-attribute name="title" value="Chức năng quản lý người sử dụng" />
     	<put-attribute name="content" value="/WEB-INF/views/usermanager/add.jsp" />                
     </definition> 
     
+    <definition name="usermanagement.editUserFunction" extends="layout">
+    	<put-attribute name="title" value="Chức năng cấp quyền chức năng cho người sử dụng" />
+    	<put-attribute name="content" value="/WEB-INF/views/usermanager/edit.jsp" />                
+    </definition> 
+    
     <!-- Map Street Manipulation -->
-    <definition name="mapstreetmanipulation.home" extends="layout5">
+    <definition name="mapstreetmanipulation.home" extends="layout">
     	<put-attribute name="title" value="Chức năng quản lý bản đồ" />
     	<put-attribute name="content" value="/WEB-INF/views/home/mapstreetmanipulationhome.jsp" />                
     </definition>
-    <definition name="mapstreetmanipulation.createroad" extends="layout5">
+    <definition name="mapstreetmanipulation.createroad" extends="layout">
     	<put-attribute name="title" value="Chức năng tạo tuyến đường" />
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/CreateRoad.jsp" />                
     </definition> 
-    <definition name="mapstreetmanipulation.editPoint" extends="layout5">
+    <definition name="mapstreetmanipulation.editPoint" extends="layout">
     	<put-attribute name="title" value="Chức năng sửa bản đồ" />
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/editPoint.jsp" />                
     </definition>
-    <definition name="mapstreetmanipulation.viewStreets" extends="layout5">
+    <definition name="mapstreetmanipulation.viewStreets" extends="layout">
     	<put-attribute name="title" value="Chức năng xem các tuyến đường" />
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/viewStreets.jsp" />              
     </definition>
-    <definition name="mapstreetmanipulation.findIntersectionPoints" extends="layout5">
+    <definition name="mapstreetmanipulation.findIntersectionPoints" extends="layout">
     	<put-attribute name="title" value="Chức năng tìm điểm giao cắt"/>
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/findIntersectionPoints.jsp"></put-attribute>
     </definition>
-    <definition name="mapstreetmanipulation.editroadpoints" extends="layout5">
+    <definition name="mapstreetmanipulation.editroadpoints" extends="layout">
     	<put-attribute name="title" value="Chức năng chỉnh sửa điểm nút bản đồ"/>
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/EditRoadPoints.jsp"></put-attribute>
     </definition>
-    <definition name="mapstreetmanipulation.directionhome" extends="layout5">
+    <definition name="mapstreetmanipulation.directionhome" extends="layout">
     	<put-attribute name="title" value="Tìm đường ngắn nhất"/>
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/upload-time-series.jsp"></put-attribute>
     </definition>
-    <definition name="mapstreetmanipulation.demoChart" extends="layout5">
+    <definition name="mapstreetmanipulation.demoChart" extends="layout">
     	<put-attribute name="title" value="ve do thi"/>
     	<put-attribute name="content" value="/WEB-INF/views/mapstreetmanipulation/demoChart.jsp"></put-attribute>
     </definition>
     <!-- Request Shipper Matching -->
-    <definition name="requestshippermatching.home" extends="layout6">
+    <definition name="requestshippermatching.home" extends="layout">
     	<put-attribute name="title" value="View request shipper matching" />
     	<put-attribute name="content" value="/WEB-INF/views/home/requestshippermatchinghome.jsp" />                
     </definition>
-    <definition name="requestshippermatching.uploadshippermatchingrequest" extends="layout6">
+    <definition name="requestshippermatching.uploadshippermatchingrequest" extends="layout">
     	<put-attribute name="title" value="Upload shipper matching request" />
     	<put-attribute name="content" value="/WEB-INF/views/requestshippermatching/uploadrequestshippermatching.jsp" />                
     </definition>
-    <definition name="requestshippermatching.viewsolutionshippermatching" extends="layout6">
+    <definition name="requestshippermatching.viewsolutionshippermatching" extends="layout">
     	<put-attribute name="title" value="View solution shipper matching" />
     	<put-attribute name="content" value="/WEB-INF/views/requestshippermatching/viewrequestshippermatching.jsp" />                
     </definition>
