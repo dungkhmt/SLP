@@ -114,6 +114,10 @@ public class mOrdersServiceImpl implements mOrdersService{
 		// TODO Auto-generated method stub
 		orderDAO.updateStatus(order_Code, status);
 	}
+	@Override
+	public void updateOrderBatch( String O_Code, String O_BatchCode) {
+		orderDAO.updateOrderBatch(O_Code, O_BatchCode);
+	};
 	String name(){
 		return "mOrdersServiceImpl";
 	}
@@ -122,6 +126,12 @@ public class mOrdersServiceImpl implements mOrdersService{
 		// TODO Auto-generated method stub
 		return orderDAO.getListOrderByBatchCode(batchCode);
 	}
+	
+	@Override
+	public List<mOrders> getListOrderByCUSCode(String CUSCode) {
+		return orderDAO.getListOrderByCUSCode(CUSCode);
+	}
+	
 	@Override
 	public void deleteOrder(String batchCode) {
 		// TODO Auto-generated method stub

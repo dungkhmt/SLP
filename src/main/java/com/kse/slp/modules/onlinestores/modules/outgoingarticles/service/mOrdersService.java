@@ -13,10 +13,12 @@ public interface mOrdersService {
 	public void setStatusbyOrderCode(String orderCode,String status);
 	public List<mOrderDetail> getListOrderDetail();
 	public List<String> getListDueDate();
+	public List<mOrders> getListOrderByCUSCode(String CUSCode);
 	public List<mOrders> getListOrderByDueDate(String DueDate);
 	public List<mOrders> getListOrderByBatchCode(String batchCode);
 	public List<sOrder> getstaticsOrders(String from, String to, String type, String status, String cus_Code);
 	public void updateStatus(String order_Code, String status);
+	public void updateOrderBatch( String O_Code, String O_BatchCode);
 	public void deleteOrder(String batchCode);
 	public void updateAnOrder(mOrders order);
 }

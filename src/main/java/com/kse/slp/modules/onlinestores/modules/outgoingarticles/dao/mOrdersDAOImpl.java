@@ -31,6 +31,9 @@ import org.springframework.stereotype.Repository;
 
 
 
+
+
+
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
@@ -247,6 +250,13 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 		}
 	}
+	
+	@Override
+	public List<mOrders> getListOrderByCUSCode(String cUSCode) {
+		// TODO 
+		return null;
+	};
+	
 	@Override
 	public void updateStatus(String order_Code,String status) {
 		// TODO Auto-generated method stub
@@ -293,6 +303,29 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			close();
 		}
 	}
+	
+	@Override
+	public void updateOrderBatch( String O_Code, String O_BatchCode) {
+		try{
+			begin();
+			String hql = "UPDATE mOrders set O_BatchCode = :O_BatchCode "  + 
+		             "WHERE O_Code = :O_Code";
+			Query query = getSession().createQuery(hql);
+			query.setParameter("O_BatchCode", O_BatchCode);
+			query.setParameter("O_Code", O_Code);
+			int result = query.executeUpdate();
+			System.out.println("Order Rows affected: " + result);
+			commit();
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+		}finally{
+			flush();
+			close();
+		}
+	};
+	
 	@Override
 	public void deleteOrder(String batchCode) {
 		// TODO Auto-generated method stub
@@ -325,17 +358,21 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			tx = getSession().beginTransaction();
 			String sQuery = "";
 			if(type.equals("day")) {
-				sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y')";
+				sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code IN (" +status+ ") AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%d-%m-%Y')";
 			} else {
-				if(type.equals("month")) {
-					sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%m-%Y\') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%m-%Y\')";
+				if(type.equals("week")) {
+					sQuery = "SELECT concat(substr(YEARWEEK(O_DueDate), 5,2), \"-\", substr(YEARWEEK(O_DueDate),1,4)) date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code IN (" +status+ ") AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY YEARWEEK(O_DueDate) ";
 				} else {
-					sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code = :status AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%Y')";
+					if(type.equals("month")) {
+						sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%m-%Y\') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code IN (" +status+ ") AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%m-%Y\')";
+					} else {
+						sQuery = "SELECT DATE_FORMAT(DATE(O_DueDate), '%Y') date, SUM(O_Price) total FROM slp.tblorders WHERE (O_BatchCode LIKE :C_Code) AND O_Status_Code IN (" +status+ ") AND DATE(O_DueDate) >= DATE( :from ) AND DATE(O_DueDate) <= DATE( :to ) GROUP BY DATE_FORMAT(DATE(O_DueDate), '%Y')";
+					}
 				}
 			}
+			
 			SQLQuery query = getSession().createSQLQuery(sQuery);
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-			query.setParameter("status", status);
 			query.setParameter("from", from);
 			query.setParameter("to", to);
 			query.setParameter("C_Code", "%" + cus_Code + "%");

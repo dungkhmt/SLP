@@ -19,22 +19,8 @@
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
-	<!-- /.row -->
-	<div class="row">
-		<div class="col-sm-4">
-			<div class="form-group">
-				<select class="form-control" id="sel-batchCode">
-					<c:forEach items="${lstBatchCode}" var="batCode">
-						<option value="${batCode}">${batCode}</option>
-					</c:forEach>
-				</select>
-			</div>
-		</div>
-		<!-- /.form-group .col-sm-3  -->
-		<div class="col-sm-offset-7 col-sm-1">
-			<button type="button" class="btn btn-primary addOutOrder">Thêm</button>
-		</div>
-	</div>
+	<button type="button" class="btn btn-primary addOutOrder pull-right">Thêm</button>
+		
 	<!-- /.row -->
 	<div class="row">
 		<div class="col-lg-12">
@@ -89,15 +75,7 @@
 <script>
 
 
-$(document).ready(function(){
-	$.fn.dataTable.ext.search.push(function(settings,data,dataInde){
-		var bathCodeSelected = $("#sel-batchCode").val();
-		if(bathCodeSelected==data[6]){
-			return true;
-		}
-		return false;
-	});
-	
+$(document).ready(function(){	
 	var table = $('#dataTabels-outarticles').DataTable({
 		"footerCallback": function ( row, data, start, end, display ) {
 	    	var api = this.api(), data;
@@ -144,7 +122,8 @@ $(document).ready(function(){
 	       	// Update footer
 	       	$( api.column(5).footer() ).html("Tổng: "+SpageTotal+" VND");
 	    },
-	    "bSort":false,
+	    "order": [[2, 'desc']],
+	    "bSort":true,
 	    "columnDefs":[{
 	    	"targets":[6],
 	    	"visible":false
@@ -157,9 +136,5 @@ $(document).ready(function(){
 	
 	$('#batchCodeInfo').text($('#sel-batchCode').val());
 	
-	$("#sel-batchCode").click(function(){
-		$('#batchCodeInfo').text($(this).val());
-		table.draw();
-	})
 });
 </script>

@@ -22,10 +22,10 @@
 	</div>
 	<div id="map" style="height:100%">
     </div>
-    <div class="row">
-  	<div class="col-sm-1">
-					<button class="btn btn-primary" onclick="loadMap()">View Routes</button>
-	</div>
+    <div class="row" style="margin-top:10px; margin-bottom:10px">
+	  	<div class="col-sm-1">
+						<button class="btn btn-primary" onclick="loadMap()">View Routes</button>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-lg-12">
