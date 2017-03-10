@@ -24,6 +24,7 @@
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/parcel"/>">Quản lý lô giao hàng</a></li>
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/clustering"/>">Phân lô giao hàng</a></li>
 				 <li><a href="<c:url value="${baseUrl}/incomingArticles/list"/>">Nhập hàng</a></li>
+				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/viewOrderStatus"/>">Cập nhật tình trạng giao hàng</a></li>
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/list"/>">Nhận đơn hàng đơn lẻ</a></li>
 				 <li><a href="<c:url value="${baseUrl}/outgoingarticles/uploadFile"/>">Nhận đơn hàng qua Excel</a></li>
 				 <li><a href="<c:url value="${baseUrl}/ship/createRoute"/>">Lập tuyến giao hàng</a></li>

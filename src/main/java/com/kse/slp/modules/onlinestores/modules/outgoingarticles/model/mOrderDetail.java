@@ -12,7 +12,7 @@ public class mOrderDetail {
 	private String O_OrderDate;
 	private String O_DueDate;
 	private String C_Name;
-	private String OST_Name;
+	private String O_Status_Code;
 	private String REQBAT_Description;
 	
 	public String getO_DeliveryAddress() {
@@ -33,11 +33,11 @@ public class mOrderDetail {
 	public void setREQBAT_Description(String rEQBAT_Description) {
 		REQBAT_Description = rEQBAT_Description;
 	}
-	public String getOST_Name() {
-		return OST_Name;
+	public String getO_Status_Code() {
+		return O_Status_Code;
 	}
-	public void setOST_Name(String oST_Name) {
-		OST_Name = oST_Name;
+	public void setO_Status_Code(String o_Status_Code) {
+		O_Status_Code = o_Status_Code;
 	}
 	public String getO_Code() {
 		return O_Code;

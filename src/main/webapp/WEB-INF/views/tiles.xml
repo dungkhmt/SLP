@@ -92,6 +92,11 @@
     	<put-attribute name="title" value="Danh sách hàng nhập"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
     </definition>
+    
+    <definition name="outgoingarticles.orderStatus" extends="layout1">
+    	<put-attribute name="title" value="Cập nhật tình trạng giao hàng"/>
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/viewOrderStatus.jsp"/>
+    </definition>
 	
 	<!-- trash -->
 	<definition name="trash.outgoingarticles.add" extends="layout1">
