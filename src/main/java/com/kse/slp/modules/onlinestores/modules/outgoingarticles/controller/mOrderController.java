@@ -59,6 +59,7 @@ import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncoming
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteJSONResponse;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.batchOnlineStoreService;
@@ -123,6 +124,15 @@ public class mOrderController extends BaseWeb{
 	StoresService StoresService;
 	@Autowired
 	batchOnlineStoreService batchOnlineStoreService;
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public @ResponseBody List<mOrderDetail> test(ModelMap model, HttpSession session){
+		
+		return orderService.getListOrderDetail("'"+Constants.ORDER_STATUS_NOT_IN_ROUTE + "', '" + Constants.ORDER_STATUS_IN_ROUTE + "'", "CUS000001");
+		
+	}
+	
 	
 	@RequestMapping(value="/clustering", method = RequestMethod.GET)
 	public String clustering(ModelMap model,HttpSession session){

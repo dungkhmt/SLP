@@ -34,11 +34,13 @@ import org.springframework.stereotype.Repository;
 
 
 
+
+
 import com.kse.slp.dao.BaseDao;
 import com.kse.slp.modules.onlinestores.common.Constants;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 @Repository("mOrdersDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
@@ -148,32 +150,38 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 	}
 	
 	@Override
-	public List<mOrderDetail> getListOrderDetail() {
+	public List<mOrderDetail> getListOrderDetail(String status, String CUSCode) {
 		// TODO Auto-generated method stub
 		try {
 			begin();
-			String sql = "SELECT mo.O_Code, mo.O_DeliveryLat, mo.O_DeliveryLng ,mo.O_TimeEarly, mo.O_TimeLate, mo.O_DueDate, mc.C_Name"
-					+ " FROM mOrders mo, mClients mc"
-					+ " WHERE (mo.O_Status_Code='"+Constants.ORDER_STATUS_NOT_IN_ROUTE+
-								"' or mo.O_Status_Code='"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"') and mo.O_ClientCode=mc.C_Code"
-					+ " ORDER BY mo.O_DueDate ASC";
+			String sql = "SELECT mstt.OST_Name, mo.O_Code, mo.O_OrderDate,  mo.O_DeliveryAddress, mo.O_DeliveryLat, mo.O_DeliveryLng ,mo.O_TimeEarly, mo.O_TimeLate, mo.O_DueDate, mc.C_Name, mrb.REQBAT_Description"
+					+ " FROM mOrders mo, mClients mc, mOrderStatus mstt, batchOnlineStore mrb"
+					+ " WHERE mo.O_Status_Code IN ("+status+") and mstt.OST_Code = mo.O_Status_Code and mo.O_ClientCode = mc.C_Code and mrb.REQBAT_Code = mo.O_BatchCode and mrb.REQBAT_CustomerCode = :C_Code ORDER BY mo.O_DueDate ASC";
+//			='"+Constants.ORDER_STATUS_NOT_IN_ROUTE+
+//					"' or mo.O_Status_Code='"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"')
 			Query query = getSession().createQuery(sql);
-			List<Object[]> query_result = query.list();
+			query.setParameter("C_Code", CUSCode);
+			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+			List query_result = query.list();
 			List<mOrderDetail> lstOrderDetail = new ArrayList<mOrderDetail>();
-			
+			//0=Chưa được gán cho shipper, 1=OR000137, 2=2016-09-06, 3=200 Lê Duẩn, Hà Nội, 4=21.0173, 5=105.841, 6=18:00:00, 7=19:00:00, 8=2016-09-06, 9=Phan Anh Tú, 10=Các request lô 2016-09-24 10:00:00
 			for(int i=0; i<query_result.size(); i++){
-				mOrderDetail tmp = new mOrderDetail();
-				tmp.setO_Code((String)query_result.get(i)[0]);
-				tmp.setO_DeliveryLat((float)query_result.get(i)[1]);
-				tmp.setO_DeliveryLng((float)query_result.get(i)[2]);
-				tmp.setO_TimeEarly((String)query_result.get(i)[3]);
-				tmp.setO_TimeLate((String)query_result.get(i)[4]);
-				tmp.setO_DueDate((String)query_result.get(i)[5]);
-				tmp.setC_Name((String)query_result.get(i)[6]);
-				System.out.println(name()+"::getListOrderDetail--mOrderDetail["+i+"]"+tmp.toString());
-				lstOrderDetail.add(tmp);
+				Map tmp = (Map) query_result.get(i);
+				mOrderDetail temp = new mOrderDetail();
+				temp.setO_Code(tmp.get("1").toString());
+				temp.setO_DeliveryLat(Float.valueOf(tmp.get("4").toString()));
+				temp.setO_DeliveryLng(Float.valueOf(tmp.get("5").toString()));
+				temp.setO_TimeEarly(tmp.get("6").toString());
+				temp.setO_TimeLate(tmp.get("7").toString());
+				temp.setO_DueDate(tmp.get("8").toString());
+				temp.setC_Name(tmp.get("9").toString());
+				temp.setREQBAT_Description(tmp.get("10").toString());
+				temp.setO_DeliveryAddress(tmp.get("3").toString());
+				temp.setOST_Name(tmp.get("0").toString());
+				temp.setO_OrderDate(tmp.get("2").toString());
+				//System.out.println(name()+"::getListOrderDetail--mOrderDetail["+i+"]"+tmp.toString());
+				lstOrderDetail.add(temp);
 			}
-			
 	        commit();
 	        
 	        return lstOrderDetail;

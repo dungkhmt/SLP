@@ -9,9 +9,9 @@ import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrderArticlesDAO;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.dao.mOrdersDAO;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.utilities.CodeGenerationUtility;
 
 @Service("mOrderService")
@@ -88,9 +88,9 @@ public class mOrdersServiceImpl implements mOrdersService{
 		}
 	}
 	@Override
-	public List<mOrderDetail> getListOrderDetail() {
+	public List<mOrderDetail> getListOrderDetail(String status, String C_Code) {
 		// TODO Auto-generated method stub
-		return orderDAO.getListOrderDetail();
+		return orderDAO.getListOrderDetail(status, C_Code);
 	}
 	@Override
 	public List<String> getListDueDate() {

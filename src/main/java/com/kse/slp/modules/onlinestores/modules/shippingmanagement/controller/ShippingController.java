@@ -29,6 +29,7 @@ import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
 import com.kse.slp.modules.onlinestores.common.Constants;
 import com.kse.slp.modules.onlinestores.modules.incomingarticles.controller.IncomingArticlesController;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.lstJSONResquestCreateRoute;
@@ -36,7 +37,6 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONAn
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONRequestCreateRoute;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONResponseBoolean;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONResponseToCreateRoute;
-import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteDetail;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.RouteDetailContainer;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mRouteUnderCreation;
