@@ -154,9 +154,9 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 		// TODO Auto-generated method stub
 		try {
 			begin();
-			String sql = "SELECT mstt.OST_Name, mo.O_Code, mo.O_OrderDate,  mo.O_DeliveryAddress, mo.O_DeliveryLat, mo.O_DeliveryLng ,mo.O_TimeEarly, mo.O_TimeLate, mo.O_DueDate, mc.C_Name, mrb.REQBAT_Description"
-					+ " FROM mOrders mo, mClients mc, mOrderStatus mstt, batchOnlineStore mrb"
-					+ " WHERE mo.O_Status_Code IN ("+status+") and mstt.OST_Code = mo.O_Status_Code and mo.O_ClientCode = mc.C_Code and mrb.REQBAT_Code = mo.O_BatchCode and mrb.REQBAT_CustomerCode = :C_Code ORDER BY mo.O_DueDate ASC";
+			String sql = "SELECT mo.O_Status_Code, mo.O_Code, mo.O_OrderDate,  mo.O_DeliveryAddress, mo.O_DeliveryLat, mo.O_DeliveryLng ,mo.O_TimeEarly, mo.O_TimeLate, mo.O_DueDate, mc.C_Name, mrb.REQBAT_Description"
+					+ " FROM mOrders mo, mClients mc, batchOnlineStore mrb"
+					+ " WHERE mo.O_Status_Code IN ("+status+") and mo.O_ClientCode = mc.C_Code and mrb.REQBAT_Code = mo.O_BatchCode and mrb.REQBAT_CustomerCode = :C_Code ORDER BY mo.O_DueDate ASC";
 //			='"+Constants.ORDER_STATUS_NOT_IN_ROUTE+
 //					"' or mo.O_Status_Code='"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"')
 			Query query = getSession().createQuery(sql);
@@ -177,7 +177,7 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 				temp.setC_Name(tmp.get("9").toString());
 				temp.setREQBAT_Description(tmp.get("10").toString());
 				temp.setO_DeliveryAddress(tmp.get("3").toString());
-				temp.setOST_Name(tmp.get("0").toString());
+				temp.setO_Status_Code(tmp.get("0").toString());
 				temp.setO_OrderDate(tmp.get("2").toString());
 				//System.out.println(name()+"::getListOrderDetail--mOrderDetail["+i+"]"+tmp.toString());
 				lstOrderDetail.add(temp);
@@ -276,7 +276,6 @@ public class mOrdersDAOImpl extends BaseDao implements mOrdersDAO{
 			query.setParameter("status", status);
 			query.setParameter("order_Code", order_Code);
 			int result = query.executeUpdate();
-			System.out.println(name()+"Rows affected: " + result);
 			commit();
 		}catch(HibernateException e){
 			e.printStackTrace();
