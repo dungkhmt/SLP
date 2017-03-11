@@ -60,15 +60,18 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRout
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderStatus;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.batchOnlineStoreService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.batchOnlineStore;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderArticlesService;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderStatusService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.batchFormAdd;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mClusteringForm;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormSaveOrderStatus;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.StoreBatch;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.Stores;
@@ -124,13 +127,37 @@ public class mOrderController extends BaseWeb{
 	StoresService StoresService;
 	@Autowired
 	batchOnlineStoreService batchOnlineStoreService;
+	@Autowired
+	mOrderStatusService mOrderStatusService;
+	
+	@RequestMapping(value = "/viewOrderStatus", method = RequestMethod.GET)
+	public  String orderStatus(ModelMap model, HttpSession session){
+		
+		return "outgoingarticles.orderStatus";
+	}
+	
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@RequestMapping(value = "/order/getorderstatus", method = RequestMethod.GET)
+	public @ResponseBody List<mOrderDetail> getOrderStatus(ModelMap model, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
+		return orderService.getListOrderDetail("'"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"', '"+Constants.ORDER_STATUS_DELIVERIED+"', '"+Constants.ORDER_STATUS_IN_ROUTE+"', '"+Constants.ORDER_STATUS_NOT_IN_ROUTE+"'", "CUS000001");
+	}
+	
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@RequestMapping(value = "/order/getstatus", method = RequestMethod.GET)
+	public @ResponseBody List<mOrderStatus> getStatus(ModelMap model, HttpSession session){
+		return mOrderStatusService.getList();
+	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public @ResponseBody List<mOrderDetail> test(ModelMap model, HttpSession session){
+	@RequestMapping(value = "/order/save-orderstatus", method = RequestMethod.POST)
+	public @ResponseBody void saveOrderStatus(ModelMap model,HttpServletRequest request, HttpSession session, @ModelAttribute("mFormSaveOrderStatus") mFormSaveOrderStatus formOrderStatus, BindingResult result){
+		//System.out.print("This is "+orderForm.getOrderAdress());
+		User u=(User) session.getAttribute("currentUser");
 		
-		return orderService.getListOrderDetail("'"+Constants.ORDER_STATUS_NOT_IN_ROUTE + "', '" + Constants.ORDER_STATUS_IN_ROUTE + "'", "CUS000001");
-		
+		orderService.updateStatus(formOrderStatus.getO_Code(), formOrderStatus.getO_Status_Code());
 	}
 	
 	
