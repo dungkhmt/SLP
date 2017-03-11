@@ -104,7 +104,6 @@ $(document).ready(function(){
 				data[i].selectize_status = '<input style="width:200px" id="selectize_orderstatus'+i+'">';
 			}
 			
-			
 			table = $('#dataTabels-order').DataTable({
 			 	data: data,
 				columns: [
@@ -118,9 +117,10 @@ $(document).ready(function(){
 				    { "data": "status" }
 				],
 				"columnDefs": [
+								{ "width": "12%", "targets": 0 },
 								{ "width": "15%", "targets": 1 },
-				               { "width": "10%", "targets": 3 },
-				               { "width": "10%", "targets": 2 }
+				               { "width": "12%", "targets": 3 },
+				               { "width": "12%", "targets": 2 }
 				             ],
 		       "bSort": false,
 		       "fnInfoCallback": function( oSettings, iStart, iEnd, iMax, iTotal, sPre ) {
