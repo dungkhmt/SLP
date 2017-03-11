@@ -13,7 +13,7 @@ import com.kse.slp.modules.usermanagement.model.User;
 
 @Controller("ManagerControler")
 @RequestMapping(value = {"/manage"})
-public class ManagerController {
+public class ManagerController extends BaseWeb {
 	private static final Logger log = Logger.getLogger(ManagerController.class);
 	@RequestMapping(value="",method=RequestMethod.GET)
 	public String home(ModelMap model,HttpSession session){

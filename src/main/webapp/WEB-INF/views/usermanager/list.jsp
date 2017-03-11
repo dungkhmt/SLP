@@ -41,6 +41,7 @@
     				<thead>
     					<tr>
     						<th> Danh sách User</th>
+    						<th></th>
     					</tr>
     				</thead>
     				
@@ -48,6 +49,9 @@
     					<c:forEach items ="${usi}" var = "mNU">
     					<tr>
     						<td><c:out value = "${mNU.username}"/></td>
+    						<td>
+    							<button type="button" onclick="v_fViewDetail('${mNU.username}');" class="btn btn-info btn-xs" title="Edit">Chi tiết</button>
+    						</td>
     					</tr>
     					</c:forEach>
     				</tbody>
@@ -73,6 +77,11 @@ $(document).ready(function(){
 	});
 	
 });
+function v_fViewDetail(user){
+	console.log(user);
+	var sViewDetailUrl = baseUrl + "/usermanager/user-function-detail/"+user+".html";
+	window.location = sViewDetailUrl;
+}
 
 </script>
 

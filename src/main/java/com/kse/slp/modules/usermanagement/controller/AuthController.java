@@ -36,7 +36,7 @@ import com.kse.slp.modules.usermanagement.validation.UserValidation;
 
 @Controller(value = "authController")
 @RequestMapping(value="/auth")
-public class AuthController extends BaseWeb {
+public class AuthController  {
 	private static final Logger log = Logger.getLogger(AuthController.class);
 	@Autowired
 	private UserService userService;	
