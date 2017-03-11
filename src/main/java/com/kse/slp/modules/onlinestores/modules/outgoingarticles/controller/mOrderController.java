@@ -43,6 +43,7 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodInput;
 import com.kse.slp.modules.api.deliverygoods.model.DeliveryGoodRoute;
@@ -58,6 +59,7 @@ import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncoming
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteJSONResponse;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.batchOnlineStoreService;
@@ -65,6 +67,7 @@ import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.batchOnli
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderArticlesService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.batchFormAdd;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mClusteringForm;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.StoreBatch;
@@ -121,6 +124,34 @@ public class mOrderController extends BaseWeb{
 	StoresService StoresService;
 	@Autowired
 	batchOnlineStoreService batchOnlineStoreService;
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public @ResponseBody List<mOrderDetail> test(ModelMap model, HttpSession session){
+		
+		return orderService.getListOrderDetail("'"+Constants.ORDER_STATUS_NOT_IN_ROUTE + "', '" + Constants.ORDER_STATUS_IN_ROUTE + "'", "CUS000001");
+		
+	}
+	
+	
+	@RequestMapping(value="/clustering", method = RequestMethod.GET)
+	public String clustering(ModelMap model,HttpSession session){
+		List<mOrders> mOrders = orderService.getList();
+		String json = new Gson().toJson(mOrders );
+		model.put("mOrders", json);
+		return "outgoingarticles.clustering";
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/clustering/save", method = RequestMethod.POST)
+	public @ResponseBody void clussteringSave(ModelMap model,HttpServletRequest request, HttpSession session, @ModelAttribute("mClusteringForm") mClusteringForm mClusteringForm, BindingResult result){
+		
+		User u=(User) session.getAttribute("currentUser");
+		
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
+		orderService.updateOrderBatch(mClusteringForm.getO_Code(), mClusteringForm.getO_BatchCode());
+		
+	}
 	
 	@RequestMapping(value="/parcel", method = RequestMethod.GET)
 	public String parcel(ModelMap model,HttpSession session){
@@ -183,12 +214,25 @@ public class mOrderController extends BaseWeb{
 		String from = request.getParameter("from");
 		String to = request.getParameter("to");
 		String type = request.getParameter("type");
+		String status = request.getParameter("status");
+		
+		String stt = "";
+		if(status.equals("ALL")) {
+			stt = "\""+ Constants.ORDER_STATUS_DELIVERIED + "\",\"" + Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED 
+					+ "\",\"" + Constants.ORDER_STATUS_IN_ROUTE + "\",\"" + Constants.ORDER_STATUS_NOT_IN_ROUTE + "\"";
+		} else {
+			if(status.equals("DELIVERIED")) {
+				stt = "\""+ Constants.ORDER_STATUS_DELIVERIED + "\"";
+			} else {
+				stt = "\""+ Constants.ORDER_STATUS_IN_ROUTE + "\",\"" + Constants.ORDER_STATUS_NOT_IN_ROUTE + "\"";
+			}
+		}
 		
 		User u=(User) session.getAttribute("currentUser");
 		
 		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
 
-		return orderService.getstaticsOrders(from, to, type, Constants.ORDER_STATUS_DELIVERIED, staffCustomer.getSTFCUS_CustomerCode());
+		return orderService.getstaticsOrders(from, to, type, stt, staffCustomer.getSTFCUS_CustomerCode());
 		
 	}
 	

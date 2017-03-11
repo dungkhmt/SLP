@@ -5,14 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.kse.slp.modules.mapstreetmanipulation.model.RoadPoint;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadPointsService;
 import com.kse.slp.modules.mapstreetmanipulation.service.RoadPointsServiceImpl;
+import com.kse.slp.modules.usermanagement.model.Function;
+import com.kse.slp.modules.usermanagement.model.UserFunctions;
+import com.kse.slp.modules.usermanagement.service.FunctionService;
+import com.kse.slp.modules.usermanagement.service.UserFunctionsService;
 import com.kse.slp.modules.utilities.shortestpathalgorithms.Arc;
 import com.kse.slp.modules.utilities.shortestpathalgorithms.DijkstraBinaryHeap;
 import com.kse.slp.modules.utilities.shortestpathalgorithms.Itinerary;
@@ -23,6 +29,16 @@ public class BaseWeb {
     private HttpServletRequest request;
     protected String baseUrl;
     protected String assetsUrl;
+    public static List<Function> functionPermissionList;
+    public static List<Function> functionChildrenPermissionList;
+    public static List<Function> functionParentPermissionList;
+    
+    @Autowired
+    private FunctionService functionService;
+    
+    @Autowired
+    private UserFunctionsService userFunctionService;
+    
     
     //public static DijkstraBinaryHeap dijkstra = null;
     public static int count = 0;
@@ -84,10 +100,18 @@ public class BaseWeb {
     	*/
     	
 	}
-    
+    public void setPermission(HttpSession session)
+    {
+	    	// set User permissions 
+	    	BaseWeb.functionPermissionList = functionService.loadFunctionsList();
+	    	// set User permissions 
+	    	BaseWeb.functionParentPermissionList = functionService.loadFunctionsParentHierachyList();
+	    	// set User permissions
+	    	BaseWeb.functionChildrenPermissionList = functionService.loadFunctionsChildHierachyList();
+    }
     @ModelAttribute
-    public void addGlobalAttr(ModelMap map) {
-    
+    public void addGlobalAttr(ModelMap map,HttpSession session) {
+    	setPermission(session);
         switch (request.getRequestURI()) {
             case "/":
                 baseUrl = request.getRequestURL().substring(0, request.getRequestURL().length() - 1).toString();
@@ -100,11 +124,51 @@ public class BaseWeb {
                 break;
         }       
        
-        
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         assetsUrl = baseUrl + "/assets";
         map.put("baseUrl", baseUrl);
         map.put("assetsUrl", assetsUrl);
+        
+        List<UserFunctions> functionUserList=userFunctionService.loadFunctionsPermissionByUserList(username);
+        //System.out.println("BaseWeb:: "+functionUserList);
+        List<Function> functionPermissionList=BaseWeb.functionPermissionList;
+        List<Function> functionChildrenPermissionList=BaseWeb.functionChildrenPermissionList;
+        List<Function> functionParentPermissionList=BaseWeb.functionParentPermissionList;
+        boolean xd=true;
+        for(int i=0;i<functionChildrenPermissionList.size();){
+        	xd=true;
+        	for(UserFunctions uf : functionUserList){
+        		if ( uf.getUSERFUNC_FuncCode().equals(functionChildrenPermissionList.get(i).getFUNC_Code()) ){
+        			i++;
+        			xd=false;
+        			break;
+        		}
+        	}
+        	if(xd==true) {
+        		functionChildrenPermissionList.remove(i);
+        	}
+        }
+       
+        for(int i=0;i<functionParentPermissionList.size();){
+        	xd=true;
+        	for(UserFunctions uf : functionUserList){
+        		if ( uf.getUSERFUNC_FuncCode().equals(functionParentPermissionList.get(i).getFUNC_Code()) ){
+        			i++;
+        			xd=false;
+        			break;
+        		}
+        	}
+        	if(xd==true){
+        		functionParentPermissionList.remove(i);
+        		
+        	}
+        }
+        map.put("functionPermissionList", functionPermissionList);
+        map.put("functionParentPermissionList", functionParentPermissionList);
+        map.put("functionChildrenPermissionList",functionChildrenPermissionList);
     }
-    
+    String name(){
+    	return "BaseWeb::";
+    }
    
 }
