@@ -22,7 +22,6 @@
 		<div class="sidebar-nav navbar-collapse">
 			<ul	class="nav" id="side-menu">
 				<li><a href="<c:url value="${baseUrl}/usermanager"/>">Quản lý user</a></li>
-				
 			</ul>
 		</div>
 	</div>

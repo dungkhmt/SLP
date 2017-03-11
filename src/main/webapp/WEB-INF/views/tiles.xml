@@ -240,4 +240,5 @@
     	<put-attribute name="title" value="View solution shipper matching" />
     	<put-attribute name="content" value="/WEB-INF/views/requestshippermatching/viewrequestshippermatching.jsp" />                
     </definition>
+    
 </tiles-definitions>
