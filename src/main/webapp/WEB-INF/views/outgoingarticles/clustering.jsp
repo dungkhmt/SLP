@@ -138,7 +138,7 @@ $(document).ready(function(){
 		   			var $selectize = $("#selectize_batch"+indexData[i]).selectize({
 		   				options: batchList,
 		   				maxItems: 1,
-		   				valueField: 'reqbat_Description',
+		   				valueField: 'reqbat_Code',
 		   				labelField: 'reqbat_Description',
 		   				searchField: ['reqbat_Description']
 		   			});

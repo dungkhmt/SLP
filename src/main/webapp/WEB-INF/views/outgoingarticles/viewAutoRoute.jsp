@@ -20,7 +20,7 @@
 				<select class="form-control" id="select-listBatch">
 					<option>Chọn batch</option>
 					<c:forEach items="${lstBatch}" var="batch">
-						<option value="${batch.REQBAT_Code}"><c:out value="${batch.REQBAT_Code}"/></option>
+						<option value="${batch.REQBAT_Code}"><c:out value="${batch.REQBAT_Description}"/></option>
 					</c:forEach>
 				</select>
 			</div>

@@ -12,7 +12,7 @@
 				<select class="form-control" id="lstBatch">
 					<option>Chọn Batch</option>
 					<c:forEach items="${lstreBatch}" var="reBatch">
-						<option value="${reBatch.REQBAT_Code}"><c:out value="${reBatch.REQBAT_Code}"/></option>
+						<option value="${reBatch.REQBAT_Code}"><c:out value="${reBatch.REQBAT_Description}"/></option>
 					</c:forEach>
 				</select>
 			</div>

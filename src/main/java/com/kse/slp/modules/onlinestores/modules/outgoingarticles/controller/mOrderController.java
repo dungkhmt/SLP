@@ -555,7 +555,10 @@ public class mOrderController extends BaseWeb{
 		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
 		List<RequestBatchOnlineStore> lstreBatch = mRequestBatchService.getList(CustomerCode);
-		
+		System.out.println(name() + "::lstBatch = ");
+		for(RequestBatchOnlineStore b: lstreBatch){
+			System.out.println(b.getREQBAT_Description() + "\t" + b.getREQBAT_Code());
+		}
 		model.put("lstreBatch", lstreBatch);
 		
 		return "outgoingarticles.createAutoRoute";
@@ -581,7 +584,7 @@ public class mOrderController extends BaseWeb{
 				String deliveryLatLng = lstOrder.get(i).getO_DeliveryLat()+", "+lstOrder.get(i).getO_DeliveryLng();
 				String earlyDeliveryTime = lstOrder.get(i).getO_OrderDate()+" " +lstOrder.get(i).getO_TimeEarly();
 				String lateDeliveryTime = lstOrder.get(i).getO_DueDate()+" "+lstOrder.get(i).getO_TimeLate();
-				double weight = 10.0;
+				double weight = 1;//10.0;
 				double volumn = 0.0;
 				deliveryRequest[i] = new DeliveryRequest(requestCode, deliveryAddress, deliveryLatLng, earlyDeliveryTime, lateDeliveryTime, weight, volumn);
 			}
@@ -591,8 +594,10 @@ public class mOrderController extends BaseWeb{
 			//Customer cus = CustomerService.getByCode(customerCode);
 			//System.out.println(name()+"callServiceCreateRoute--cus: "+cus.toString());
 			List<Stores> lstStore = StoresService.getListStoreInBatch(batch);
+			
 			Store store = new Store(lstStore.get(0).getSTR_Code(), lstStore.get(0).getSTR_Name(), lstStore.get(0).getSTR_Address(), lstStore.get(0).getSTR_LatLng()); 
 			
+			System.out.println(name() + "::callServiceCreateRoute, lstOrders = " + lstOrder.size() + " = requests = " + deliveryRequest.length);
 			//List<mShippers> lstShipper = mShippersService.getByCustomerCode(customerCode);
 			List<mShippers> lstShipper = mShippersService.getListInBatch(batch);
 			Shipper shippers[] = new Shipper[lstShipper.size()];
@@ -600,10 +605,15 @@ public class mOrderController extends BaseWeb{
 				String shipperCode = lstShipper.get(i).getSHP_Code();
 				String name = lstShipper.get(i).getSHP_User_Name();
 				String currentLatLng = lstShipper.get(i).getSHP_CurrentLocation();
-				double weight = 50.0;
-				double volumn = 100.0;
+				double weight = lstShipper.get(i).getSHP_Capacity_1();//50.0;
+				double volumn = lstShipper.get(i).getSHP_Capacity_2();//100.0;
 				shippers[i] = new Shipper(shipperCode, name, currentLatLng, weight, volumn);
+				
+				System.out.println(name() + "::callServiceCreateRoute, shipper weight = " + weight + " = " + shippers[i].getWeight() + "/" + shippers[i].getVolumn());
 			}
+			
+			//System.exit(-1);
+			
 			DeliveryGoodInput data = new DeliveryGoodInput(deliveryRequest, store, shippers);
 			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 			String datajson = ow.writeValueAsString(data);
