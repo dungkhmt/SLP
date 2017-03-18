@@ -174,6 +174,7 @@ function viewDirection(marker1,marker2){
       }, function(response, status) {
         if (status === 'OK') {
           directionsDisplay.setDirections(response);
+          console.log("response"+response);
         } else {
           window.alert('Directions request failed due to ' + status);
         }
