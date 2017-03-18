@@ -72,6 +72,11 @@
     	<put-attribute name="title" value="Danh sách hàng nhập"/>
     	<put-attribute name="content" value="/WEB-INF/views/incomingarticles/list.jsp"/>
     </definition>
+    
+    <definition name="outgoingarticles.orderStatus" extends="layout">
+    	<put-attribute name="title" value="Cập nhật tình trạng giao hàng"/>
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/viewOrderStatus.jsp"/>
+    </definition>
 	
 	<!-- trash -->
 	<definition name="trash.outgoingarticles.add" extends="layout">
@@ -229,4 +234,5 @@
     	<put-attribute name="title" value="View solution shipper matching" />
     	<put-attribute name="content" value="/WEB-INF/views/requestshippermatching/viewrequestshippermatching.jsp" />                
     </definition>
+    
 </tiles-definitions>

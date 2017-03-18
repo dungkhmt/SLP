@@ -173,8 +173,31 @@ function viewDirection(marker1,marker2){
         travelMode: 'DRIVING'
       }, function(response, status) {
         if (status === 'OK') {
-          directionsDisplay.setDirections(response);
-          console.log("response"+response);
+        	console.log(response);
+        	//console.log();
+        	var oarr=response.routes[0].overview_path;
+        	var marker = new google.maps.Marker({
+ 				icon:"http://maps.google.com/mapfiles/ms/icons/yellow.png",
+ 				map:map
+ 			});
+        	
+        	move = function(marker, latlngs, index, wait, newDestination) {
+        		//console.log("index"+index);
+        		marker.setPosition(latlngs[index]);
+        		if(index != latlngs.length-1) {
+          		// call the next "frame" of the animation
+	          		setTimeout(function() { 
+	            		move(marker, latlngs, index+1, wait, newDestination); 
+	          		}, wait);
+        		}
+        		else{
+          			// assign new route
+			        marker.position = marker.destination;
+			        marker.destination = newDestination;
+        		}
+        	};
+        	move(marker, oarr, 0, 1000, marker.position);
+        	directionsDisplay.setDirections(response);
         } else {
           window.alert('Directions request failed due to ' + status);
         }

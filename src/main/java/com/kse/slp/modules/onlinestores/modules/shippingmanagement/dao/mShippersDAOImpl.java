@@ -108,7 +108,7 @@ public class mShippersDAOImpl extends BaseDao implements mShippersDAO {
 		try{
 			
 			begin();
-			String sql = "SELECT s.SHP_Code, s.SHP_User_Name, s.SHP_CurrentLocation"
+			String sql = "SELECT s.SHP_Code, s.SHP_User_Name, s.SHP_CurrentLocation, s.SHP_Capacity_1, s.SHP_Capacity_2 "
 					+ " FROM mShippers s, ShipperBatch sb"
 					+ " WHERE s.SHP_Code = sb.SHPBAT_ShipperCode and sb.SHPBAT_BatchCode = '"+batchCode+"'";
 			List<Object[]> queryResult = getSession().createQuery(sql).list();
@@ -118,6 +118,8 @@ public class mShippersDAOImpl extends BaseDao implements mShippersDAO {
 				tmp.setSHP_Code((String)queryResult.get(i)[0]);
 				tmp.setSHP_User_Name((String)queryResult.get(i)[1]);
 				tmp.setSHP_CurrentLocation((String)queryResult.get(i)[2]);
+				tmp.setSHP_Capacity_1((int)queryResult.get(i)[3]);
+				tmp.setSHP_Capacity_2((int)queryResult.get(i)[4]);
 				lsshp.add(tmp);
 			}
 			

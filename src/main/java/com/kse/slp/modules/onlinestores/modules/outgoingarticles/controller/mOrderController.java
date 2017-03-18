@@ -59,15 +59,19 @@ import com.kse.slp.modules.onlinestores.modules.incomingarticles.model.mIncoming
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteJSONResponse;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mAutoRouteResponseInfo;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderArticles;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderStatus;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.sOrder;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.batchOnlineStoreService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.batchOnlineStore;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderArticlesService;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrderStatusService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.batchFormAdd;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mClusteringForm;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormAddFileExcel;
+import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mFormSaveOrderStatus;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.validation.mOrderFormAdd;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.StoreBatch;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.Stores;
@@ -123,6 +127,39 @@ public class mOrderController extends BaseWeb{
 	StoresService StoresService;
 	@Autowired
 	batchOnlineStoreService batchOnlineStoreService;
+	@Autowired
+	mOrderStatusService mOrderStatusService;
+	
+	@RequestMapping(value = "/viewOrderStatus", method = RequestMethod.GET)
+	public  String orderStatus(ModelMap model, HttpSession session){
+		
+		return "outgoingarticles.orderStatus";
+	}
+	
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@RequestMapping(value = "/order/getorderstatus", method = RequestMethod.GET)
+	public @ResponseBody List<mOrderDetail> getOrderStatus(ModelMap model, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
+		return orderService.getListOrderDetail("'"+Constants.ORDER_STATUS_ARRIVED_BUT_NOT_DELIVERIED+"', '"+Constants.ORDER_STATUS_DELIVERIED+"', '"+Constants.ORDER_STATUS_IN_ROUTE+"', '"+Constants.ORDER_STATUS_NOT_IN_ROUTE+"'", "CUS000001");
+	}
+	
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@RequestMapping(value = "/order/getstatus", method = RequestMethod.GET)
+	public @ResponseBody List<mOrderStatus> getStatus(ModelMap model, HttpSession session){
+		return mOrderStatusService.getList();
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/order/save-orderstatus", method = RequestMethod.POST)
+	public @ResponseBody void saveOrderStatus(ModelMap model,HttpServletRequest request, HttpSession session, @ModelAttribute("mFormSaveOrderStatus") mFormSaveOrderStatus formOrderStatus, BindingResult result){
+		//System.out.print("This is "+orderForm.getOrderAdress());
+		User u=(User) session.getAttribute("currentUser");
+		
+		orderService.updateStatus(formOrderStatus.getO_Code(), formOrderStatus.getO_Status_Code());
+	}
+	
 	
 	@RequestMapping(value="/clustering", method = RequestMethod.GET)
 	public String clustering(ModelMap model,HttpSession session){
@@ -518,7 +555,10 @@ public class mOrderController extends BaseWeb{
 		//System.out.println(name()+"createAutoRoute--CustomerCode: "+sc.getSTFCUS_CustomerCode());
 		
 		List<RequestBatchOnlineStore> lstreBatch = mRequestBatchService.getList(CustomerCode);
-		
+		System.out.println(name() + "::lstBatch = ");
+		for(RequestBatchOnlineStore b: lstreBatch){
+			System.out.println(b.getREQBAT_Description() + "\t" + b.getREQBAT_Code());
+		}
 		model.put("lstreBatch", lstreBatch);
 		
 		return "outgoingarticles.createAutoRoute";
@@ -544,7 +584,7 @@ public class mOrderController extends BaseWeb{
 				String deliveryLatLng = lstOrder.get(i).getO_DeliveryLat()+", "+lstOrder.get(i).getO_DeliveryLng();
 				String earlyDeliveryTime = lstOrder.get(i).getO_OrderDate()+" " +lstOrder.get(i).getO_TimeEarly();
 				String lateDeliveryTime = lstOrder.get(i).getO_DueDate()+" "+lstOrder.get(i).getO_TimeLate();
-				double weight = 10.0;
+				double weight = 1;//10.0;
 				double volumn = 0.0;
 				deliveryRequest[i] = new DeliveryRequest(requestCode, deliveryAddress, deliveryLatLng, earlyDeliveryTime, lateDeliveryTime, weight, volumn);
 			}
@@ -554,8 +594,10 @@ public class mOrderController extends BaseWeb{
 			//Customer cus = CustomerService.getByCode(customerCode);
 			//System.out.println(name()+"callServiceCreateRoute--cus: "+cus.toString());
 			List<Stores> lstStore = StoresService.getListStoreInBatch(batch);
+			
 			Store store = new Store(lstStore.get(0).getSTR_Code(), lstStore.get(0).getSTR_Name(), lstStore.get(0).getSTR_Address(), lstStore.get(0).getSTR_LatLng()); 
 			
+			System.out.println(name() + "::callServiceCreateRoute, lstOrders = " + lstOrder.size() + " = requests = " + deliveryRequest.length);
 			//List<mShippers> lstShipper = mShippersService.getByCustomerCode(customerCode);
 			List<mShippers> lstShipper = mShippersService.getListInBatch(batch);
 			Shipper shippers[] = new Shipper[lstShipper.size()];
@@ -563,10 +605,15 @@ public class mOrderController extends BaseWeb{
 				String shipperCode = lstShipper.get(i).getSHP_Code();
 				String name = lstShipper.get(i).getSHP_User_Name();
 				String currentLatLng = lstShipper.get(i).getSHP_CurrentLocation();
-				double weight = 50.0;
-				double volumn = 100.0;
+				double weight = lstShipper.get(i).getSHP_Capacity_1();//50.0;
+				double volumn = lstShipper.get(i).getSHP_Capacity_2();//100.0;
 				shippers[i] = new Shipper(shipperCode, name, currentLatLng, weight, volumn);
+				
+				System.out.println(name() + "::callServiceCreateRoute, shipper weight = " + weight + " = " + shippers[i].getWeight() + "/" + shippers[i].getVolumn());
 			}
+			
+			//System.exit(-1);
+			
 			DeliveryGoodInput data = new DeliveryGoodInput(deliveryRequest, store, shippers);
 			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 			String datajson = ow.writeValueAsString(data);

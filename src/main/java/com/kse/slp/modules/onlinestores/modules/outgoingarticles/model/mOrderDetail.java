@@ -1,4 +1,4 @@
-package com.kse.slp.modules.onlinestores.modules.shippingmanagement.model;
+package com.kse.slp.modules.onlinestores.modules.outgoingarticles.model;
 
 import javax.persistence.Entity;
 
@@ -6,12 +6,39 @@ public class mOrderDetail {
 	private String O_Code;
 	private float O_DeliveryLat;
 	private float O_DeliveryLng;
+	private String O_DeliveryAddress;
 	private String O_TimeEarly;
 	private String O_TimeLate;
+	private String O_OrderDate;
 	private String O_DueDate;
 	private String C_Name;
+	private String O_Status_Code;
+	private String REQBAT_Description;
 	
-	
+	public String getO_DeliveryAddress() {
+		return O_DeliveryAddress;
+	}
+	public void setO_DeliveryAddress(String o_DeliveryAddress) {
+		O_DeliveryAddress = o_DeliveryAddress;
+	}
+	public String getO_OrderDate() {
+		return O_OrderDate;
+	}
+	public void setO_OrderDate(String o_OrderDate) {
+		O_OrderDate = o_OrderDate;
+	}
+	public String getREQBAT_Description() {
+		return REQBAT_Description;
+	}
+	public void setREQBAT_Description(String rEQBAT_Description) {
+		REQBAT_Description = rEQBAT_Description;
+	}
+	public String getO_Status_Code() {
+		return O_Status_Code;
+	}
+	public void setO_Status_Code(String o_Status_Code) {
+		O_Status_Code = o_Status_Code;
+	}
 	public String getO_Code() {
 		return O_Code;
 	}
