@@ -22,7 +22,10 @@
     	<c:set var="sUrl" value="${fn:substringBefore(sUrl, '/')}"></c:set>
     	<c:set var="sUrl" value="/${sUrl}" ></c:set>
     	<c:forEach items="${functionPermissionList}" var="fPL">
-    		<c:if test="${fPL.FUNC_Url == sUrl}">
+    		<c:set var="fsUrl" value="${fn:substringAfter(fPL.FUNC_Url, '/')}"></c:set>
+    		<c:set var="fsUrl" value="${fn:substringBefore(fsUrl, '/')}"></c:set>
+    		<c:set var="fsUrl" value="/${fsUrl}" ></c:set>
+    		<c:if test="${fsUrl == sUrl}">
     			<c:choose>
     				<c:when test="${fPL.FUNC_HasChildren==1 }">
     					<c:set var="idparent" value="${fPL.FUNC_Id}"></c:set>	

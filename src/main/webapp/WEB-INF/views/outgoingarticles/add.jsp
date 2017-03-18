@@ -41,8 +41,9 @@
 					Thêm mới hóa đơn khách hàng
 			</div>
 			
-			
+		
 		<div class="panel-body">
+					<h4>${error}</h4>
 					<div class="form-group">
 						<label class="control-label col-lg-2 phoneinput">Số điện thoại</label>
 						<div class="col-lg-6">
@@ -177,7 +178,7 @@
 		</div>
 		
 		<button type="submit" class="btn btn-primary" id="addANewOrder">Lưu</button>
-        <button type="reset" class="btn btn-primary cancel">Hủy</button>
+        <button type="button" class="btn btn-primary cancel" onclick="goBack();">Hủy</button>
 	</div>
 	</form:form>
 
@@ -237,7 +238,7 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
-
+	</div>
   </div>
 </div>
 <!-- Javascript -->
@@ -264,6 +265,9 @@
 	$(".saveAClientButton").hide();
 </script>
 <script type="text/javascript">
+function goBack(){
+	window.location = '${baseUrl}/outgoingarticles/list';
+}
 function pushPrice(){
 	var price=0;
 	var table = document.getElementById('listOrderArticles'), 

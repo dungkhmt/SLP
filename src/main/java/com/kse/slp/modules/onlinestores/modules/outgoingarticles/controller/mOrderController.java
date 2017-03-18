@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -264,7 +265,7 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value = "/add-an-order", method = RequestMethod.GET)
-	public String addAOrder(ModelMap model, HttpSession session){
+	public String addAOrder(ModelMap model, HttpSession session,RedirectAttributes redirectAttributes){
 		User u=(User) session.getAttribute("currentUser");
 		String username = u.getUsername();
 		//System.out.println(name()+"upLoadFile--username: "+username);
@@ -291,19 +292,22 @@ public class mOrderController extends BaseWeb{
 	}
 	
 	@RequestMapping(value = "/save-an-order", method = RequestMethod.POST)
-	public String saveAOrder(ModelMap model,HttpServletRequest request, HttpSession session,@ModelAttribute("orderFormAdd") mOrderFormAdd orderForm,BindingResult result){
+	public String saveAOrder(ModelMap model,HttpServletRequest request, HttpSession session,@ModelAttribute("orderFormAdd") mOrderFormAdd orderForm,BindingResult result,RedirectAttributes redirectAttributes){
 		//System.out.print("This is "+orderForm.getOrderAdress());
 		User u=(User) session.getAttribute("currentUser");
 		
-		String[] orderArticles = request.getParameterValues("orderArticles");
-		for(int i=0;i<orderArticles.length;i++){
-			System.out.println(name()+"saveAOrder--orderArticles["+i+"]:"+orderArticles[i]);
-		}
+		
 		model.put("orderFormAdd", new mOrderFormAdd());
 		if(result.hasErrors()){
 			log.info(u.getUsername()+" FAIL");
 		}else{
-			
+			String[] orderArticles = request.getParameterValues("orderArticles");
+			if(orderArticles==null) {
+				return "redirect:add-an-order";
+			}
+			for(int i=0;i<orderArticles.length;i++){
+				System.out.println(name()+"saveAOrder--orderArticles["+i+"]:"+orderArticles[i]);
+			}
 			String code=orderForm.getOrderClientCode();
 			String clientCode=orderForm.getOrderClientCode();
 			String dueDate=orderForm.getOrderDate();
