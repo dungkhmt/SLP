@@ -23,6 +23,10 @@
     	<put-attribute name="content" value="/WEB-INF/views/home/onlinestorehome.jsp" />                
     </definition> 
   	<!-- outgoing articles -->
+  	<definition name="outgoingarticles.allotParcelToShipper" extends="layout">
+    	<put-attribute name="title" value="Phân lô cho shipper" />
+    	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/allotParcelToShipper.jsp" />                
+    </definition>
   	<definition name="outgoingarticles.clustering" extends="layout">
     	<put-attribute name="title" value="Phân lô giao hàng" />
     	<put-attribute name="content" value="/WEB-INF/views/outgoingarticles/clustering.jsp" />                
