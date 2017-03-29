@@ -1,6 +1,9 @@
 package com.kse.slp.modules.onlinestores.modules.shippingmanagement.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +16,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,8 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
 import com.kse.slp.modules.containerdelivery.model.mPickupDeliveryOrders;
 import com.kse.slp.modules.containerdelivery.service.mPickupDeliveryOrdersService;
@@ -32,6 +36,7 @@ import com.kse.slp.modules.onlinestores.modules.incomingarticles.controller.Inco
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrderDetail;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.model.mOrders;
 import com.kse.slp.modules.onlinestores.modules.outgoingarticles.service.mOrdersService;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.ShipperBatch;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.lstJSONResquestCreateRoute;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONAndroidRouteList;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.model.mJSONRequestCreateRoute;
@@ -46,9 +51,12 @@ import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRout
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRouteDetailService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mRoutesService;
 import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.mShippersService;
+import com.kse.slp.modules.usermanagement.model.StaffCustomer;
 import com.kse.slp.modules.usermanagement.model.User;
+import com.kse.slp.modules.usermanagement.service.StaffCustomerService;
 import com.kse.slp.modules.usermanagement.service.UserService;
 import com.kse.slp.modules.utilities.GenerationDateTimeFormat;
+import com.kse.slp.modules.onlinestores.modules.shippingmanagement.service.ShipperBatchService;
 
 @Controller("ShippingController")
 @RequestMapping(value={"/ship"})
@@ -74,6 +82,12 @@ public class ShippingController extends BaseWeb{
 	
 	@Autowired
 	private mRouteDetailContainerService routeDetailContainerService;
+	
+	@Autowired
+	StaffCustomerService StaffCustomerService;
+	
+	@Autowired
+	ShipperBatchService ShipperBatchService;
 	
 	@RequestMapping(value="/createRoute")
 	public String creatRouteToShip(ModelMap map,HttpSession session){
@@ -422,4 +436,51 @@ public class ShippingController extends BaseWeb{
 		return true;
 	}
 	
+	@RequestMapping(value="/getShipperList")
+	public @ResponseBody List<mShippers> getShipperList(ModelMap model,HttpServletRequest request, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		StaffCustomer staffCustomer = StaffCustomerService.getCusCodeByUserName(u.getUsername());
+		System.out.print(staffCustomer.getSTFCUS_CustomerCode());
+		List<mShippers> shippers = mShippersService.getByCustomerCode(staffCustomer.getSTFCUS_CustomerCode());
+		
+		return shippers;
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value="/getAllotParcel")
+	public @ResponseBody List<String> getAllotParcel(ModelMap model,HttpServletRequest request, HttpSession session){
+		User u=(User) session.getAttribute("currentUser");
+		String batchCode = request.getParameter("batchCode");
+		
+		List<String> shippers = ShipperBatchService.getShipperInBatch(batchCode);
+		
+		return shippers;
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseBody @RequestMapping(value="/update-allot-parcel", method=RequestMethod.POST)
+	public boolean updateAllotParcel(HttpSession session,@RequestBody String json){
+		User u=(User) session.getAttribute("currentUser");
+
+		JSONParser parser = new JSONParser();
+		
+		JSONObject req;
+		try {
+			req = (JSONObject) parser.parse(json);
+			String batchCode=(String) req.get("batchCode");
+			JSONArray shippers=(JSONArray) req.get("shippers");
+			
+			ShipperBatchService.deleteShipperBatch(batchCode);
+			
+			for(int i=0;i<shippers.size();i++){
+				ShipperBatchService.saveAShipperBatch((String) shippers.get(i), batchCode);
+			}
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return false;
+			// TODO Auto-generated catch block
+		}
+		return true;
+	}
 }
