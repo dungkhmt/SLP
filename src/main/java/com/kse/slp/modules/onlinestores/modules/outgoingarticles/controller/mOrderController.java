@@ -131,6 +131,12 @@ public class mOrderController extends BaseWeb{
 	@Autowired
 	mOrderStatusService mOrderStatusService;
 	
+	@RequestMapping(value = "/allotParcelToShipper", method = RequestMethod.GET)
+	public  String allotParcelToShipper(ModelMap model, HttpSession session){
+		
+		return "outgoingarticles.allotParcelToShipper";
+	}
+	
 	@RequestMapping(value = "/viewOrderStatus", method = RequestMethod.GET)
 	public  String orderStatus(ModelMap model, HttpSession session){
 		
