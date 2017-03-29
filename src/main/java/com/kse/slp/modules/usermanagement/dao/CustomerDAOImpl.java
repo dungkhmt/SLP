@@ -58,4 +58,22 @@ public class CustomerDAOImpl extends BaseDao implements CustomerDAO {
 		}
 	}
 
+	@Override
+	public int save(Customer cus) {
+		// TODO Auto-generated method stub
+		try {
+			begin();
+			int id = (Integer)getSession().save(cus);
+			commit();
+			return id;
+		} catch (HibernateException e) {
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		} finally {
+			flush();
+			close();
+		}
+	}
 }

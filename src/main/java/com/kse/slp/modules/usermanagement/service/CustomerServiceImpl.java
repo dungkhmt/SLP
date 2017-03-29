@@ -26,4 +26,19 @@ public class CustomerServiceImpl implements CustomerService {
 		return CustomerDAO.getByCode(cus_code);
 	}
 
+	@Override
+	public int save(String cusCode,String cusName, String cusPhone, String cusAddress,
+			float lat, float lng) {
+		// TODO Auto-generated method stub
+		Customer cus = new Customer(0, cusCode, cusName, cusPhone, cusAddress, lat, lng);
+		
+		return CustomerDAO.save(cus);
+	}
+
+	@Override
+	public int save(Customer cus) {
+		// TODO Auto-generated method stub
+		return CustomerDAO.save(cus);
+	}
+
 }

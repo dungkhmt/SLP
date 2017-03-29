@@ -7,4 +7,6 @@ import com.kse.slp.modules.usermanagement.model.Customer;
 public interface CustomerService {
 	public List<Customer> getList();
 	public Customer getByCode(String cus_code);
+	public int save(String cusCode,String cusName, String cusPhone, String cusAddress, float lat, float lng );
+	public int save(Customer cus);
 }
