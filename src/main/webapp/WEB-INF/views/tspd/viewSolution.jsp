@@ -42,7 +42,7 @@ function initMap(){
 			path: [pi,pj],
 			strokeColor: "blue",
 			strokeOpacity: 1.0,
-			strokeWeight: 5,
+			strokeWeight: 2,
 			icons: [{
 	            icon: lineSymbol,
 	            offset: '100%'
@@ -68,7 +68,7 @@ function initMap(){
 			path: [lauch_node,drone_node],
 			strokeColor: "red",
 			strokeOpacity: 1.0,
-			strokeWeight: 5,
+			strokeWeight: 2,
 			icons: [{
 	            icon: lineSymbol,
 	            offset: '100%'
@@ -79,7 +79,7 @@ function initMap(){
 			path: [drone_node,rendezvous_node],
 			strokeColor: "red",
 			strokeOpacity: 1.0,
-			strokeWeight: 5,
+			strokeWeight: 2,
 			icons: [{
 	            icon: lineSymbol,
 	            offset: '100%'
