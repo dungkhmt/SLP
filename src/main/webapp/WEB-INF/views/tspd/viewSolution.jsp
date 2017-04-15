@@ -5,7 +5,7 @@
 		</div>
 	</div>
 	<div class="row"> 
-		<button class="btn btn-primary" onclick="view_tpsdls_solution();">TSPD-LS</button>
+		<button class="btn btn-primary" onclick="view_tspdls_solution();">TSPD-LS</button>
 		<button class="btn btn-primary" onclick="view_grasp_solution();">GRASP</button>
 	</div>
 	<div id="map" style="height:100%"></div>
@@ -15,7 +15,7 @@
 <script>
 var map;
 var dataResponse = JSON.parse('${tour}');
-console.log("data response: "+dataResponse);
+console.log("data response: "+JSON.stringify(dataResponse));
 
 function initMap(){
 	map = new google.maps.Map(document.getElementById('map'),{
@@ -31,9 +31,9 @@ function view_tspdls_solution(){
 }
 
 function view_grasp_solution(){
-	initMap();
-	var tour_tspdls = dataResponse[0];
-	view_tour(tour_tspdls);
+	//initMap();
+	//var tour_grasp = dataResponse[1];
+	//view_tour(tour_tspdls);
 }
 
 function view_tour(data){
