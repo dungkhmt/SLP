@@ -8,7 +8,9 @@
 		<button class="btn btn-primary" onclick="view_tspdls_solution();">TSPD-LS</button>
 		<button class="btn btn-primary" onclick="view_grasp_solution();">GRASP</button>
 	</div>
-	<div id="map" style="height:100%"></div>
+	<div class="row">
+		<div id="map" style="height:100%"></div>
+	</div>
 </div>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&callback=initMap"></script>
@@ -20,7 +22,7 @@ console.log("data response: "+JSON.stringify(dataResponse));
 function initMap(){
 	map = new google.maps.Map(document.getElementById('map'),{
 		center: {lat:21.03, lng:105.8},
-		zoom: 14
+		zoom: 12
 	});
 }
 
@@ -31,9 +33,9 @@ function view_tspdls_solution(){
 }
 
 function view_grasp_solution(){
-	//initMap();
-	//var tour_grasp = dataResponse[1];
-	//view_tour(tour_tspdls);
+	initMap();
+	var tour_grasp = dataResponse[1];
+	view_tour(tour_grasp);
 }
 
 function view_tour(data){
@@ -120,5 +122,4 @@ function view_tour(data){
 		})
 	}
 }
-
 </script>
