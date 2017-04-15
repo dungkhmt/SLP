@@ -15,11 +15,11 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="form-group">
-						<label class="control-label col-lg-3">Truck speed</label>
+						<label class="control-label col-lg-3">Truck speed (km/h)</label>
 						<div class="col-lg-3">
 							<form:input path="truckSpeed" name="truckSpeed" id="truckSpeed" class="form-control" placeholder="Truck speed"/>
 						</div>
-						<label class="control-label col-lg-3">Drone speed</label>
+						<label class="control-label col-lg-3">Drone speed (km/h)</label>
 						<div class="col-lg-3">
 							<form:input path="droneSpeed" name="droneSpeed" id="droneSpeed" class="form-control" placeholder="Drone speed"/>
 						</div>
@@ -27,11 +27,11 @@
 				</div>
 				<div class="row" style="margin-top:10px">
 					<div class="form-group">
-						<label class="control-label col-lg-3">Cost per unit of truck</label>
+						<label class="control-label col-lg-3">Cost per unit (km) of truck</label>
 						<div class="col-lg-3">
 							<form:input path="truckCost" name="truckCost" id="truckCost" class="form-control" placeholder="Cost per unit of truck"/>
 						</div>
-						<label class="control-label col-lg-3">Cost per unit of drone</label>
+						<label class="control-label col-lg-3">Cost per unit (km) of drone</label>
 						<div class="col-lg-3">
 							<form:input path="droneCost" name="droneCost" id="droneCost" class="form-control" placeholder="Cost per unit of drone"/>
 						</div>
@@ -39,11 +39,11 @@
 				</div>
 				<div class="row" style="margin-top:10px">
 					<div class="form-group">
-						<label class="control-label col-lg-3">Wait time (Delta)</label>
+						<label class="control-label col-lg-3">Wait time (Delta) (minute)</label>
 						<div class="col-lg-3">
 							<form:input path="delta" name="delta" id="delta" class="form-control" placeholder="Wait time" />
 						</div>
-						<label class="control-label col-lg-3">Drone endurance (e)</label>
+						<label class="control-label col-lg-3">Drone endurance (e) (km)</label>
 						<div class="col-lg-3">
 							<form:input path="endurance" name="endurance" id="endurance" class="form-control" placeholder="endurance"/>
 						</div>
@@ -51,8 +51,7 @@
 				</div>
 				<div class="row" style="margin-top:10px">
 					<form:input path="listPoints" name="listPoints" id="listPoints" type="hidden"/>
-					<button class="btn btn-primary col-lg-offset-5 btn-solve" type="submit" name="action" value="tspd-ls">TSPD-LS</button>
-					<button class="btn btn-primary btn-solve" type="submit" name="action" value="grasp">GRASP</button>
+					<button class="btn btn-primary col-lg-offset-5 btn-solve" type="submit">Upload</button>
 				</div>
 			</div>		
 		</div>

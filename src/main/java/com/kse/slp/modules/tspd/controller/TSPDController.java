@@ -50,7 +50,7 @@ public class TSPDController extends BaseWeb{
 	
 	@RequestMapping(value="/computeTSPDTour", method = RequestMethod.POST)
 	public String computeTSPDTour(ModelMap model, @ModelAttribute("tspdInputFile") TSPDInput request){
-		System.out.println(name()+"computeTSPDTour::");
+		//System.out.println(name()+"computeTSPDTour::");
 		MultipartFile mFile = request.getTspdInputRequest();
 		try {
 			InputStream file = mFile.getInputStream();
@@ -68,7 +68,7 @@ public class TSPDController extends BaseWeb{
 			HttpResponse response = httpClient.execute(post);
 			HttpEntity res = response.getEntity();
 			String responseString = EntityUtils.toString(res, "UTF-8");
-			Tour result = gson.fromJson(responseString, Tour.class);
+			//Tour[] result = gson.fromJson(responseString, Tour[].class);
 			
 			model.put("tour", responseString);
 			
@@ -87,10 +87,8 @@ public class TSPDController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/tspd-solve", method=RequestMethod.POST)
-	public String tspdSolve(@ModelAttribute("tspd") TSPDRequest data ,BindingResult bresult, ModelMap model, @RequestParam String action){
+	public String tspdSolve(@ModelAttribute("tspd") TSPDRequest data ,BindingResult bresult, ModelMap model){
 		System.out.println(name()+"tspdSolve::data = "+data.toString());
-		System.out.println(name()+"tspdSolve::params = "+action);
-		
 		
 		Gson gson = new Gson();
 		Point[] listPoints = gson.fromJson(data.getListPoints(), Point[].class);
@@ -99,7 +97,7 @@ public class TSPDController extends BaseWeb{
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		
 		
-		HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/tsp-with-drone/"+action);
+		HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/tsp-with-drone");
 		StringEntity params = new StringEntity(gson.toJson(dataSend), ContentType.APPLICATION_JSON);
 		post.addHeader("content-type", "application/json");
 		post.setEntity(params);
@@ -110,14 +108,14 @@ public class TSPDController extends BaseWeb{
 			HttpEntity res = response.getEntity();
 			String responseString = EntityUtils.toString(res, "UTF-8");
 			System.out.println(name()+"tspdSolve::reponse"+responseString);
-			Tour result = gson.fromJson(responseString, Tour.class);
+			//Tour result = gson.fromJson(responseString, Tour.class);
 			model.put("tour", responseString);
 			return "tspd.viewSolution";
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "tspd.viewSolution";
+			return null;
 		}
 	}
 	
