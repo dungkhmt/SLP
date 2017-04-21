@@ -70,7 +70,7 @@ public class TSPDController extends BaseWeb{
 			String responseString = EntityUtils.toString(res, "UTF-8");
 			//Tour[] result = gson.fromJson(responseString, Tour[].class);
 			
-			model.put("tour", responseString);
+			model.put("sol", responseString);
 			
 			file.close();
 		} catch (IOException e) {
@@ -109,7 +109,7 @@ public class TSPDController extends BaseWeb{
 			String responseString = EntityUtils.toString(res, "UTF-8");
 			System.out.println(name()+"tspdSolve::reponse"+responseString);
 			//Tour result = gson.fromJson(responseString, Tour.class);
-			model.put("tour", responseString);
+			model.put("sol", responseString);
 			return "tspd.viewSolution";
 			
 		} catch (IOException e) {
