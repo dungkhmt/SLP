@@ -123,7 +123,7 @@ function view_tour(data){
 		position : null,
 		speed: dataResponse.droneSpeed,
 		isDrone: true,
-		isRunning: false
+		isRunning: -1
 	});
 	markerTruck = new google.maps.Marker({
 		icon : "https://maps.gstatic.com/mapfiles/ms2/micons/truck.png",
@@ -132,24 +132,15 @@ function view_tour(data){
 		isDrone: false
 	});
 	
-	for(var i=0; i<truckTour.length-1; i++){
-		var pi = truckTour[i];
-		pi = new google.maps.LatLng(pi.lat,pi.lng);
-		
-		var marker_pi;
-		if(i == 0){
-			marker_pi = new google.maps.Marker({
-				map: map,
-				icon : "https://www.google.com/mapfiles/marker_yellow.png",
-				position : pi
-			})
-		};
-		
-		var pj = truckTour[i+1];
-		pj = new google.maps.LatLng(pj.lat,pj.lng);
-	}	
-	
 
+	for(var i=0;i<droneDeliveries.length;i++){
+		marker_pi = new google.maps.Marker({
+			map: map,
+			icon : "https://www.google.com/mapfiles/marker_yellow.png",
+			position : new google.maps.LatLng(droneDeliveries[i].drone_node.lat,droneDeliveries[i].drone_node.lat)
+		})
+		console.log(i);
+	}
 	animation(0);
 	
 }
@@ -182,10 +173,11 @@ function checkWayPoint(lat,lng,speed){
 		if(distance2point(lat, lng, truckTour[i].lat, truckTour[i].lng) <speed) return i
 	return -1;
 }
-function runDrone(lauch,drone,rendezvous){
+var laughed;
+function runDrone(lauch,drone,rendezvous,c){
 	// make poliline
 	console.log("rundrone");
-	markerDrone.isRunning=true;
+	markerDrone.isRunning=c;
 	markerDrone.setMap(map);
 	polyline = new google.maps.Polyline({
 					path: [],
@@ -295,12 +287,13 @@ function startAnimation(marker,polyLine,end){
 	}, 100);
 }
 /* chuyển động của animation */
+
+
 function animate(marker,d,step,distance,polyLine,end){
 	if(d > distance){
 		marker.setPosition(end);
 		if (marker.isDrone==true) {
-			console.log("here");
-			markerDrone.isRunning=false;
+			markerDrone.isRunning=-1;
 		}
 		return;
 	}
@@ -316,19 +309,21 @@ function animate(marker,d,step,distance,polyLine,end){
 			move = function( wait, newDestination) {
 				//console.log("loop");
 				console.log("markerDrone.isRunning "+markerDrone.isRunning);
-        		if(markerDrone.isRunning==true) {
+        		if(markerDrone.isRunning==c && laughed!=c) {
           		// call the next "frame" of the animation
 	          		setTimeout(function() { 
 	            		move(wait); 
 	          		}, wait);
         		} else{
         			console.log("running"+markerDrone.isRunning)
-        			if(truckTour[c].obLauch_node!=null && markerDrone.isRunning==false){
-        				runDrone(truckTour[c].obLauch_node.lauch_node,truckTour[c].obLauch_node.drone_node,truckTour[c].obLauch_node.rendezvous_node);			
+        			if(truckTour[c].obLauch_node!=null && markerDrone.isRunning==-1){
+        				laughed=c;
+        				runDrone(truckTour[c].obLauch_node.lauch_node,truckTour[c].obLauch_node.drone_node,truckTour[c].obLauch_node.rendezvous_node,c);			
+        			} else {
+        				markerDrone.setMap(null);
         			}
         			var a = d + step;
         			setTimeout(function(){
-        				markerDrone.setMap(null);
         				animate(marker,a,step,distance,polyLine,end);
         			}, 100);
         		}
@@ -337,8 +332,9 @@ function animate(marker,d,step,distance,polyLine,end){
 			move(1000);
 		}
 		else{ 
-			if(truckTour[c].obLauch_node!=null && markerDrone.isRunning==false){
-				runDrone(truckTour[c].obLauch_node.lauch_node,truckTour[c].obLauch_node.drone_node,truckTour[c].obLauch_node.rendezvous_node);			
+			if(truckTour[c].obLauch_node!=null && markerDrone.isRunning==-1 && marker.isDrone==false){
+				laughed=c;
+				runDrone(truckTour[c].obLauch_node.lauch_node,truckTour[c].obLauch_node.drone_node,truckTour[c].obLauch_node.rendezvous_node,c);			
 			}
 			var a = d + step;
 			setTimeout(function(){
