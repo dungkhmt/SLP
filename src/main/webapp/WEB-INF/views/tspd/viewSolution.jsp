@@ -66,7 +66,6 @@ function initMap(){
 		var p1= this.getPath().getAt(i-2);
 		var p2= this.getPath().getAt(i-1);
 		var m = (metres-olddist)/(dist-olddist);
-		console.log(this.getPath().getAt(i-1));
 		return [new google.maps.LatLng( p1.lat() + (p2.lat()-p1.lat())*m, p1.lng() + (p2.lng()-p1.lng())*m),this.getPath().getAt(i-1).isWayPoint];
 	}
 
@@ -89,6 +88,7 @@ function view_grasp_solution(){
 var truckTour;
 var droneDeliveries ;
 var dr=[];
+var dl=[];
 function view_tour(data){
 	truckTour = data.td.truck_tour;
 	droneDeliveries = data.dd;
@@ -131,17 +131,20 @@ function view_tour(data){
 	
 
 	for(var i=0;i<droneDeliveries.length;i++){
-		droneDeliveries[i].d=0;
-		console.log(droneDeliveries[i].drone_node.lat+" "+droneDeliveries[i].drone_node.lat);
-		marker_pi = new google.maps.Marker({
+		var pi = new google.maps.Marker({
 			icon : "https://www.google.com/mapfiles/marker_yellow.png",
-			position : new google.maps.LatLng(droneDeliveries[i].drone_node.lat,droneDeliveries[i].drone_node.lng)
+			position : new google.maps.LatLng(droneDeliveries[i].drone_node.lat,droneDeliveries[i].drone_node.lng),
+			infowindow: new google.maps.InfoWindow({ content:""+ droneDeliveries[i].drone_node.id })
 		})
-		marker_pi.setMap(map);
-		console.log(i);
+		pi.setMap(map);
+		pi.addListener('click', function() {
+	          this.infowindow.open(map, this);
+	    });
 	}
-	for(var i=0;i<truckTour.length;i++)
+	for(var i=0;i<truckTour.length;i++){
 		dr[i]=0;
+		dl[i]=0;
+	}
 	runTruck(new google.maps.LatLng(truckTour[0].lat,truckTour[0].lng),new google.maps.LatLng(truckTour[truckTour.length-1].lat,truckTour[truckTour.length-1].lng));
 	
 }
@@ -162,6 +165,7 @@ function distance2point(lat1,lon1 ,lat2,lon2){
 }
 
 function runDrone(lauch,drone,rendezvous,c){
+	dl[c]=1;
 	markerDrone.isRunning=true;
 	markerDrone.setMap(map);
 	polyline = new google.maps.Polyline({
@@ -191,25 +195,25 @@ function calculateAndDisplay(start, end, marker){
 	              stopover: true
 	            });
 		}
-		request = {
+		var request = {
 			origin: start,
 			destination: end,
 			waypoints:waypoints,
 			travelMode: google.maps.DirectionsTravelMode.DRIVING
 		};
-		display=function(rep, status){
+		var display=function(rep, status){
 			console.log(rep);
 			if(status == google.maps.DirectionsStatus.OK){
-				polyLine = new google.maps.Polyline({
+				var polyLine = new google.maps.Polyline({
 					path: [],
 					strokeColor: '#696969'
 				});		
-				directionsDisplay = new google.maps.DirectionsRenderer();		
+				var directionsDisplay = new google.maps.DirectionsRenderer();		
 				directionsDisplay.setMap(map);
 				directionsDisplay.setDirections(rep);
 
-				startLocation = new Object();
-				endLocation = new Object();
+				var startLocation = new Object();
+				var endLocation = new Object();
 
 				var legs = rep.routes[0].legs;   
 				for(var h=0; h<legs.length; h++){
@@ -254,7 +258,7 @@ function animate(marker,d,step,distance,polyLine,end){
 	if(d > distance){
 		marker.setPosition(end);
 		if (marker.isDrone==true) {
-			markerDrone.isRunning=-1;
+			markerDrone.isRunning=false;
 		}
 		return;
 	}
@@ -262,19 +266,18 @@ function animate(marker,d,step,distance,polyLine,end){
 	var t;
 	[p,t] = polyLine.GetPointAtDistance(d);
 	marker.setPosition(p);
-	console.log("is Drone"+marker.isDrone);
 	if(t!=-1 && t!= undefined ) {
-		console.log(t);
-		if(truckTour[t].obRendezvous_node!=null&& marker.isDrone==false&&dr[t]==0){
+		if(truckTour[t].obRendezvous_node!=null&& marker.isDrone==false && dr[t]==0){
 			move = function( wait, newDestination) {
         		if(markerDrone.isRunning==true) {
 	          		setTimeout(function() { 
 	            		move(wait); 
 	          		}, wait);
         		} else{
-        			console.log("is Drone in loop"+marker.isDrone);
         			dr[t]=1;
-        			if(truckTour[t].obLauch_node!=null ){
+        			console.log(t+" laught Node"+markerDrone.isRunning+" "+marker.isDrone);
+        			console.log(truckTour[t].obLauch_node);
+        			if(truckTour[t].obLauch_node!=null&&dl[t]==0 ){
         				runDrone(truckTour[t].obLauch_node.lauch_node,truckTour[t].obLauch_node.drone_node,truckTour[t].obLauch_node.rendezvous_node,t);			
         			} else {
         				markerDrone.setMap(null);
@@ -288,7 +291,9 @@ function animate(marker,d,step,distance,polyLine,end){
 			}
 			move(1000);
 		}else{ 
-			if(truckTour[t].obLauch_node!=null && markerDrone.isRunning==false && marker.isDrone==false){
+			console.log(t+" laught Node"+markerDrone.isRunning+" "+marker.isDrone);
+			console.log(truckTour[t].obLauch_node);
+			if(truckTour[t].obLauch_node!=null && markerDrone.isRunning==false && marker.isDrone==false&&dl[t]==0){
 				runDrone(truckTour[t].obLauch_node.lauch_node,truckTour[t].obLauch_node.drone_node,truckTour[t].obLauch_node.rendezvous_node,t);	
 			}
 			var a = d + step;
