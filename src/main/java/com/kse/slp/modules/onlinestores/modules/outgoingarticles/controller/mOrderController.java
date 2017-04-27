@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,12 +21,21 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.validator.internal.util.privilegedactions.NewInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -579,13 +589,6 @@ public class mOrderController extends BaseWeb{
 		System.out.println(name()+"callServiceCreateRoute--callbatch " +batch);
 		URL url;
 		try {
-			//url = new URL("http://103.18.4.32:8080/ezRoutingAPI/delivery-goods-plan");
-			url = new URL("http://localhost:8080/ezRoutingAPI/delivery-goods-plan");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-type", "application/json");
-			
 			List<mOrders> lstOrder = orderService.getListOrderByBatchCode(batch);
 			DeliveryRequest[] deliveryRequest = new DeliveryRequest[lstOrder.size()];
 			for(int i=0; i<lstOrder.size(); i++){
@@ -625,22 +628,22 @@ public class mOrderController extends BaseWeb{
 			//System.exit(-1);
 			
 			DeliveryGoodInput data = new DeliveryGoodInput(deliveryRequest, store, shippers);
-			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-			String datajson = ow.writeValueAsString(data);
+			Gson gson = new Gson();
+			String datajson = gson.toJson(data);
 			System.out.println(name()+"callServiceCreateRoute---data send:");
 			System.out.println(datajson);
-			OutputStream os = conn.getOutputStream();
-			os.write(datajson.getBytes());
-			os.flush();
 			
-			BufferedReader br =  new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String reciveData = br.readLine();
-			//System.out.println(name()+"callServiceCreateRoute--recived Data: \n "+reciveData);
+			HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/delivery-goods-plan");
+			StringEntity params = new StringEntity(datajson, ContentType.APPLICATION_JSON);
+			post.addHeader("content-type", "application/json");
+			post.setEntity(params);
 			
-			ObjectMapper mapper = new ObjectMapper();
-			DeliveryGoodSolution solution = mapper.readValue(reciveData, DeliveryGoodSolution.class);
-			//System.out.println(name()+"callServiceCreateRoute--length of route"+solution.getRoutes().length);
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			HttpResponse response = httpClient.execute(post);
+			HttpEntity res = response.getEntity();
+			String responseString = EntityUtils.toString(res, "UTF-8");
 			
+			DeliveryGoodSolution solution = gson.fromJson(responseString, DeliveryGoodSolution.class);			
 			List<mRoutes> lstr = mRoutesService.getListByBatchCode(batch);
 			System.out.println(name()+"callServiceCreateRoute--length of route to remove"+lstr.size());
 			
