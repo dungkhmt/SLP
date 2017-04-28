@@ -265,7 +265,7 @@ function lastReq(marker,end,request,polyLine){
 var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 function calculateAndDisplay(i,start, end, marker,polyLine,waypoints){
-	if(i %6==0 || i>=truckTour.length-1){
+	if(i %22==0 || i>=truckTour.length-1){
 			var request = {
 				origin: start,
 				destination: new google.maps.LatLng(truckTour[i].lat,truckTour[i].lng),
