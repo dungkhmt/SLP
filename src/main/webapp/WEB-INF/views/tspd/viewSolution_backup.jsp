@@ -18,7 +18,6 @@
 var map;
 var dataResponse = JSON.parse('${sol}');
 var tours=dataResponse.tours
-console.log(tours);
 var makerDrone;
 var makerTruck;
 var directionsService ;
@@ -45,7 +44,7 @@ function initMap(){
 	}
 	google.maps.Polygon.prototype.Distance = function(){
 		var distance =0;
-		for(var i=2; i< this.getPath().getLength(); i++){
+		for(var i=1; i< this.getPath().getLength(); i++){
 			distance += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i-1));
 		}
 		return distance;
@@ -57,7 +56,7 @@ function initMap(){
 	    if (this.getPath().getLength() < 2) return null;
 	    var dist=0;
 	    var olddist=0;
-	    for (var i=2; (i < this.getPath().getLength() && dist < metres); i++) {
+	    for (var i=1; (i < this.getPath().getLength() && dist < metres); i++) {
 			olddist = dist;
 			dist += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i-1));
 		}
@@ -67,7 +66,6 @@ function initMap(){
 		var p1= this.getPath().getAt(i-2);
 		var p2= this.getPath().getAt(i-1);
 		var m = (metres-olddist)/(dist-olddist);
-		console.log(this.getPath().getAt(i-1).isWayPoint);
 		return [new google.maps.LatLng( p1.lat() + (p2.lat()-p1.lat())*m, p1.lng() + (p2.lng()-p1.lng())*m),this.getPath().getAt(i-1).isWayPoint];
 	}
 
@@ -91,7 +89,6 @@ var truckTour;
 var droneDeliveries ;
 var dr=[];
 var dl=[];
-var markerTruckTour=[];
 function view_tour(data){
 	truckTour = data.td.truck_tour;
 	droneDeliveries = data.dd;
@@ -182,123 +179,69 @@ function runDrone(lauch,drone,rendezvous,c){
 	startAnimation(markerDrone, polyline, new google.maps.LatLng(rendezvous.lat,rendezvous.lng))
 
 }
-var storeReq=null;
+
 function set(start,end,marker){	
 	marker.setPosition(start);
 	marker.setMap(map);
-	var waypoints=[]
-	
-	var polyLine = new google.maps.Polyline({
-		path: [],
-		strokeColor: '#1A9D51',
-		strokeOpacity: 0.7,
-	    strokeWeight: 3
-	});	
-	
-	calculateAndDisplay(1,start,end,marker,polyLine,waypoints);
-}
-var sucQDir=false;
-function storeResponce(request,polyLine){
-	var display=function(rep, status){
-		if(status == google.maps.DirectionsStatus.OK){
-			console.log(rep);
-			var legs = rep.routes[0].legs;   
-			for(var h=0; h<legs.length; h++){			
-				var steps = legs[h].steps;
-				var marker_z = new google.maps.Marker({
-					position : legs[h].start_location,
-					label:labels[markerTruckTour.length % labels.length],
-					map: map
-				});
-				markerTruckTour.push(marker_z);
-				legs[h].start_location.isWayPoint=markerTruckTour.length-1;
-				polyLine.getPath().push(legs[h].start_location);
-				for(var j = 0; j < steps.length; j++){
-					var nextPoint = steps[j].path;  			
-					for(var k = 0; k < nextPoint.length; k++){
-						if(j==0&& k==0) continue;
-						nextPoint[k].isWayPoint=markerTruckTour.length-1;
-						polyLine.getPath().push(nextPoint[k]); 		
-					}
-				}
-			}
-		}
-		sucQDir=true;
-	};
-	directionsService.route(request, display);	
+	calculateAndDisplay(start,end,marker);
 }
 
-function lastReq(marker,end,request,polyLine){
-	
-	var display=function(rep, status){
-		console.log(rep);
-		if(status == google.maps.DirectionsStatus.OK){
-	
-			var legs = rep.routes[0].legs;   
-			for(var h=0; h<legs.length; h++){
-				
-				var steps = legs[h].steps;
-				var marker_z = new google.maps.Marker({
-					position : legs[h].start_location,
-					label:labels[markerTruckTour.length % labels.length],
-					map: map
-				});
-				markerTruckTour.push(marker_z);
-				legs[h].start_location.isWayPoint=markerTruckTour.length-1;
-				polyLine.getPath().push(legs[h].start_location);
-				for(var j = 0; j < steps.length; j++){
-					var nextPoint = steps[j].path;  			
-					for(var k = 0; k < nextPoint.length; k++){
-						if(j==0&& k==0) continue;
-						nextPoint[k].isWayPoint=markerTruckTour.length-1;
-						polyLine.getPath().push(nextPoint[k]); 		
-					}
-				}
-			}
-		}
-		polyLine.setMap(map);
-		startAnimation(marker,polyLine,end);	
-	};
 
-	directionsService.route(request, display);
-}
-var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-function calculateAndDisplay(i,start, end, marker,polyLine,waypoints){
-	if(i %6==0 || i>=truckTour.length-1){
-			var request = {
-				origin: start,
-				destination: new google.maps.LatLng(truckTour[i].lat,truckTour[i].lng),
-				waypoints:waypoints,	
-				travelMode: google.maps.DirectionsTravelMode.DRIVING
-			};
-			sucQDir=false;	
-			if(i>=truckTour.length-1){
-				lastReq(marker,end,request,polyLine);
-				return;
-			}
-			storeResponce(request,polyLine);
-			move = function( wait,i) {
-        		if(sucQDir==false) {
-	          		setTimeout(function() { 
-	            		move(wait,i); 
-	          		}, wait);
-        		} else{
-        			start= new google.maps.LatLng(truckTour[i].lat,truckTour[i].lng);
-        			waypoints=[];
-        			calculateAndDisplay(i+1,start, end, marker,polyLine,waypoints);
-        			return
-        		}
-			}
-			move(10,i);
-		} else {
+function calculateAndDisplay(start, end, marker){
+		var waypoints=[]
+		for(var i=1;i<truckTour.length-1;i++){
 			waypoints.push({
-	            location:new google.maps.LatLng(truckTour[i].lat,truckTour[i].lng),
-	            stopover: true
-	  		});
-			calculateAndDisplay(i+1,start, end, marker,polyLine,waypoints);
+	              location:new google.maps.LatLng(truckTour[i].lat,truckTour[i].lng),
+	              stopover: true
+	            });
 		}
-		
+		var request = {
+			origin: start,
+			destination: end,
+			waypoints:waypoints,
+			travelMode: google.maps.DirectionsTravelMode.DRIVING
+		};
+		var display=function(rep, status){
+			console.log(rep);
+			if(status == google.maps.DirectionsStatus.OK){
+				var polyLine = new google.maps.Polyline({
+					path: [],
+					strokeColor: '#696969'
+				});		
+				var directionsDisplay = new google.maps.DirectionsRenderer();		
+				directionsDisplay.setMap(map);
+				directionsDisplay.setDirections(rep);
+
+				var startLocation = new Object();
+				var endLocation = new Object();
+
+				var legs = rep.routes[0].legs;   
+				for(var h=0; h<legs.length; h++){
+					
+					if(h==0){
+						startLocation.latlng = legs[h].start_location;
+					}
+					endLocation.latlng = legs[h].end_location; 
+								
+					var steps = legs[h].steps;
+					legs[h].start_location.isWayPoint=h;
+					polyLine.getPath().push(legs[h].start_location);
+					for(var j = 0; j < steps.length; j++){
+						var nextPoint = steps[j].path;  			
+						for(var k = 0; k < nextPoint.length; k++){
+							if(j==0&& k==0) continue;
+							nextPoint[k].isWayPoint=h;
+							polyLine.getPath().push(nextPoint[k]); 		
+						}
+					}
+				}
+			}
+			polyLine.setMap(map);
+			
+			startAnimation(marker,polyLine,end);	
+		};
+	
+		directionsService.route(request, display);	
 }
 
 function startAnimation(marker,polyLine,end){
@@ -311,6 +254,7 @@ function startAnimation(marker,polyLine,end){
 
 
 function animate(marker,d,step,distance,polyLine,end){
+	
 	if(d > distance){
 		marker.setPosition(end);
 		if (marker.isDrone==true) {
@@ -324,7 +268,7 @@ function animate(marker,d,step,distance,polyLine,end){
 	marker.setPosition(p);
 	if(t!=-1 && t!= undefined ) {
 		if(truckTour[t].obRendezvous_node!=null&& marker.isDrone==false && dr[t]==0){
-			move = function( wait) {
+			move = function( wait, newDestination) {
         		if(markerDrone.isRunning==true) {
 	          		setTimeout(function() { 
 	            		move(wait); 
@@ -341,6 +285,7 @@ function animate(marker,d,step,distance,polyLine,end){
         				animate(marker,a,step,distance,polyLine,end);
         			}, 100);
         		}
+        		
 			}
 			move(1000);
 		}else{ 
