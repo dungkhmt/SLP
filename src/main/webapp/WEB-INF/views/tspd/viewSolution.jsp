@@ -62,7 +62,7 @@ function initMap(){
 	}
 	google.maps.Polygon.prototype.Distance = function(){
 		var distance =0;
-		for(var i=2; i< this.getPath().getLength(); i++){
+		for(var i=1; i< this.getPath().getLength(); i++){
 			distance += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i-1));
 		}
 		return distance;
@@ -74,7 +74,7 @@ function initMap(){
 	    if (this.getPath().getLength() < 2) return null;
 	    var dist=0;
 	    var olddist=0;
-	    for (var i=2; (i < this.getPath().getLength() && dist < metres); i++) {
+	    for (var i=1; (i < this.getPath().getLength() && dist < metres); i++) {
 			olddist = dist;
 			dist += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i-1));
 		}
