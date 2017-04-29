@@ -67,7 +67,6 @@ function initMap(){
 		var p1= this.getPath().getAt(i-2);
 		var p2= this.getPath().getAt(i-1);
 		var m = (metres-olddist)/(dist-olddist);
-		console.log(this.getPath().getAt(i-1).isWayPoint);
 		return [new google.maps.LatLng( p1.lat() + (p2.lat()-p1.lat())*m, p1.lng() + (p2.lng()-p1.lng())*m),this.getPath().getAt(i-1).isWayPoint];
 	}
 
@@ -95,7 +94,6 @@ var markerTruckTour=[];
 function view_tour(data){
 	truckTour = data.td.truck_tour;
 	droneDeliveries = data.dd;
-	console.log(data)
 	for(var j=0;j<truckTour.length;j++){
 		truckTour[j].obLauch_node=null;
 		truckTour[j].obRendezvous_node=null;
@@ -201,7 +199,6 @@ var sucQDir=false;
 function storeResponce(request,polyLine){
 	var display=function(rep, status){
 		if(status == google.maps.DirectionsStatus.OK){
-			console.log(rep);
 			var legs = rep.routes[0].legs;   
 			for(var h=0; h<legs.length; h++){			
 				var steps = legs[h].steps;
@@ -231,7 +228,6 @@ function storeResponce(request,polyLine){
 function lastReq(marker,end,request,polyLine){
 	
 	var display=function(rep, status){
-		console.log(rep);
 		if(status == google.maps.DirectionsStatus.OK){
 	
 			var legs = rep.routes[0].legs;   
