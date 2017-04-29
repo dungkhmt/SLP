@@ -7,6 +7,7 @@
 	<div class="row"> 
 		<button class="btn btn-primary" onclick="view_tspdls_solution();">TSPD-LS</button>
 		<button class="btn btn-primary" onclick="view_grasp_solution();">GRASP</button>
+		<button class="btn btn-warning" id="buttonChangePolyline" onclick="hireNormalPolyline();">Hire</button>
 	</div>
 	<div class="row">
 		<div id="map" style="height:100%"></div>
@@ -22,6 +23,22 @@ console.log(tours);
 var makerDrone;
 var makerTruck;
 var directionsService ;
+var stateBotNormalPolyline=0;
+function hireNormalPolyline(){
+	console.log(stateBotNormalPolyline);
+	if(stateBotNormalPolyline==0) {
+		$( "#buttonChangePolyline" ).removeClass( "btn-warning" );
+		$( "#buttonChangePolyline" ).addClass( "btn-error" );
+        $("#buttonChangePolyline").text("View");
+		polylineNormal.setMap(null);
+	} else {
+		$( "#buttonChangePolyline" ).removeClass( "btn-error" );
+		$( "#buttonChangePolyline" ).addClass( "btn-warning" );
+		$("#buttonChangePolyline").text("Hire");
+		polylineNormal.setMap(map);
+	}
+	stateBotNormalPolyline=(stateBotNormalPolyline+1)%2;
+}
 function initMap(){
 	map = new google.maps.Map(document.getElementById('map'),{
 		center: {lat:21.03, lng:105.8},
@@ -91,14 +108,27 @@ var droneDeliveries ;
 var dr=[];
 var dl=[];
 var markerTruckTour=[];
+var polylineNormal;
 function view_tour(data){
 	truckTour = data.td.truck_tour;
 	droneDeliveries = data.dd;
+	var lineSymbol = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
+	polylineNormal=new google.maps.Polyline({
+		strokeColor: '#096D9F',
+	    strokeOpacity: 0.5,
+	    strokeWeight: 2,
+	    icons: [{
+			icon: lineSymbol,
+			offset: '100%',
+			repeat: '200px'
+		}]
+	});
 	for(var j=0;j<truckTour.length;j++){
+		
 		truckTour[j].obLauch_node=null;
 		truckTour[j].obRendezvous_node=null;
 	}
-	var lineSymbol = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
+	
 	for(var i=0;i<droneDeliveries.length;i++){
 		for(var j=0;j<truckTour.length;j++){
 			if(truckTour[j].id==droneDeliveries[i].lauch_node.id){
@@ -129,8 +159,6 @@ function view_tour(data){
 		speed: dataResponse.truckSpeed,
 		isDrone: false
 	});
-	
-
 	for(var i=0;i<droneDeliveries.length;i++){
 		var pi = new google.maps.Marker({
 			icon : "https://www.google.com/mapfiles/marker_yellow.png",
@@ -142,6 +170,7 @@ function view_tour(data){
 	          this.infowindow.open(map, this);
 	    });
 	}
+	
 	for(var i=0;i<truckTour.length;i++){
 		dr[i]=0;
 		dl[i]=0;
@@ -202,6 +231,7 @@ function storeResponce(request,polyLine){
 			var legs = rep.routes[0].legs;   
 			for(var h=0; h<legs.length; h++){			
 				var steps = legs[h].steps;
+				polylineNormal.getPath().push(legs[h].start_location)
 				var marker_z = new google.maps.Marker({
 					position : legs[h].start_location,
 					label:labels[markerTruckTour.length % labels.length],
@@ -234,6 +264,7 @@ function lastReq(marker,end,request,polyLine){
 			for(var h=0; h<legs.length; h++){
 				
 				var steps = legs[h].steps;
+				polylineNormal.getPath().push(legs[h].start_location)
 				var marker_z = new google.maps.Marker({
 					position : legs[h].start_location,
 					label:labels[markerTruckTour.length % labels.length],
@@ -253,9 +284,11 @@ function lastReq(marker,end,request,polyLine){
 			}
 		}
 		polyLine.setMap(map);
+		polylineNormal.getPath().push(end);
+		polylineNormal.setMap(map);
 		startAnimation(marker,polyLine,end);	
 	};
-
+	
 	directionsService.route(request, display);
 }
 var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
