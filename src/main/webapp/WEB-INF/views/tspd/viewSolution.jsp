@@ -22,6 +22,7 @@ var tours=dataResponse.tours
 console.log(tours);
 var makerDrone;
 var makerTruck;
+var algo=0;
 var directionsService ;
 var stateBotNormalPolyline=0;
 function hireNormalPolyline(){
@@ -93,12 +94,14 @@ function initMap(){
 }
 var droneDeliverySort=[];
 function view_tspdls_solution(){
+	algo+=1;
 	initMap();
 	var tour_tspdls = tours[1];
 	view_tour(tour_tspdls);
 }
 
 function view_grasp_solution(){
+	algo+=1;
 	initMap();
 	var tour_grasp = tours[0];
 	view_tour(tour_grasp);
@@ -110,6 +113,7 @@ var dl=[];
 var markerTruckTour=[];
 var polylineNormal;
 function view_tour(data){
+	markerTruckTour=[];
 	truckTour = data.td.truck_tour;
 	droneDeliveries = data.dd;
 	var lineSymbol = {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW};
@@ -206,7 +210,7 @@ function runDrone(lauch,drone,rendezvous,c){
 	polyline.getPath().push(new google.maps.LatLng(drone.lat,drone.lng));
 	polyline.getPath().push(new google.maps.LatLng(rendezvous.lat,rendezvous.lng));
 	polyline.setMap(map);
-	startAnimation(markerDrone, polyline, new google.maps.LatLng(rendezvous.lat,rendezvous.lng))
+	startAnimation(markerDrone, polyline, new google.maps.LatLng(rendezvous.lat,rendezvous.lng),algo)
 
 }
 var storeReq=null;
@@ -286,7 +290,7 @@ function lastReq(marker,end,request,polyLine){
 		polyLine.setMap(map);
 		polylineNormal.getPath().push(end);
 		polylineNormal.setMap(map);
-		startAnimation(marker,polyLine,end);	
+		startAnimation(marker,polyLine,end,algo);	
 	};
 	
 	directionsService.route(request, display);
@@ -330,17 +334,17 @@ function calculateAndDisplay(i,start, end, marker,polyLine,waypoints){
 		
 }
 
-function startAnimation(marker,polyLine,end){
+function startAnimation(marker,polyLine,end,malgo){
 	var step = marker.speed;
 	distance = polyLine.Distance();
 	setTimeout(function(){
-		animate(marker,1,step,distance,polyLine,end);
+		animate(marker,1,step,distance,polyLine,end,malgo);
 	}, 100);
 }
 
 
-function animate(marker,d,step,distance,polyLine,end){
-	if(d > distance){
+function animate(marker,d,step,distance,polyLine,end,malgo){
+	if(d > distance || malgo!=algo){
 		marker.setPosition(end);
 		if (marker.isDrone==true) {
 			markerDrone.isRunning=false;
@@ -367,7 +371,7 @@ function animate(marker,d,step,distance,polyLine,end){
         			}
         			var a = d + step;
         			setTimeout(function(){
-        				animate(marker,a,step,distance,polyLine,end);
+        				animate(marker,a,step,distance,polyLine,end,malgo);
         			}, 100);
         		}
 			}
@@ -378,13 +382,13 @@ function animate(marker,d,step,distance,polyLine,end){
 			}
 			var a = d + step;
 			setTimeout(function(){
-				animate(marker,a,step,distance,polyLine,end);
+				animate(marker,a,step,distance,polyLine,end,malgo);
 			}, 100);
 		}
 	} else{
 		var a = d + step;
 		setTimeout(function(){
-			animate(marker,a,step,distance,polyLine,end);
+			animate(marker,a,step,distance,polyLine,end,malgo);
 		}, 100);
 	}
 }
