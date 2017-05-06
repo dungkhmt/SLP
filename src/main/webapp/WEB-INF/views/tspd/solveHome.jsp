@@ -9,7 +9,13 @@
 	</div>
 	
 	<div class="row">
+		<form:form action="${baseUrl}/tsp-drone/uploadSolution" method="POST" id="tspdsolution" commandName="tspdsolution" enctype="multipart/form-data" role="form" class="form-horizontal">
+			<form:input id="input-solution" path="tspdSolutionFile" name="tspdSolutionFile" type="file" class="file file-loading " style="display:none" />
+			<a class="btn btn-primary " id="submit-button-solution" onclick="uploadSolution()" >Upload Solution</a>
+		</form:form>
 		<div id="googleMap" style="width:100%;height:100%"></div>
+		
+		
 		<form:form action="${baseUrl}/tsp-drone/tspd-solve" method="POST" commandName="tspd" role="form" class="form-horizontal">
 		<div class="panel panel-default">
 			<div class="panel-body">
@@ -59,6 +65,7 @@
 			</div>		
 		</div>
 		</form:form>
+		
 	</div>
 </div>
 
@@ -138,6 +145,9 @@ function save_file(el){
 function upload_file(){
 	$('#file-tsp-data').click();
 }
+function uploadSolution(){
+	$('#input-solution').click();
+}
 
 (function(){
     
@@ -188,7 +198,17 @@ function upload_file(){
     document.getElementById('file-tsp-data').addEventListener('change', onChange);
 
 }());
+(function(){
+    
+    function onChange(event) {
+    	console.log("input-solution");
+        $("#tspdsolution").submit();
+    }
 
+    
+    document.getElementById('input-solution').addEventListener('change', onChange);
+
+}());
 /*
 function tspd_solve(){
 	//console.log("-----------")
