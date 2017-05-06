@@ -10,6 +10,11 @@
 	
 	<div class="row">
 		<div id="googleMap" style="width:100%;height:100%"></div>
+		<form:form action="${baseUrl}/tsp-drone/uploadSolution" method="POST" commandName="tspdsolution" role="form" class="form-horizontal">
+			<form:input id="input-solution" path="tspdSolutionFile" name="tspdSolutionFile" type="file" class="file file-loading" />
+			<button class="btn btn-primary col-lg-offset-5" type="submit">Upload Solution</button>
+		</form:form>
+		
 		<form:form action="${baseUrl}/tsp-drone/tspd-solve" method="POST" commandName="tspd" role="form" class="form-horizontal">
 		<div class="panel panel-default">
 			<div class="panel-body">
@@ -59,6 +64,7 @@
 			</div>		
 		</div>
 		</form:form>
+		
 	</div>
 </div>
 

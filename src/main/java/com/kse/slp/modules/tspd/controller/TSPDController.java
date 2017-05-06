@@ -30,6 +30,7 @@ import com.kse.slp.modules.tspd.model.Point;
 import com.kse.slp.modules.tspd.model.TSPD;
 import com.kse.slp.modules.tspd.model.TSPDInput;
 import com.kse.slp.modules.tspd.model.TSPDRequest;
+import com.kse.slp.modules.tspd.model.TSPDSolutionFile;
 import com.kse.slp.modules.tspd.model.Tour;
 import com.kse.slp.modules.utilities.gismap.googlemaps.GoogleMapsQuery;
 
@@ -80,9 +81,30 @@ public class TSPDController extends BaseWeb{
 		return "tspd.viewSolution";
 	}
 	
+	@RequestMapping(value="/uploadSolution", method = RequestMethod.POST)
+	public String viewTSPDTour(ModelMap model, @ModelAttribute("tspdsolution") TSPDSolutionFile solution){
+		System.out.println(name()+"computeTSPDTour::"+ "ok");
+		MultipartFile mFile = solution.getTspdSolutionFile();
+		try {
+			InputStream file = mFile.getInputStream();
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(file, writer,"UTF-8");
+			String json = writer.toString();
+			
+			
+			model.put("sol", json);
+			
+			file.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "tspd.viewSolution";
+	}
 	@RequestMapping(value="/tspd-solve-home", method = RequestMethod.GET)
 	public String tspdSolveHome(ModelMap model){
 		model.put("tspd", new TSPDRequest());
+		model.put("tspdsolution", new TSPDSolutionFile());
 		return "tspd.solveHome";
 	}
 	

@@ -8,10 +8,12 @@
 		<button class="btn btn-primary" onclick="view_tspdls_solution();">TSPD-LS</button>
 		<button class="btn btn-primary" onclick="view_grasp_solution();">GRASP</button>
 		<button class="btn btn-warning" id="buttonChangePolyline" onclick="hireNormalPolyline();">Hire</button>
+		<a class="btn btn-primary col-sm-offset-10 " onclick="saveSolution(this);">Save Solution</a>
 	</div>
 	<div class="row">
 		<div id="map" style="height:100%"></div>
 	</div>
+	
 </div>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&callback=initMap&sensor=true&libraries=geometry"></script>
@@ -25,6 +27,14 @@ var makerTruck;
 var algo=0;
 var directionsService ;
 var stateBotNormalPolyline=0;
+function saveSolution(view){
+	console.log("here");
+	save_data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataResponse));
+	console.log(save_data);
+	view.setAttribute("href", "data:"+save_data);
+    view.setAttribute("download", "solution.json");
+    //window.location = baseUrl + "/tsp-drone/tspd-solve-home";
+}
 function hireNormalPolyline(){
 	console.log(stateBotNormalPolyline);
 	if(stateBotNormalPolyline==0) {
@@ -35,7 +45,7 @@ function hireNormalPolyline(){
 	} else {
 		$( "#buttonChangePolyline" ).removeClass( "btn-error" );
 		$( "#buttonChangePolyline" ).addClass( "btn-warning" );
-		$("#buttonChangePolyline").text("Hire");
+		$("#buttonChangePolyline").text("Hide");
 		polylineNormal.setMap(map);
 	}
 	stateBotNormalPolyline=(stateBotNormalPolyline+1)%2;
