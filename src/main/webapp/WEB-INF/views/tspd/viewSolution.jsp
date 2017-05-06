@@ -94,13 +94,13 @@ function initMap(){
 var droneDeliverySort=[];
 function view_tspdls_solution(){
 	initMap();
-	var tour_tspdls = tours[0];
+	var tour_tspdls = tours[1];
 	view_tour(tour_tspdls);
 }
 
 function view_grasp_solution(){
 	initMap();
-	var tour_grasp = tours[1];
+	var tour_grasp = tours[0];
 	view_tour(tour_grasp);
 }
 var truckTour;
