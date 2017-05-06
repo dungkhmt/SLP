@@ -82,9 +82,10 @@ public class TSPDController extends BaseWeb{
 	}
 	
 	@RequestMapping(value="/uploadSolution", method = RequestMethod.POST)
-	public String viewTSPDTour(ModelMap model, @ModelAttribute("tspdsolution") TSPDSolutionFile solution){
-		System.out.println(name()+"computeTSPDTour::"+ "ok");
-		MultipartFile mFile = solution.getTspdSolutionFile();
+	public String viewTSPDTour(ModelMap model, @ModelAttribute("tspdsolution") TSPDSolutionFile tspdsolution,BindingResult bresult){
+		//System.out.println(name()+"computeTSPDTour::"+ "ok");
+		//System.out.println(name()+tspdsolution);
+		MultipartFile mFile = tspdsolution.getTspdSolutionFile();
 		try {
 			InputStream file = mFile.getInputStream();
 			StringWriter writer = new StringWriter();

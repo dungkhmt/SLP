@@ -14,5 +14,15 @@ public class TSPDSolutionFile {
 		this.tspdSolutionFile = tspdSolutionFile;
 	}
 
+	public TSPDSolutionFile() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "TSPDSolutionFile [tspdSolutionFile=" + tspdSolutionFile + "]";
+	}
+
 
 }
