@@ -136,6 +136,85 @@ public class mShippersDAOImpl extends BaseDao implements mShippersDAO {
 		}
 	}
 
+	@Override
+	public int save(mShippers ship) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			int id = (Integer)getSession().save(ship);
+			commit();
+			return id;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
+	@Override
+	public mShippers getByCode(String shp_Code) {
+		try{
+			
+			begin();
+			Criteria criteria = getSession().createCriteria(mShippers.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			criteria.add(Restrictions.eq("SHP_Code", shp_Code));
+			mShippers ship = (mShippers) criteria.uniqueResult();
+			commit();
+			
+			return ship;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return null;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
+	@Override
+	public int editAShipper(mShippers shipper) {
+		// TODO Auto-generated method stub
+		try{
+			begin();
+			getSession().update(shipper);
+			commit();
+			return 1;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
+	@Override
+	public int delAShipper(mShippers shipper) {
+		try {
+			begin();
+			getSession().delete(shipper);
+			commit();
+			return 1;
+		} catch (HibernateException e) {
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		} finally {
+			flush();
+			close();
+		}
+	}
+
 
 
 }

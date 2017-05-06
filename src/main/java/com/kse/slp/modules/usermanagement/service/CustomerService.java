@@ -9,4 +9,6 @@ public interface CustomerService {
 	public Customer getByCode(String cus_code);
 	public int save(String cusCode,String cusName, String cusPhone, String cusAddress, float lat, float lng );
 	public int save(Customer cus);
+	public int editACustomer(Customer cus);
+	public int delACustomer(String cusCode);
 }
