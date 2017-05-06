@@ -242,11 +242,29 @@
     <!-- Item managerment module -->
     <definition name="customermanager.list" extends="layout">
     	<put-attribute name="title" value="Quản lý khách hàng" />
-    	<put-attribute name="content" value="/WEB-INF/views/customermanager/list.jsp" />                
+    	<put-attribute name="content" value="/WEB-INF/views/itemmanagerment/list.jsp" />                
     </definition>
     <definition name="customermanager.add" extends="layout">
     	<put-attribute name="title" value="Thêm khách hàng" />
-    	<put-attribute name="content" value="/WEB-INF/views/customermanager/add.jsp" />                
+    	<put-attribute name="content" value="/WEB-INF/views/itemmanagerment/add.jsp" />                
+    </definition>
+    <definition name="customermanager.edit" extends="layout">
+    	<put-attribute name="title" value="Sửa thông tin khách hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/itemmanagerment/edit.jsp" />                
+    </definition>
+    
+    <!-- Shippermanagerment module -->
+    <definition name="shippermanagerment.list" extends="layout">
+    	<put-attribute name="title" value="Quản lý người giao hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/shippermanagerment/list.jsp" />                
+    </definition>
+    <definition name="shippermanagerment.add" extends="layout">
+    	<put-attribute name="title" value="Thêm người giao hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/shippermanagerment/add.jsp" />                
+    </definition>
+    <definition name="shippermanagerment.edit" extends="layout">
+    	<put-attribute name="title" value="Sửa thông tin người giao hàng hàng" />
+    	<put-attribute name="content" value="/WEB-INF/views/shippermanagerment/edit.jsp" />                
     </definition>
     
     <!-- TSPD -->
