@@ -179,18 +179,23 @@ $(document).ready(function(){
 	       "bSort": false,
 	       "fnInfoCallback": function( oSettings, iStart, iEnd, iMax, iTotal, sPre ) {
 	    	   var indexData = oSettings.aiDisplay;
-	    	   console.log(iEnd);
-	    	   for(var i = iStart - 1; i < iEnd; ++i) {
-	    		   console.log(i);
-		   			var j = i;
-		   			$.get(window.location.origin + "/slp/ship/getAllotParcel?batchCode="+dataBatchs[indexData[j]].reqbat_Code, function(data) {
-		   				var temp = table.row(indexData[j]).data();
-		   				temp.shippers = data.join(", ");
-		   				table.row(indexData[j]).data(temp);
-		   			});
-		   		}
+	    	   viewBatch(indexData, 0);
 	    	}
 	   });
 	});
 });
+
+function viewBatch(arr, index) {
+	if(index == arr.length) {
+		return ;
+	} else {
+		$.get(window.location.origin + "/slp/ship/getAllotParcel?batchCode="+dataBatchs[arr[index]].reqbat_Code, function(data) {
+			var temp = table.row(arr[index]).data();
+			temp.shippers = data.join(", ");
+			
+			table.row(arr[index]).data(temp);
+			viewBatch(arr, index + 1);
+		});
+	}
+}
 </script>
