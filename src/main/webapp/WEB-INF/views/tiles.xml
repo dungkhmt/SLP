@@ -284,4 +284,18 @@
     	<put-attribute name="title" value="Create data"/>
     	<put-attribute name="content" value="/WEB-INF/views/tspd/solveHome.jsp"/>
     </definition>
+    
+    <!-- VRP-Load3D -->
+    <definition name = "vrpload3d.home" extends = "layout">
+    	<put-attribute name="title" value="VRP-Load3d Home" />
+    	<put-attribute name="content" value="/WEB-INF/views/home/vrpload3dhome.jsp" />
+    </definition>
+    <definition name = "vrpload3d.uploadFile" extends = "layout">
+    	<put-attribute name="title" value="VRP-Load3D Upload File" />
+    	<put-attribute name="content" value="/WEB-INF/views/vrpload3d/uploadFile.jsp" />
+    </definition>
+    <definition name="vrpload3d.viewSolution" extends="layout">
+    	<put-attribute name="title"  value="VRP-Load3D Solution" />
+    	<put-attribute name="content" value="/WEB-INF/views/vrpload3d/viewSolution.jsp" />
+    </definition>
 </tiles-definitions>

@@ -5,10 +5,10 @@
 		</div>
 	</div>
 	<div class="row"> 
-		<button class="btn btn-primary" onclick="view_tspdls_solution();">TSPD-LS</button>
-		<button class="btn btn-primary" onclick="view_grasp_solution();">GRASP</button>
-		<button class="btn btn-warning" id="buttonChangePolyline" onclick="hireNormalPolyline();">Hire</button>
-		<a class="btn btn-primary col-sm-offset-8 " onclick="saveSolution(this);">Save Solution</a>
+		<button class="btn btn-primary col-sm-1" onclick="view_tspdls_solution();">TSPD-LS</button>
+		<button class="btn btn-primary col-sm-1" onclick="view_grasp_solution();">GRASP</button>
+		<button class="btn btn-warning col-sm-1" id="buttonChangePolyline" onclick="hireNormalPolyline();">Hide</button>
+		<a class="btn btn-primary"  onclick="saveSolution(this);">Save Solution</a>
 	</div>
 	<div class="row">
 		<div id="map" style="height:100%"></div>

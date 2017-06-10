@@ -61,7 +61,7 @@ public class TSPDController extends BaseWeb{
 			Gson gson = new Gson();
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			
-			HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/tsp-with-drone");
+			HttpPost post = new HttpPost("http://localhost:8088/ezRoutingAPI/tsp-with-drone");
 			StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 			post.addHeader("content-type", "application/json");
 			post.setEntity(params);
