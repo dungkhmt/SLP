@@ -2,6 +2,22 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<!-- DataTables CSS -->
+<link href="<c:url value="/assets/libs/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css"/>" rel="stylesheet">
+
+<!-- DataTables Responsive CSS -->
+<link href="<c:url value="/assets/libs/datatables-responsive/css/dataTables.responsive.css" />" rel="stylesheet">
+
+<!-- DataTables JavaScript -->
+<script src="<c:url value="/assets/libs/datatables/media/js/jquery.dataTables.js"/>"></script>
+<script src="<c:url value="/assets/libs/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js"/>"></script>
+
+<style>
+#modal-load3d .modal-dialog{
+	width: 95%;
+}
+</style>
+
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
@@ -22,8 +38,22 @@
 				<h4 class="modal-title">Load3D of <span id="vehicle-name"></span></h4>
 			</div>
 			<div class="modal-body">
-				<div class="row" id="canvas-load3d">
-	
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="dataTable_wrapper">
+							<table class="table table-striped table-bordered table-hover" id="table-info-load3d">
+								<thead>
+									<tr>
+										<th>Tên S/P</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-lg-6" id="canvas-load3d"></div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -38,6 +68,7 @@
 <script src="<c:url value="/assets/libs/processing/processing.js"/>"></script>
 
 <script>
+
 var colorInit=["red","green","blue","yellow","black"]; // mang init mau
 var map;
 var dataResponse = JSON.parse('${sol}');
@@ -128,146 +159,124 @@ function initMap(){
 		});
 	}
 }
-var edgecolor = color(34, 68, 204);
+
+function createCuboid(x, y, z, w, h, d) { 
+	var nodes = [[x,   y,   z  ],
+     			 [x,   y,   z+d],
+      			 [x,   y+h, z  ],
+     			 [x,   y+h, z+d],
+     			 [x+w, y,   z  ],
+     			 [x+w, y,   z+d],
+     			 [x+w, y+h, z  ],
+     			 [x+w, y+h, z+d]];
+	var edges = [[0, 1], [1, 3], [3, 2], [2, 0],
+    			 [4, 5], [5, 7], [7, 6], [6, 4],
+     			 [0, 4], [1, 5], [2, 6], [3, 7]];
+	return { 'nodes': nodes, 'edges': edges };
+};
+
+function rotateZ3D(theta,nodes) {
+    var sin_t = Math.sin(theta);
+    var cos_t = Math.cos(theta);
+    
+    for (var n=0; n<nodes.length; n++) {
+        var node = nodes[n];
+        var x = node[0];
+        var y = node[1];
+        node[0] = x * cos_t - y * sin_t;
+        node[1] = y * cos_t + x * sin_t;
+    }
+};
+
+function rotateY3D(theta, nodes) {
+    var sin_t = Math.sin(theta);
+    var cos_t = Math.cos(theta);
+    
+    for (var n=0; n<nodes.length; n++) {
+        var node = nodes[n];
+        var x = node[0];
+        var z = node[2];
+        node[0] = x * cos_t - z * sin_t;
+        node[2] = z * cos_t + x * sin_t;
+    }
+};
+
+function rotateX3D(theta, nodes) {
+    var sin_t = Math.sin(theta);
+    var cos_t = Math.cos(theta);
+    
+    for (var n=0; n<nodes.length; n++) {
+        var node = nodes[n];
+        var y = node[1];
+        var z = node[2];
+        node[1] = y * cos_t - z * sin_t;
+        node[2] = z * cos_t + y * sin_t;
+    }
+};
+
+//var index_object = 0;
+var objects = [];
+
 function f_view_load3d (index_route){
 	$('#modal-load3d').modal();
 	$('#vehicle-name').text(loads[index_route].vehicle.code);
-	$('#canvas-load3d').html("<canvas id='canvas1'></canvas>")
+	$('#canvas-load3d').html("<canvas id='canvas1'></canvas>");
+	$('#table-info-load3d').dataTable().fnDestroy();
+	var table_info = $('#table-info-load3d').DataTable({
+		"searching" : false,
+		"aaSorting" : [],
+		"ordering" : false,
+		"bInfo" : false
+	});
+	table_info.clear().draw();
+	var load = loads[index_route];
+	var vehicle = load.vehicle;
+	var loadElements = load.loadElements;
+	for(var i=0; i<loadElements.length; i++){
+		var e = loadElements[i];
+		table_info.row.add([
+		   	e.item.name,
+		   	'<button class="btn btn-primary" onclick="f_view_item('+index_route+','+i+',this)">Xem</button>'
+		                    ]).draw(false);
+	}
+	
+	objects = [];
+	var object = createCuboid(0,0,0,vehicle.width,vehicle.length,vehicle.height);
+	rotateX3D(120,object.nodes);
+	rotateY3D(120,object.nodes);
+	rotateZ3D(120,object.nodes);
+	objects.push(object);
+	f_draw_box();
+}
+
+function f_view_item(index_route, index_item, button_clicked){
+	var load = loads[index_route];
+	var loadElements = load.loadElements;
+	var e = loadElements[index_item];
+	var tmp_o = createCuboid(e.posWidth,e.posLength,e.posHeight,e.item.w,e.item.l,e.item.h);
+	rotateX3D(120,tmp_o.nodes);
+	rotateY3D(120,tmp_o.nodes);
+	rotateZ3D(120,tmp_o.nodes);
+	
+	objects.push(tmp_o);
+	f_draw_box();
+	$(button_clicked).prop('disabled',true);
+}
+
+function f_draw_box(){
 	var sketch = new Processing.Sketch();
 	//sketch.use3DContext = true;
 	sketch.attachFunction = function(processing){
-		var createCuboid = function(x, y, z, w, h, d) { 
-			var nodes = [[x,   y,   z  ],
-             			 [x,   y,   z+d],
-              			 [x,   y+h, z  ],
-             			 [x,   y+h, z+d],
-             			 [x+w, y,   z  ],
-             			 [x+w, y,   z+d],
-             			 [x+w, y+h, z  ],
-             			 [x+w, y+h, z+d]];
-			var edges = [[0, 1], [1, 3], [3, 2], [2, 0],
-            			 [4, 5], [5, 7], [7, 6], [6, 4],
-             			 [0, 4], [1, 5], [2, 6], [3, 7]];
-			return { 'nodes': nodes, 'edges': edges };
-		};
-
-		var objects = [];
-		var load = loads[index_route];
-		var vehicle = load.vehicle;
-		var object = createCuboid(0,0,0,vehicle.width,vehicle.length,vehicle.height);
-		objects.push(object);
-		var loadElements = load.loadElements;
-		for(var i=0; i<loadElements.length; i++){
-			var e = loadElements[i];
-			var tmp_o = createCuboid(e.posWidth,e.posLength,e.posHeight,e.item.w,e.item.l,e.item.h);
-			objects.push(tmp_o);
-		}
-		// var nodes = object.nodes;
-		// var edges = object.edges;
-
-		// Rotate shape around the z-axis
-		var rotateZ3D = function(theta,nodes) {
-		    var sin_t = Math.sin(theta);
-		    var cos_t = Math.cos(theta);
-		    
-		    for (var n=0; n<nodes.length; n++) {
-		        var node = nodes[n];
-		        var x = node[0];
-		        var y = node[1];
-		        node[0] = x * cos_t - y * sin_t;
-		        node[1] = y * cos_t + x * sin_t;
-		    }
-		};
-
-		var rotateY3D = function(theta, nodes) {
-		    var sin_t = Math.sin(theta);
-		    var cos_t = Math.cos(theta);
-		    
-		    for (var n=0; n<nodes.length; n++) {
-		        var node = nodes[n];
-		        var x = node[0];
-		        var z = node[2];
-		        node[0] = x * cos_t - z * sin_t;
-		        node[2] = z * cos_t + x * sin_t;
-		    }
-		};
-
-		var rotateX3D = function(theta, nodes) {
-		    var sin_t = Math.sin(theta);
-		    var cos_t = Math.cos(theta);
-		    
-		    for (var n=0; n<nodes.length; n++) {
-		        var node = nodes[n];
-		        var y = node[1];
-		        var z = node[2];
-		        node[1] = y * cos_t - z * sin_t;
-		        node[2] = z * cos_t + y * sin_t;
-		    }
-		};
-
-		for(var o=0; o< objects.length; o++){
-			var ob = objects[o];
-			var nodes = ob.nodes;
-			//var edges = ob.edges;
-			rotateX3D(120,nodes);
-			rotateY3D(120,nodes);
-			rotateZ3D(120,nodes);
-		}
-		
 		processing.setup = function(){
 			processing.size(600,500);
-			processing.background(255,255,255);
+			processing.background(220,220,220);
 			processing.noLoop();
 			//processing.translate(400, 200);
 		}
 		
 		processing.draw = function(){
-			//var o = 0;
-			
-			//setTimeout(function(){
-				//if(o<objects.length){
-			//console.log("pre draw");
-			//f_draw_box(processing,objects);
-			
-			var o = 0;
-			f_draw_box = function (processing, objects){
-				console.log("draw box "+o);
-				setTimeout(function(){
-					if(o==0){
-						processing.translate(400, 200);	
-					}
-					processing.stroke(34, 68, 204);
-					var edges = objects[o].edges;
-					var nodes = objects[o].nodes;
-					for (var e=0; e<edges.length; e++) {
-						var n0 = edges[e][0];
-						var n1 = edges[e][1];
-						var node0 = nodes[n0];
-						var node1 = nodes[n1];
-						processing.line(node0[0], node0[1], node1[0], node1[1]);
-					}
-				
-				    // Draw nodes
-				    processing.fill(40, 168, 107);
-				    processing.noStroke();
-				    for (var n=0; n<nodes.length; n++) {
-				        var node = nodes[n];
-				        processing.ellipse(node[0], node[1], 4, 4);
-				    }
-				    o++;
-				    if(o < objects.length){
-				    	f_draw_box(processing,objects);
-			    	}
-				},1000);
-			};
-			f_draw_box(processing,objects);
-			
-			//console.log("draw");
-			//	}
-			//	o++;
-			//},3000);
-			//processing.translate(400, 200);			
-			/*for(var o=0; o<objects.length; o++){
+			processing.translate(400, 200);
+			for(o = 0; o < objects.length-1; o++){
 				processing.stroke(34, 68, 204);
 				var edges = objects[o].edges;
 				var nodes = objects[o].nodes;
@@ -284,11 +293,31 @@ function f_view_load3d (index_route){
 			    processing.noStroke();
 			    for (var n=0; n<nodes.length; n++) {
 			        var node = nodes[n];
-			        processing.ellipse(node[0], node[1], 4, 4);
+			        processing.ellipse(node[0], node[1], 2, 2);
 			    }	
-			}*/
+			}
+			var lastObject = objects[objects.length-1];
+			var edges = lastObject.edges;
+			var nodes = lastObject.nodes;
+			processing.stroke(255, 0, 0);
+			processing.strokeWeight(2);
+			for (var e=0; e<edges.length; e++) {
+				var n0 = edges[e][0];
+				var n1 = edges[e][1];
+				var node0 = nodes[n0];
+				var node1 = nodes[n1];
+				processing.line(node0[0], node0[1], node1[0], node1[1]);
+			}
+		
+		    // Draw nodes
+		    processing.fill(40, 168, 107);
+		    processing.noStroke();
+		    for (var n=0; n<nodes.length; n++) {
+		        var node = nodes[n];
+		        processing.ellipse(node[0], node[1], 4, 4);
+		    }
 		}
-	}
+	};
 	var canvas = document.getElementById("canvas1");
 	var p = new Processing(canvas,sketch);
 }
