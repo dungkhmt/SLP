@@ -262,8 +262,16 @@
     	<put-attribute name="title" value="Solution TSPD"/>
     	<put-attribute name="content" value="/WEB-INF/views/tspd/viewSolution.jsp"></put-attribute>
     </definition>
+    <definition name="tspds.viewSolution" extends="layout">
+    	<put-attribute name="title" value="Solution TSPDs"/>
+    	<put-attribute name="content" value="/WEB-INF/views/tspd/viewSolutionkDrone.jsp"></put-attribute>
+    </definition>
     <definition name="tspd.solveHome" extends="layout">
     	<put-attribute name="title" value="Create data"/>
     	<put-attribute name="content" value="/WEB-INF/views/tspd/solveHome.jsp"/>
+    </definition>
+    <definition name="tspds.solveHome" extends="layout">
+    	<put-attribute name="title" value="Home tsps"/>
+    	<put-attribute name="content" value="/WEB-INF/views/tspd/tspdssolveHome.jsp"/>
     </definition>
 </tiles-definitions>

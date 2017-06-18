@@ -141,6 +141,45 @@ public class TSPDController extends BaseWeb{
 			return null;
 		}
 	}
+	@RequestMapping(value="/tspds-solve-home", method = RequestMethod.GET)
+	public String tspdsSolveHome(ModelMap model){
+		model.put("tspd", new TSPDRequest());
+		model.put("tspdsolution", new TSPDSolutionFile());
+		System.out.println(name()+"is Done");
+		return "tspds.solveHome";
+	}
+	@RequestMapping(value="/tspds-solve", method=RequestMethod.POST)
+	public String tspdsSolve(@ModelAttribute("tspd") TSPDRequest data ,BindingResult bresult, ModelMap model){
+		System.out.println(name()+"tspdSolve::data = "+data.toString());
+		
+		Gson gson = new Gson();
+		Point[] listPoints = gson.fromJson(data.getListPoints(), Point[].class);
+		
+		TSPD dataSend = new TSPD(data.getTruckSpeed(), data.getDroneSpeed(), data.getTruckCost(), data.getDroneCost(), data.getDelta(), data.getEndurance(), listPoints);
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		
+		
+		HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/tsp-with-kdrone");
+		StringEntity params = new StringEntity(gson.toJson(dataSend), ContentType.APPLICATION_JSON);
+		post.addHeader("content-type", "application/json");
+		post.setEntity(params);
+		
+		HttpResponse response;
+		try {
+			response = httpClient.execute(post);
+			HttpEntity res = response.getEntity();
+			String responseString = EntityUtils.toString(res, "UTF-8");
+			System.out.println(name()+"tspdSolve::reponse"+responseString);
+			//Tour result = gson.fromJson(responseString, Tour.class);
+			model.put("sol", responseString);
+			return "tspds.viewSolution";
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public String name(){
 		return "TSPDController::";
