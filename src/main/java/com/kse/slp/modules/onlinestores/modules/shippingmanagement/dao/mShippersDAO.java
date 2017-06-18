@@ -11,5 +11,9 @@ public interface mShippersDAO {
 	public void updateAShipper(mShippers shipper);
 	public List<mShippers> getByCustomerCode(String cus_code);
 	public List<mShippers> getListInBatch(String batchCode);
+	int save(mShippers ship);
+	public mShippers getByCode(String shp_Code);
+	public int editAShipper(mShippers shipper);
+	public int delAShipper(mShippers shipper);
 	
 }

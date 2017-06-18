@@ -41,4 +41,24 @@ public class CustomerServiceImpl implements CustomerService {
 		return CustomerDAO.save(cus);
 	}
 
+	@Override
+	public int editACustomer(Customer cus) {
+		// TODO Auto-generated method stub
+		Customer customer = CustomerDAO.getByCode(cus.getCus_Code());
+		customer.setCus_Address(cus.getCus_Address());
+		customer.setCus_Name(cus.getCus_Name());
+		customer.setCus_Phone(cus.getCus_Phone());
+		customer.setCus_Lat(cus.getCus_Lat());
+		customer.setCus_Lng(cus.getCus_Lng());
+		return CustomerDAO.editACustomer(customer);
+	
+	}
+
+	@Override
+	public int delACustomer(String cusCode) {
+		// TODO Auto-generated method stub
+		Customer customer = CustomerDAO.getByCode(cusCode);
+		return CustomerDAO.delACustomer(customer);
+	}
+
 }

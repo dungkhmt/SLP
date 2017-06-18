@@ -73,31 +73,43 @@
 <script>
 var table;
 var data = ${mOrders};
-function saveClustering(index) {
-	$.post(window.location.href + "/save",
-	        {
-				"O_Code": data[index].O_Code,
-				"O_BatchCode": $("#selectize_batch"+index).val()
-	        },
-	        function(){
-	        	data[index].O_BatchCode = $("#selectize_batch"+index).val();
-	        	$(".selectize_batch" + index).addClass("hide");
-	        });
+function saveClustering(id) {
+	data.find(function(cluster, index) {
+		if(cluster.O_ID == id) {
+			$.post(window.location.href + "/save",
+		        {
+					"O_Code": cluster.O_Code,
+					"O_BatchCode": $("#selectize_batch"+id).val()
+		        },
+		        function(){
+		        	cluster.O_BatchCode = $("#selectize_batch"+id).val();
+		        	$(".selectize_batch" + id).addClass("hide");
+		        });
+			return true;
+
+		}
+	})
 }
 
-function closeClustering(index) {
-	$("#selectize_batch" + index)[0].selectize.setValue(data[index].O_BatchCode);
-	$(".selectize_batch" + index).addClass("hide");
+function closeClustering(id) {
+	data.find(function(cluster, index) {
+		if(cluster.O_ID == id) {
+			$("#selectize_batch" + id)[0].selectize.setValue(cluster.O_BatchCode);
+			$(".selectize_batch" + id).addClass("hide");
+			return true;
+		}
+	})
+	
 }
 
 $(document).ready(function(){
 	for(var i = 0; i < data.length; ++i) {
 		data[i].O_Time = data[i].O_TimeEarly + "-" + data[i].O_TimeLate;
-		data[i].clustering = '<div class="selectize_batch'+i+' hide">'
-			+'<i class="fa fa-check" aria-hidden="true" style="color:green; cursor:pointer; font-size: 20px" onClick="saveClustering('+i+')"></i>'
-			+ '<i class="fa fa-times" style="color:gray; cursor:pointer;font-size: 20px" onClick="closeClustering('+i+')" aria-hidden="true"></i>'
+		data[i].clustering = '<div class="selectize_batch'+data[i].O_ID+' hide">'
+			+'<i class="fa fa-check" aria-hidden="true" style="color:green; cursor:pointer; font-size: 20px" onClick="saveClustering('+data[i].O_ID+')"></i>'
+			+ '<i class="fa fa-times" style="color:gray; cursor:pointer;font-size: 20px" onClick="closeClustering('+data[i].O_ID+')" aria-hidden="true"></i>'
 			+'</div>';
-		data[i].selectize_BatchCode = '<input style="width:250px" id="selectize_batch'+i+'">';
+		data[i].selectize_BatchCode = '<input style="width:250px" id="selectize_batch'+data[i].O_ID+'">';
 	}
 	
 	
@@ -133,9 +145,10 @@ $(document).ready(function(){
 			             ],
 	       "bSort": false,
 	       "fnInfoCallback": function( oSettings, iStart, iEnd, iMax, iTotal, sPre ) {
+	    	   console.log(oSettings);
 	    	   var indexData = oSettings.aiDisplay;
 		    	   for(var i = iStart - 1; i < iEnd; ++i) {
-		   			var $selectize = $("#selectize_batch"+indexData[i]).selectize({
+		   			var $selectize = $("#selectize_batch"+oSettings.aoData[indexData[i]]._aData.O_ID).selectize({
 		   				options: batchList,
 		   				maxItems: 1,
 		   				valueField: 'reqbat_Code',
@@ -145,9 +158,16 @@ $(document).ready(function(){
 		   			$selectize[0].selectize.setValue(data[indexData[i]].O_BatchCode);
 		   		}
 		    	   $('select.selectized,input.selectized', $wrapper).each(function(index) {
-		    			var local = indexData[index + iStart - 1];
+		    			var local = oSettings.aoData[indexData[index + iStart - 1]]._aData.O_ID;
+		    			var batch = data.find(function(batch) {
+		    				return batch.O_ID == local;
+		    			})
+		    			console.log(local)
+		    			console.log(batch)
 		    		   var update = function(e) {
-		    				if(data[local].O_BatchCode != $("#selectize_batch" + local)[0].selectize.items[0]) {
+		    				console.log($("#selectize_batch" + local)[0].selectize.items[0]);
+		    				console.log(batch.O_BatchCode)
+		    				if(batch.O_BatchCode != $("#selectize_batch" + local)[0].selectize.items[0]) {
 		    					$(".selectize_batch" + local).removeClass("hide");
 		    				} else {
 		    					

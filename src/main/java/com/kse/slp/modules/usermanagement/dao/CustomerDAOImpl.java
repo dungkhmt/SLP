@@ -76,4 +76,45 @@ public class CustomerDAOImpl extends BaseDao implements CustomerDAO {
 			close();
 		}
 	}
+
+	@Override
+	public int editACustomer(Customer cus) {
+		// TODO Auto-generated method stub
+		try{
+			
+			begin();
+			getSession().update(cus);
+			commit();
+			
+			return 1;
+			
+		}catch(HibernateException e){
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		}finally{
+			flush();
+			close();
+		}
+	}
+
+	@Override
+	public int delACustomer(Customer cus) {
+		// TODO Auto-generated method stub
+		try {
+			begin();
+			getSession().delete(cus);
+			commit();
+			return 1;
+		} catch (HibernateException e) {
+			e.printStackTrace();
+			rollback();
+			close();
+			return 0;
+		} finally {
+			flush();
+			close();
+		}
+	}
 }

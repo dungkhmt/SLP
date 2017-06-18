@@ -67,7 +67,7 @@
 		    	</form>
 	        </div>
 	        <div class="modal-footer">
-	        	<button type="button" class="btn btn-success" onclick="update()">Update</button>
+	        	<button type="button" class="btn btn-success" id="update-batch">Update</button>
 	         	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        </div>
 	      </div>
@@ -116,8 +116,8 @@ function save() {
 			"description": $("#description").val()
         },
         function(newBatch,status){
-        	newBatch.change = '<span style = "color: green; margin:10px; cursor:pointer" class="glyphicon glyphicon-pencil" onclick="editBatch(' + listBatch.length + ')" data-toggle="modal" data-target="#changeBatch"></span>'
-			+	'<span style = "color: red; cursor:pointer" class="glyphicon glyphicon-trash" onclick="deleteBatch(' + listBatch.length + ')"></span>';
+        	newBatch.change = '<span style = "color: green; margin:10px; cursor:pointer" class="glyphicon glyphicon-pencil" onclick="editBatch(' + newBatch.reqbat_ID + ')" data-toggle="modal" data-target="#changeBatch"></span>'
+			+	'<span style = "color: red; cursor:pointer" class="glyphicon glyphicon-trash" onclick="deleteBatch(' + newBatch.reqbat_ID + ')"></span>';
 			listBatch.push(newBatch);
 			table.row.add(newBatch).draw();
 			$('#addNewBatch').modal('hide');
@@ -125,33 +125,48 @@ function save() {
         });
 }
 
-function update() {
-	$.post(window.location.href + "/edit/" + listBatch[sessionIndex].reqbat_ID,
+function update(id) {
+	$.post(window.location.href + "/edit/" + id,
 	        {
 				"description": $("#oldDescription").val()
 	        },
 	        function(newBatch,status){
-	        	listBatch[sessionIndex].reqbat_Description = $("#oldDescription").val();
-	        	var temp = table.row(sessionIndex).data();
-	        	temp.reqbat_Description = $("#oldDescription").val();
-	        	table.row(sessionIndex).data(temp).draw();
+	        	var oldBatch = listBatch.find(function(batch, index) {
+	        		if(batch.reqbat_ID == id) {
+	        			var temp = table.row(sessionIndex).data();
+	    	        	temp.reqbat_Description = $("#oldDescription").val();
+	    	        	table.row(sessionIndex).data(temp).draw();
+	    	        	return true;
+	        		}
+	        	})
+	        	
+	        	oldBatch.reqbat_Description = $("#oldDescription").val();
 				$('#changeBatch').modal('hide');
 	        });
 }	
 
 
-function editBatch(index) {
-	sessionIndex = index;
-	document.getElementById("oldDescription").value = listBatch[index].reqbat_Description;
+function editBatch(id) {
+	document.getElementById("update-batch").onclick = function(){update(id)}
+	var oldBatch = listBatch.find(function(batch, index) {
+		return batch.reqbat_ID == id;
+	})
+	document.getElementById("oldDescription").value = oldBatch.reqbat_Description;
 };
 
-function deleteBatch(index) {
-	var r = confirm("Are you sure to delete \'" + listBatch[index].reqbat_Code + '\'');
+function deleteBatch(id) {
+	
+	var r = confirm("Are you sure to delete \'" + id + '\'');
 	if (r == true) {
-		$.post(window.location.href + "/delete?id=" + listBatch[index].reqbat_ID, {},
+		$.post(window.location.href + "/delete?id=" + id, {},
 	        function(data,status){
-				table.row(index).remove().draw();
-				listBatch.splice(index, 1);
+			var batch = listBatch.find(function(batch, index) {
+				if(batch.reqbat_ID == id) {
+					table.row(index).remove().draw();
+					delete listBatch[index];
+					return true;
+				}
+			})
         });
 	}
 };
@@ -159,8 +174,8 @@ function deleteBatch(index) {
 $(document).ready(function(){
 	$.get(window.location.href + "/getBatchList", function(data) {
 		for(var i = 0; i < data.length; ++i) {
-			data[i].change = '<span style = "color: green; margin:10px; cursor:pointer" class="glyphicon glyphicon-pencil" onclick="editBatch(' + i + ')" data-toggle="modal" data-target="#changeBatch"></span>'
-						+	'<span style = "color: red; cursor:pointer" class="glyphicon glyphicon-trash" onclick="deleteBatch(' + i + ')"></span>';
+			data[i].change = '<span style = "color: green; margin:10px; cursor:pointer" class="glyphicon glyphicon-pencil" onclick="editBatch(' + data[i].reqbat_ID + ')" data-toggle="modal" data-target="#changeBatch"></span>'
+						+	'<span style = "color: red; cursor:pointer" class="glyphicon glyphicon-trash" onclick="deleteBatch(' + data[i].reqbat_ID + ')"></span>';
 		}
 		if(data == "") {
 			listBatch = [];
