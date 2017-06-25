@@ -102,6 +102,27 @@ public class TSPDController extends BaseWeb{
 		}
 		return "tspd.viewSolution";
 	}
+	@RequestMapping(value="/uploadSolutionkDrone", method = RequestMethod.POST)
+	public String viewTSPDsTour(ModelMap model, @ModelAttribute("tspdsolution") TSPDSolutionFile tspdsolution,BindingResult bresult){
+		//System.out.println(name()+"computeTSPDTour::"+ "ok");
+		//System.out.println(name()+tspdsolution);
+		MultipartFile mFile = tspdsolution.getTspdSolutionFile();
+		try {
+			InputStream file = mFile.getInputStream();
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(file, writer,"UTF-8");
+			String json = writer.toString();
+			
+			
+			model.put("sol", json);
+			
+			file.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "tspds.viewSolution";
+	}
 	@RequestMapping(value="/tspd-solve-home", method = RequestMethod.GET)
 	public String tspdSolveHome(ModelMap model){
 		model.put("tspd", new TSPDRequest());

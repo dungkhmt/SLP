@@ -9,7 +9,7 @@
 	</div>
 	
 	<div class="row">
-		<form:form action="${baseUrl}/tsp-drone/uploadSolution" method="POST" id="tspdsolution" commandName="tspdsolution" enctype="multipart/form-data" role="form" class="form-horizontal">
+		<form:form action="${baseUrl}/tsp-drone/uploadSolutionkDrone" method="POST" id="tspdsolution" commandName="tspdsolution" enctype="multipart/form-data" role="form" class="form-horizontal">
 			<form:input id="input-solution" path="tspdSolutionFile" name="tspdSolutionFile" type="file" class="file file-loading " style="display:none" />
 			<a class="btn btn-primary " id="submit-button-solution" onclick="uploadSolution()" >Upload Solution</a>
 		</form:form>

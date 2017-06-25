@@ -90,7 +90,7 @@ function initMap(){
 			dist += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i-1));
 		}
 		if (dist < metres) {
-			return null;
+			dist=metres+10;
 		}
 		var p1= this.getPath().getAt(i-2);
 		var p2= this.getPath().getAt(i-1);
@@ -211,7 +211,7 @@ function runDrone(lauch,drone,rendezvous,c,id,marker){
 	marker.isRunning=true;
 	marker.setMap(map);
 	marker.delivery=id;
-	polyline = new google.maps.Polyline({
+	var polyline = new google.maps.Polyline({
 					path: [],
 					strokeColor: '#FF0000'
 	});
@@ -393,6 +393,8 @@ function animate(marker,d,step,distance,polyLine,end,malgo){
 	}
 	var p;
 	var t;
+	//console.log(malgo+" "+marker.isDrone);
+	console.log(marker.isDrone+" "+polyLine.GetPointAtDistance(d));
 	[p,t] = polyLine.GetPointAtDistance(d);
 	marker.setPosition(p);
 	if(t!=-1 && t!= undefined ) {
