@@ -33,9 +33,9 @@
     <beans:bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
                
-        <beans:property name="url" value="jdbc:mysql://localhost:3306/slp?useEncoding=true&amp;characterEncoding=UTF-8"/>
-        <beans:property name="username" value="root"/>
-        <beans:property name="password" value=""/>        
+        <beans:property name="url" value="jdbc:mysql://159.65.133.130:3306/rd_dev?useEncoding=true&amp;characterEncoding=UTF-8"/>
+        <beans:property name="username" value="tupa"/>
+        <beans:property name="password" value="EUgAAAkwAAAF0CAYAAA"/>        
         <beans:property name="testOnBorrow" value="1"/>        
         <beans:property name="validationQuery" value="SELECT 1"/>
     </beans:bean>

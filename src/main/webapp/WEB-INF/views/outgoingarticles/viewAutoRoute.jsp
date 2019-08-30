@@ -70,7 +70,7 @@
 	</div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruL-HLFSNh6G2MLhjS-eBTea7r7EFa5A&libraries=places&callback=initialize" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnc2KpjaihZJNZUJnsa3hSyq_u073q9S8&libraries=places&callback=initialize" async defer></script>
 <!-- DataTables JavaScript -->
 <script src="<c:url value="/assets/libs/datatables/media/js/jquery.dataTables.js"/>"></script>
 <script src="<c:url value="/assets/libs/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js"/>"></script>
@@ -211,6 +211,7 @@ function viewRoute(){
 			    content: "STT giao hàng: "+ data[checkedListIndex].routeElement[j].routeSequence +"</br>"+
 			    		"Mã khách hàng: " + data[checkedListIndex].routeElement[j].clientCode +"</br>"+
 			    		"Địa chỉ: " + data[checkedListIndex].routeElement[j].clientAddress +"</br>"+
+			    		"Thời gian giao hàng y/c" + data[checkedListIndex].routeElement[j].expectedTime + "</br>"+
 			    		"Thời gian giao hàng sớm nhất: " + timeEarly + "</br>"+
 			    		"Thời gian giao hàng muộn nhất: " + timeLate + "</br>"+
 			    		"Người giao hàng: "+ data[checkedListIndex].shipperCode

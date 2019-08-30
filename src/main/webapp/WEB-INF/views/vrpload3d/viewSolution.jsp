@@ -63,7 +63,7 @@
 	</div>
 </div>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEXgYFE4flSYrNfeA7VKljWB_IhrDwxL4&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnc2KpjaihZJNZUJnsa3hSyq_u073q9S8&callback=initMap"></script>
 
 <script src="<c:url value="/assets/libs/processing/processing.js"/>"></script>
 
@@ -72,7 +72,7 @@
 var colorInit=["red","green","blue","yellow","black"]; // mang init mau
 var map;
 var dataResponse = JSON.parse('${sol}');
-//console.log("dataResponse::"+JSON.stringify(dataResponse));
+console.log("dataResponse::"+JSON.stringify(dataResponse));
 var routes = dataResponse.routes;
 var loads = dataResponse.loads;
 var polyline_route = [];

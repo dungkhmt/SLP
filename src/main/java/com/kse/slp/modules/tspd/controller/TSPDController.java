@@ -13,7 +13,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.TTCCLayout;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -61,7 +60,7 @@ public class TSPDController extends BaseWeb{
 			Gson gson = new Gson();
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			
-			HttpPost post = new HttpPost("http://localhost:8088/ezRoutingAPI/tsp-with-drone");
+			HttpPost post = new HttpPost("http://172.16.20.67:9898/ezRoutingAPI/tsp-with-drone");
 			StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 			post.addHeader("content-type", "application/json");
 			post.setEntity(params);
@@ -141,7 +140,7 @@ public class TSPDController extends BaseWeb{
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		
 		
-		HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/tsp-with-drone");
+		HttpPost post = new HttpPost("http://172.16.20.67:9898/ezRoutingAPI/tsp-with-kdrone");
 		StringEntity params = new StringEntity(gson.toJson(dataSend), ContentType.APPLICATION_JSON);
 		post.addHeader("content-type", "application/json");
 		post.setEntity(params);
@@ -180,7 +179,7 @@ public class TSPDController extends BaseWeb{
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		
 		
-		HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/tsp-with-kdrone");
+		HttpPost post = new HttpPost("http://172.16.20.67:9898/ezRoutingAPI/tsp-with-kdrone");
 		StringEntity params = new StringEntity(gson.toJson(dataSend), ContentType.APPLICATION_JSON);
 		post.addHeader("content-type", "application/json");
 		post.setEntity(params);

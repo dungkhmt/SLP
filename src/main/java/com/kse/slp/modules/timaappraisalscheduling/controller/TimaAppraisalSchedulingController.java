@@ -1,4 +1,4 @@
-package com.kse.slp.modules.vrpload3d.controller;
+package com.kse.slp.modules.timaappraisalscheduling.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,28 +22,27 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.kse.slp.controller.BaseWeb;
+import com.kse.slp.modules.timaappraisalscheduling.model.TimaAppraisalSchedulingInput;
 import com.kse.slp.modules.tspd.model.TSPDInput;
-import com.kse.slp.modules.vrpload3d.model.VRPLoad3DInput;
 
-@Controller("VRPLoad3DController")
-@RequestMapping("/vrp-load3d")
-public class VRPLoad3DController extends BaseWeb{
-
+@Controller("TIMAppraisalScheduling")
+@RequestMapping("/tima-appraisal-scheduling")
+public class TimaAppraisalSchedulingController extends BaseWeb{
 	@RequestMapping(value="", method = RequestMethod.GET)
-	public String home(){
-		return "vrpload3d.home";
+	public String home() {
+		return "timascheduling.home";
 	}
 	
 	@RequestMapping(value="/upload-file", method = RequestMethod.GET)
 	public String uploadFile(ModelMap model){
-		model.put("vrpInputFile", new VRPLoad3DInput());
-		return "vrpload3d.uploadFile";
+		model.put("timaschedulingInputFile", new TimaAppraisalSchedulingInput());
+		return "timascheduling.uploadFile";
 	}
 	
-	@RequestMapping(value="/computeSolution", method = RequestMethod.POST)
-	public String computeTSPDTour(ModelMap model, @ModelAttribute("vrpInputFile") VRPLoad3DInput request){
-		System.out.println("VRPLoad3DController::computeTSPDTour::");
-		MultipartFile mFile = request.getVrpInputRequest();
+	@RequestMapping(value="/computeTour", method = RequestMethod.POST)
+	public String computeTSPDTour(ModelMap model, @ModelAttribute("tspdInputFile") TimaAppraisalSchedulingInput request){
+		//System.out.println(name()+"computeTSPDTour::");
+		MultipartFile mFile = request.getTimaAppraisalSchedulingInputRequest();
 		try {
 			InputStream file = mFile.getInputStream();
 			StringWriter writer = new StringWriter();
@@ -51,7 +50,8 @@ public class VRPLoad3DController extends BaseWeb{
 			String json = writer.toString();
 			Gson gson = new Gson();
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost post = new HttpPost("http://172.16.20.67:9898/ezRoutingAPI/vrp-load3d");
+			
+			HttpPost post = new HttpPost("http://localhost:8088/appraisal-scheduling/run-algorithm");
 			StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 			post.addHeader("content-type", "application/json");
 			post.setEntity(params);
@@ -59,8 +59,8 @@ public class VRPLoad3DController extends BaseWeb{
 			HttpResponse response = httpClient.execute(post);
 			HttpEntity res = response.getEntity();
 			String responseString = EntityUtils.toString(res, "UTF-8");
-			System.out.println("VRPLoad3DController::computeTSPDTour::responnseString = "+responseString);
 			//Tour[] result = gson.fromJson(responseString, Tour[].class);
+			System.out.println("responseString "+responseString);
 			model.put("sol", responseString);
 			
 			file.close();
@@ -68,6 +68,6 @@ public class VRPLoad3DController extends BaseWeb{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "vrpload3d.viewSolution";
+		return "timascheduling.viewSolution";
 	}
 }

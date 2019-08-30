@@ -29,7 +29,7 @@
     </div>
 </div>
 <!-- /#page-wrapper -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruL-HLFSNh6G2MLhjS-eBTea7r7EFa5A&libraries=places&callback=initialize" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnc2KpjaihZJNZUJnsa3hSyq_u073q9S8&libraries=places&callback=initialize" async defer></script>
 <script>
 var colorInit=["#F7786B","#91A8D0","#91A8D0","#034F84","#FAE03C","#98DDDE","#9896A4","#DD4132","#B18F6A","#79C753","#B93A32","#AD5D5D","#006E51","#B76BA3","#5C7148","#D13076"]; // mang init mau
 var map;

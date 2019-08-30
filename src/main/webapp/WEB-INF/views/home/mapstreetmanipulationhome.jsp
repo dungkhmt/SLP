@@ -13,7 +13,7 @@
     <!-- /.row -->
 </div>
 <!-- /#page-wrapper -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruL-HLFSNh6G2MLhjS-eBTea7r7EFa5A&libraries=places&callback=initialize" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnc2KpjaihZJNZUJnsa3hSyq_u073q9S8&libraries=places&callback=initialize" async defer></script>
 <script>
 var map;
 function initialize() {

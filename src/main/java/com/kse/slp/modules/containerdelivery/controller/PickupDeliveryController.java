@@ -98,11 +98,11 @@ public class PickupDeliveryController extends BaseWeb{
 	@Autowired
 	ShipperBatchService shipperBatchService;
 	/*future fix
-	 * reset route ->save vào csdl (null có lưu không) -> tăng increment id rất nhanh
+	 * reset route ->save vÃ o csdl (null cÃ³ lÆ°u khÃ´ng) -> tÄƒng increment id ráº¥t nhanh
 	 * 
-	 * xử lý volumn công volumn reset route sẽ không quay về được trạng thái ban đầu
+	 * xá»­ lÃ½ volumn cÃ´ng volumn reset route sáº½ khÃ´ng quay vá»� Ä‘Æ°á»£c tráº¡ng thÃ¡i ban Ä‘áº§u
 	 * 
-	 * kiểm tra lại ord 36 -> remain order block
+	 * kiá»ƒm tra láº¡i ord 36 -> remain order block
 	 * 
 	 * 
 	 */
@@ -318,7 +318,7 @@ public class PickupDeliveryController extends BaseWeb{
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
 		//HttpPost request = new HttpPost("http://103.18.4.32:8080/ezRoutingAPI/pickup-delivery-containers-plan");
-		HttpPost request = new HttpPost("http://localhost:8080/ezRoutingAPI/pickup-delivery-containers-plan");
+		HttpPost request = new HttpPost("http://172.16.20.67:9898/ezRoutingAPI/pickup-delivery-containers-plan");
 		StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 		
 		

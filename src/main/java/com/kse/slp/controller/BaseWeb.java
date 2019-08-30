@@ -114,7 +114,7 @@ public class BaseWeb {
     	setPermission(session);
         switch (request.getRequestURI()) {
             case "/":
-                baseUrl = request.getRequestURL().substring(0, request.getRequestURL().length() - 1).toString();
+            	baseUrl = request.getRequestURL().substring(0, request.getRequestURL().length() - 1).toString();
                 break;
             case "":
                 baseUrl = request.getRequestURL().toString();

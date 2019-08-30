@@ -306,4 +306,17 @@
     	<put-attribute name="content" value="/WEB-INF/views/vrpload3d/viewSolution.jsp" />
     </definition>
     
+    <!-- TIMA-Appraisal-Scheduling -->
+    <definition name="timascheduling.home" extends="layout">
+    	<put-attribute name="title" value="Scheduling for TIMA's Appraisal"/>
+    	<put-attribute name="content" value="/WEB-INF/views/home/timaappraisalschedulinghome.jsp"/>
+    </definition>
+    <definition name="timascheduling.uploadFile" extends="layout">
+    	<put-attribute name="title" value="Upload File"/>
+    	<put-attribute name="content" value="/WEB-INF/views/timaappraisalscheduling/uploadFile.jsp"></put-attribute>
+    </definition>
+  	<definition name="timascheduling.viewSolution" extends="layout">
+    	<put-attribute name="title" value="Solution"/>
+    	<put-attribute name="content" value="/WEB-INF/views/timaappraisalscheduling/viewSolution.jsp"></put-attribute>
+    </definition>
 </tiles-definitions>

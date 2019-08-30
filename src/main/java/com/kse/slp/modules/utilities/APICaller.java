@@ -29,7 +29,7 @@ public class APICaller {
 			//HttpPost request = new HttpPost(
 			//		"http://103.18.4.32:8080/ezRoutingAPI/compute-route");
 			 HttpPost request = new
-			 HttpPost("http://localhost:8080/ezRoutingAPI/compute-route");
+			 HttpPost("http://172.16.20.67:9898/ezRoutingAPI/compute-route");
 
 			StringEntity params = new StringEntity(json);
 

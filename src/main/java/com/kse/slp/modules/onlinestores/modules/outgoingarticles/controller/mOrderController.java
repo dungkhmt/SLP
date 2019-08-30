@@ -606,13 +606,13 @@ public class mOrderController extends BaseWeb{
 			//String customerCode = mRequestBatchService.getByCode(batch).getREQBAT_CustomerCode();
 			//Customer cus = CustomerService.getByCode(customerCode);
 			//System.out.println(name()+"callServiceCreateRoute--cus: "+cus.toString());
-			List<Stores> lstStore = StoresService.getListStoreInBatch(batch);
+			List<Stores> lstStore = StoresService.getListStoreInBatch("2016-10-24 06:01:00 CUS000000");
 			
 			Store store = new Store(lstStore.get(0).getSTR_Code(), lstStore.get(0).getSTR_Name(), lstStore.get(0).getSTR_Address(), lstStore.get(0).getSTR_LatLng()); 
 			
 			System.out.println(name() + "::callServiceCreateRoute, lstOrders = " + lstOrder.size() + " = requests = " + deliveryRequest.length);
 			//List<mShippers> lstShipper = mShippersService.getByCustomerCode(customerCode);
-			List<mShippers> lstShipper = mShippersService.getListInBatch(batch);
+			List<mShippers> lstShipper = mShippersService.getList();
 			Shipper shippers[] = new Shipper[lstShipper.size()];
 			for(int i=0; i<lstShipper.size();i++){
 				String shipperCode = lstShipper.get(i).getSHP_Code();
@@ -633,7 +633,7 @@ public class mOrderController extends BaseWeb{
 			System.out.println(name()+"callServiceCreateRoute---data send:");
 			System.out.println(datajson);
 			
-			HttpPost post = new HttpPost("http://localhost:8080/ezRoutingAPI/delivery-goods-plan");
+			HttpPost post = new HttpPost("http://172.16.20.67:9898/ezRoutingAPI/delivery-goods-plan");
 			StringEntity params = new StringEntity(datajson, ContentType.APPLICATION_JSON);
 			post.addHeader("content-type", "application/json");
 			post.setEntity(params);
@@ -642,7 +642,7 @@ public class mOrderController extends BaseWeb{
 			HttpResponse response = httpClient.execute(post);
 			HttpEntity res = response.getEntity();
 			String responseString = EntityUtils.toString(res, "UTF-8");
-			
+			System.out.println(name()+"callServiceCreateRoute--responseString "+responseString);
 			DeliveryGoodSolution solution = gson.fromJson(responseString, DeliveryGoodSolution.class);			
 			List<mRoutes> lstr = mRoutesService.getListByBatchCode(batch);
 			System.out.println(name()+"callServiceCreateRoute--length of route to remove"+lstr.size());
@@ -703,7 +703,7 @@ public class mOrderController extends BaseWeb{
 		for(int i=0; i<lstRoute.size(); i++){
 			String routeCode = lstRoute.get(i).getRoute_Code();
 			String shipperCode = lstRoute.get(i).getRoute_Shipper_Code();
-			List<Stores> lstStr = StoresService.getListStoreInBatch(batch);
+			List<Stores> lstStr = StoresService.getListStoreInBatch("2016-10-24 06:01:00 CUS000000");
 			String storeLatLng = lstStr.get(0).getSTR_LatLng();
 			List<infoAutoRouteElement> routeElement = InfoAutoRouteElementService.getList(routeCode);
 			mAutoRouteResponseInfo tmp = new mAutoRouteResponseInfo(storeLatLng,shipperCode, routeCode,routeElement);
