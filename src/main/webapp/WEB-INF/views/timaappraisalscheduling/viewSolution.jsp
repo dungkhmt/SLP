@@ -4,10 +4,12 @@
 			<h1 class="page-header">Solution</h1>
 		</div>
 	</div>
+	<!-- 
 	<div class="row">
 		<button class="btn btn-warning col-sm-1" id="buttonChangePolyline" onclick="hireNormalPolyline();">Hide</button>
 		<a class="btn btn-primary"  onclick="saveSolution(this);">Save Solution</a>
 	</div>
+	 -->
 	<div class="row">
 		<div id="map" style="height:100%"></div>
 	</div>
@@ -59,14 +61,13 @@ function initMap(){
 	var lstinfowindow = [];
 	
 	for(var i=0; i<clientPoints.length; i++){
-		var lat = clientPoints[i].homeAddressLatLng.lat;
-		var lng = clientPoints[i].homeAddressLatLng.lng;
+		var lat = clientPoints[i].addressLatLng.lat;
+		var lng = clientPoints[i].addressLatLng.lng;
 		var point = new google.maps.LatLng(lat, lng);
 		
 		var infowindow = new google.maps.InfoWindow({
-		    content: "customerCode: "+ clientPoints[i].customerCode +"</br>"+
-		    		"companyAddress: " + clientPoints[i].companyAddress +"</br>"+
-		    		"homeAddress: " + clientPoints[i].homeAddress +"</br>"+
+		    content: "requestID: "+ clientPoints[i].requestID +"</br>"+
+		    		"address: " + clientPoints[i].address +"</br>"+
 		    		"earlyComingTime: " + clientPoints[i].earlyComingTime + "</br>"+
 		    		"lateComingTime: " + clientPoints[i].lateComingTime + "</br>"+
 		    		"servingTime: " + clientPoints[i].servingTime + "</br>"+

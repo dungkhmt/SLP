@@ -51,7 +51,7 @@ public class TimaAppraisalSchedulingController extends BaseWeb{
 			Gson gson = new Gson();
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			
-			HttpPost post = new HttpPost("http://localhost:8088/appraisal-scheduling/run-algorithm");
+			HttpPost post = new HttpPost("http://172.16.20.67:8086/appraisal-scheduling/run-algorithm");
 			StringEntity params = new StringEntity(json, ContentType.APPLICATION_JSON);
 			post.addHeader("content-type", "application/json");
 			post.setEntity(params);

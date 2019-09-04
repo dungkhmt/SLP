@@ -7,7 +7,7 @@
 	<form:form action="${baseUrl}/tima-appraisal-scheduling/computeTour" method="POST" commandName="timaschedulingInputFile" enctype="multipart/form-data" role="form">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Upload TSP file</h1>
+				<h1 class="page-header">Upload List Items file</h1>
 			</div>
 			<div class="col-lg-12">
 				<form:input id="input-file" path="TimaAppraisalSchedulingInputRequest" name="TimaAppraisalSchedulingInputRequest" type="file" class="file file-loading" data-allowed-file-extensions='["json"]'/>

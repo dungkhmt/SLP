@@ -1,0 +1,118 @@
+{
+	"currentPoint":{
+		"ID":0,
+		"lat": 20.9934644,
+		"lng": 105.8059148
+	},
+	"startTime": "2019-08-29 09:30:00",
+	"listItems":[
+		{
+			"requestID": "890034",
+			"loanCreditID": "890034",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,
+			"address": "số 149 Lê Duẩn - cửa nam - hoàn kiếm - hà nội",
+			"appraisalType": 1,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "869775",
+			"loanCreditID": "869775",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,
+			"address": "Số nhà 21 Ngõ 146 Định Công Thượng- Hoàng mai -Hà Nội",
+			"appraisalType": 2,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "799412",
+			"loanCreditID": "799412",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,			
+			"address": "số 16 ngõ 236/34 Đai từ, Đại Kim, Hoàng Mai, Hà Nội",
+			"appraisalType": 2,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "744505",
+			"loanCreditID": "799412",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,
+			"address": "Tòa CT10A, Phòng 1930, Tầng 19,  Khu Đô Thị Đại Thanh, Đường Cầu Bươu, Xã Tả Thanh Oai, Huyện Thanh Trì, HN",
+			"appraisalType": 1,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "727234",
+			"loanCreditID": "727234",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,
+			"address": "Số nhà 4 ngách 17/2 ngõ 17 Tạ Quang Bửu- Bách Khoa- Hà Nội",
+			"appraisalType": 1,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "734492",
+			"loanCreditID": "734492",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,
+			"address": "số 22 ngõ 8 ngách 74 phố Bùi Ngọc Dương, Phường Bạch Mai, Quận Hai Bà Trưng, Hà Nội",
+			"appraisalType": 1,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "820985",
+			"loanCreditID": "820985",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,			
+			"address": "số nhà 5 ngách 192/20 đường Tựu Liệt - Thanh Trì - Hà Nội",
+			"appraisalType": 1,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "937569",
+			"loanCreditID": "937569",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,
+			"address": "số 88 ngõ lan bá - phường trung phụng - quận đống đa - hà nội",
+			"appraisalType": 1,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		},
+		{
+			"requestID": "930884",
+			"loanCreditID": "937569",
+			"cityID": 1,
+			"districtID": 1,
+			"wardID": 1,
+			"address": "số nhà 85b, ngõ 281 Trương Định- phường Tân Mai-quận Hoàng Mai-HN",
+			"appraisalType": 1,
+			"earlyComingTime": null,
+			"lateComingTime": null,
+			"servingTime": 20
+		}
+		]
+}
